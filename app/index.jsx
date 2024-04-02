@@ -4,6 +4,7 @@ import { LandingMascot } from "@/components/ui/landing-mascot";
 import { LandingText } from "@/components/ui/landing-text";
 import { PrimaryButton } from "@/components/primary-button";
 import { Input } from "@/components/input";
+import { Link } from "expo-router";
 
 export default function App() {
   return (
@@ -19,7 +20,9 @@ export default function App() {
       >
         <View className="w-full gap-y-8 flex items-center">
           <Input placeholder="Email" className="w-[80%]" />
-          <PrimaryButton text="Get Started" className="w-[80%]" />
+          <Link className="w-[80%]" href={"/tracking"} asChild>
+            <PrimaryButton text="Get Started" />
+          </Link>
         </View>
       </View>
       <StatusBar style="auto" />
