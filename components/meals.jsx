@@ -62,9 +62,9 @@ export function Meals() {
   // TODO: make a better color palatte
   const colorPalattes = [
     { textColor: "text-white", color: "bg-[#453F78]" },
-    { textColor: "text-white", color: "bg-[#795458]" },
+    { textColor: "text-white", color: "bg-[#FA7070]" },
     { textColor: "text-white", color: "bg-[#C08B5C]" },
-    { textColor: "text-white", color: "bg-[#FFC94A]" },
+    { textColor: "text-black", color: "bg-[#FBF3D5]" },
   ];
 
   const getColor = (index) => {
@@ -76,7 +76,11 @@ export function Meals() {
     // Choosing the right color palatte according to
     // index of meal
     colorPalattes.forEach((palatte, palatteIndex) => {
-      if (palatteIndex === index || palatteIndex % index === 0) {
+      if (index > colorPalattes.length - 1) {
+        index = index % 4;
+      }
+
+      if (palatteIndex === index) {
         bgColor = palatte.color;
         textColor = palatte.textColor;
       }
@@ -86,9 +90,9 @@ export function Meals() {
   };
 
   return (
-    <View className="flex gap-y-2 mt-2">
-      <Text className="text-lg">What did you eat today?</Text>
-      <View className="h-28">
+    <View className="flex  mt-2">
+      <Text className="text-lg mb-2">What did you eat today?</Text>
+      <View className="h-30 ">
         <FlashList
           horizontal={true}
           data={meals}
@@ -97,7 +101,12 @@ export function Meals() {
             const { bgColor, textColor } = getColor(index);
 
             return (
-              <View className={cn(`mr-4 self-start rounded-2xl p-3`, bgColor)}>
+              <View
+                className={cn(
+                  `mr-4 border-2  border-secondary self-start rounded-2xl p-3`,
+                  bgColor
+                )}
+              >
                 <Text className={cn(`text-lg`, textColor)}>
                   <Text className="font-bold">{item.index}</Text> {item.summary}
                 </Text>
@@ -106,10 +115,10 @@ export function Meals() {
                   {item.calories.map((calorie, index) => (
                     <View key={index}>
                       <Text className={cn("text-center text-lg", textColor)}>
-                        {calorie.type}
+                        {calorie.value}
                       </Text>
                       <Text className={cn("text-center", textColor)}>
-                        {calorie.value}
+                        {calorie.type}
                       </Text>
                     </View>
                   ))}

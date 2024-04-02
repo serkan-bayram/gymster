@@ -25,7 +25,7 @@ export function GYMDays() {
       <Text className="text-lg">GYM Days</Text>
       <View
         className="w-full h-48 border-2 
-     border-secondary rounded-2xl p-2 overflow-hidden"
+     border-secondary bg-[#FBF3D5] rounded-2xl p-2 overflow-hidden"
       >
         <Text className="absolute top-2 right-2">{year}</Text>
         <FlashList
@@ -42,7 +42,7 @@ export function GYMDays() {
                     className="w-8 h-8 flex items-center justify-center
            bg-secondary rounded-full"
                   >
-                    <Text className=" text-white">{index + 1}</Text>
+                    <Text className=" text-background">{index + 1}</Text>
                   </View>
                 ))}
               </View>
