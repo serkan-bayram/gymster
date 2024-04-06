@@ -43,7 +43,9 @@ export function ProgressBar({ progress: userProgress, goal }) {
       className="flex-1 justify-center"
     >
       <View className="flex items-center gap-y-1">
-        <Text className="text-lg font-bold">{progressPercantage}%</Text>
+        <Text className="text-lg font-bold">
+          {progressPercantage <= 100 ? progressPercantage : 100}%
+        </Text>
         <Text>of {goal} ml </Text>
       </View>
       <Svg className="absolute">
