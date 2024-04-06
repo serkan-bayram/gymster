@@ -40,7 +40,7 @@ export function ProgressBar({ progress: userProgress, goal }) {
         setWidth(width);
         setHeight(height);
       }}
-      className="flex-1 items-center justify-center"
+      className="flex-1 justify-center"
     >
       <View className="flex items-center gap-y-1">
         <Text className="text-lg font-bold">{progressPercantage}%</Text>
