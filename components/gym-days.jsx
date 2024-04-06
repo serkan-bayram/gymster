@@ -21,7 +21,7 @@ export function GYMDays() {
 
   // TODO: give a better background color
   return (
-    <View className="flex gap-y-2 mt-4">
+    <View className="flex gap-y-2 mt-4 px-4">
       <Text className="text-lg">GYM Days</Text>
       <View
         className="w-full h-48 border-2 

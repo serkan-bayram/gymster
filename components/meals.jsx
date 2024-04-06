@@ -90,7 +90,7 @@ export function Meals() {
   };
 
   return (
-    <View className="flex  mt-2">
+    <View className="flex px-4 mt-2">
       <Text className="text-lg mb-2">What did you eat today?</Text>
       <View className="h-30 ">
         <FlashList
