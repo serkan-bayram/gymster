@@ -5,7 +5,7 @@ export function Water() {
   return (
     <View className="flex-1 mt-2">
       <Text className="text-lg mb-2">Hydration</Text>
-      <ProgressBar />
+      <ProgressBar progress="300" goal="2000" />
     </View>
   );
 }
