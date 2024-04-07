@@ -104,8 +104,9 @@ export function Water() {
                 onPress={() => bottomSheetRef.current.close()}
                 text="Cancel"
                 type="danger"
+                className="w-1/3"
               />
-              <PrimaryButton text="Save" />
+              <PrimaryButton text="Save" className="w-1/3" />
             </View>
           </View>
         </BottomSheetView>

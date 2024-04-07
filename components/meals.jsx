@@ -3,71 +3,7 @@ import { cn } from "@/utils/cn";
 import { Text, View } from "react-native";
 import { AddMeal } from "./ui/add-meal";
 
-export function Meals() {
-  // This will come from DB
-  const meals = [
-    {
-      index: "#0",
-      summary: "Eggs, Rice, Yoghurt",
-      calories: [
-        { type: "Kcal", value: "342" },
-        { type: "Protein", value: "13" },
-        { type: "Fat", value: "27" },
-        { type: "Carbs", value: "120" },
-      ],
-    },
-    {
-      index: "#1",
-      summary: "Eggs, Rice, Yoghurt",
-      calories: [
-        { type: "Kcal", value: "342" },
-        { type: "Protein", value: "13" },
-        { type: "Fat", value: "27" },
-        { type: "Carbs", value: "120" },
-      ],
-    },
-    {
-      index: "#2",
-      summary: "Meat",
-      calories: [
-        { type: "Kcal", value: "300" },
-        { type: "Protein", value: "10" },
-        { type: "Fat", value: "20" },
-        { type: "Carbs", value: "200" },
-      ],
-    },
-    {
-      index: "#3",
-      summary: "Meat",
-      calories: [
-        { type: "Kcal", value: "300" },
-        { type: "Protein", value: "10" },
-        { type: "Fat", value: "20" },
-        { type: "Carbs", value: "200" },
-      ],
-    },
-    {
-      index: "#4",
-      summary: "Meat",
-      calories: [
-        { type: "Kcal", value: "300" },
-        { type: "Protein", value: "10" },
-        { type: "Fat", value: "20" },
-        { type: "Carbs", value: "200" },
-      ],
-    },
-    {
-      index: "#5",
-      summary: "Meat",
-      calories: [
-        { type: "Kcal", value: "300" },
-        { type: "Protein", value: "10" },
-        { type: "Fat", value: "20" },
-        { type: "Carbs", value: "200" },
-      ],
-    },
-  ];
-
+export function Meals({ mealsBottomSheet, meals }) {
   // We can specify the colors of meal background & texts
   // It's important to write full tailwind styles to make it work
   // TODO: make a better color palatte
@@ -100,6 +36,9 @@ export function Meals() {
     return { bgColor, textColor };
   };
 
+  // TODO: a better idea is start showing from reverse it should
+  // go like #5, #4, ....
+
   return (
     <View className="flex px-4 mt-2">
       <Text className="text-lg mb-2">What did you eat today?</Text>
@@ -110,7 +49,7 @@ export function Meals() {
           estimatedItemSize={253}
           renderItem={({ item, index }) => {
             if (index === 0) {
-              return <AddMeal />;
+              return <AddMeal mealsBottomSheet={mealsBottomSheet} />;
             }
 
             const { bgColor, textColor } = getColor(index);
@@ -123,7 +62,7 @@ export function Meals() {
                 )}
               >
                 <Text className={cn(`text-lg`, textColor)}>
-                  <Text className="font-bold">{item.index}</Text> {item.summary}
+                  <Text className="font-bold">#{index}</Text> {item.summary}
                 </Text>
 
                 <View className="mt-3 flex flex-row gap-x-4">

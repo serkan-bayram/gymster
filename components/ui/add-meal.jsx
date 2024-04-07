@@ -1,9 +1,10 @@
 import { Pressable, Text } from "react-native";
 import { PlusSvg } from "./svg";
 
-export function AddMeal() {
+export function AddMeal({ mealsBottomSheet }) {
   return (
     <Pressable
+      onPress={() => mealsBottomSheet.current.expand()}
       className="mr-4 border-2  bg-primary active:bg-primary/75
        transition-all ease-in-out flex items-center justify-center
       border-secondary self-start rounded-2xl p-3 w-40 h-full"
