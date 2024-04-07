@@ -1,6 +1,6 @@
 import { Pressable, Text, View } from "react-native";
 import { ProgressBar } from "./ui/circular-progressbar";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { UpdateWaterValue } from "./ui/update-water-value";
 import { EditSvg } from "./ui/svg";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";

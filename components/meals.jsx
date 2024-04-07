@@ -1,10 +1,21 @@
 import { FlashList } from "@shopify/flash-list";
 import { cn } from "@/utils/cn";
 import { Text, View } from "react-native";
+import { AddMeal } from "./ui/add-meal";
 
 export function Meals() {
   // This will come from DB
   const meals = [
+    {
+      index: "#0",
+      summary: "Eggs, Rice, Yoghurt",
+      calories: [
+        { type: "Kcal", value: "342" },
+        { type: "Protein", value: "13" },
+        { type: "Fat", value: "27" },
+        { type: "Carbs", value: "120" },
+      ],
+    },
     {
       index: "#1",
       summary: "Eggs, Rice, Yoghurt",
@@ -98,6 +109,10 @@ export function Meals() {
           data={meals}
           estimatedItemSize={253}
           renderItem={({ item, index }) => {
+            if (index === 0) {
+              return <AddMeal />;
+            }
+
             const { bgColor, textColor } = getColor(index);
 
             return (
