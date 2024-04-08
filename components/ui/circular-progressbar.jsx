@@ -6,30 +6,47 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import Svg, { Circle } from "react-native-svg";
+import { DEFAULT_GOAL } from "../water";
 
+// How big the circle will be
 const CIRCLE_LENGTH = 400;
 const R = CIRCLE_LENGTH / (2 * Math.PI);
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
-export function ProgressBar({ progress: userProgress, goal }) {
+export function ProgressBar({ currentProgress }) {
+  const goal = DEFAULT_GOAL;
+
+  // We use these states to locate svgs
   const [width, setWidth] = useState(null);
   const [height, setHeight] = useState(null);
 
   const progress = useSharedValue(0);
 
+  // if currentPercantage is 1000 and goal is 2000
+  // progressPercantage would be 50
+  const progressPercantage = (currentProgress * 100) / goal;
+
+  // 100                  75
+  // 400(CIRCLE_LENGTH)    ?
+  // ? = progressCalculation
+  // We use this value to set strokeDashoffset
+  const progressCalculation = (progressPercantage * CIRCLE_LENGTH) / 100;
+
+  // Animate the progress bar on mount
   useEffect(() => {
-    progress.value = withTiming(1, { duration: 1000 });
+    progress.value = withTiming(progressCalculation, { duration: 1000 });
   }, []);
 
-  const progressPercantage = (userProgress * 100) / goal;
-
-  const progressCalculation = progressPercantage * 4;
+  // Animate the progress bar when currentProgress changes
+  useEffect(() => {
+    progress.value = withTiming(progressCalculation, { duration: 350 });
+  }, [currentProgress]);
 
   // strokeDashoffset = CIRCLE_LENGTH -> no progress
-  // strokeDashoffset = CIRCLE_LENGTH - CIRCLE_LENGTH / 2 -> 50% progress
+  // strokeDashoffset = CIRCLE_LENGTH - (CIRCLE_LENGTH / 2) -> 50% progress
   const animatedProps = useAnimatedProps(() => ({
-    strokeDashoffset: CIRCLE_LENGTH - progress.value * progressCalculation,
+    strokeDashoffset: CIRCLE_LENGTH - progress.value,
   }));
 
   return (
@@ -44,12 +61,14 @@ export function ProgressBar({ progress: userProgress, goal }) {
     >
       <View className="flex items-center gap-y-1">
         <Text className="text-lg font-bold">
+          {/* If anything goes wrong and it overflows
+           it fallbacks to 100 */}
           {progressPercantage <= 100 ? progressPercantage : 100}%
         </Text>
         <Text>of {goal} ml </Text>
       </View>
       <Svg className="absolute">
-        {width > 0 && (
+        {width > 0 && height > 0 && (
           <>
             <AnimatedCircle
               fillOpacity={0}

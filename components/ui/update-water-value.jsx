@@ -1,26 +1,27 @@
 import { Pressable, Text, View } from "react-native";
 import { ExtractSvg, PlusSvg } from "./svg";
+import { DEFAULT_GOAL, DEFAULT_UPDATE_VALUE } from "../water";
 
-export function UpdateWaterValue({
-  updateValue,
-  goalValue,
-  progress,
-  setProgress,
-}) {
+export function UpdateWaterValue({ currentProgress, setCurrentProgress }) {
+  const updateValue = DEFAULT_UPDATE_VALUE;
+  const goal = DEFAULT_GOAL;
+
   const handleClick = (type) => {
     let newProgress;
 
     if (type === "increase") {
-      const calculation = progress + updateValue;
+      const calculation = currentProgress + updateValue;
 
-      newProgress = calculation >= goalValue ? goalValue : calculation;
+      // We check for any overflow, if new calculation is bigger than
+      // goal, just return goal
+      newProgress = calculation >= goal ? goal : calculation;
     } else {
-      const calculation = progress - updateValue;
+      const calculation = currentProgress - updateValue;
 
       newProgress = calculation <= 0 ? 0 : calculation;
     }
 
-    setProgress(newProgress);
+    setCurrentProgress(newProgress);
   };
 
   return (
@@ -37,6 +38,7 @@ export function UpdateWaterValue({
         >
           <PlusSvg width={"20"} height={"20"} fill={"#7AA2E3"} />
         </Pressable>
+
         <Pressable
           onPress={() => handleClick("decrease")}
           className="bg-white border active:bg-gray-100
