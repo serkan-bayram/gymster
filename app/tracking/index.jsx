@@ -1,11 +1,11 @@
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import { Heading } from "@/components/heading";
 import { GYMDays } from "@/components/gym-days";
 import { Meals } from "@/components/meals";
 import { Water } from "@/components/water";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useRef, useState } from "react";
-import { MealsBottomSheet } from "@/components/bottom-sheets";
+import { WaterProvider } from "@/utils/water-context";
 
 export default function Tracking() {
   const mealsBottomSheet = useRef(null);
@@ -68,12 +68,9 @@ export default function Tracking() {
         <Heading heading={"Tracking"} />
         <GYMDays />
         <Meals meals={meals} mealsBottomSheet={mealsBottomSheet} />
-        <Water />
-
-        <MealsBottomSheet
-          setMeals={setMeals}
-          mealsBottomSheet={mealsBottomSheet}
-        />
+        <WaterProvider>
+          <Water />
+        </WaterProvider>
       </View>
     </GestureHandlerRootView>
   );

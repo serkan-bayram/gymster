@@ -6,7 +6,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import Svg, { Circle } from "react-native-svg";
-import { DEFAULT_GOAL } from "../water";
+import { useWater } from "@/utils/water-context";
 
 // How big the circle will be
 const CIRCLE_LENGTH = 400;
@@ -15,7 +15,7 @@ const R = CIRCLE_LENGTH / (2 * Math.PI);
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 export function ProgressBar({ currentProgress }) {
-  const goal = DEFAULT_GOAL;
+  const { goalValue: goal } = useWater();
 
   // We use these states to locate svgs
   const [width, setWidth] = useState(null);
@@ -40,8 +40,10 @@ export function ProgressBar({ currentProgress }) {
 
   // Animate the progress bar when currentProgress changes
   useEffect(() => {
-    progress.value = withTiming(progressCalculation, { duration: 350 });
-  }, [currentProgress]);
+    if (progressPercantage <= 100) {
+      progress.value = withTiming(progressCalculation, { duration: 350 });
+    }
+  }, [currentProgress, goal]);
 
   // strokeDashoffset = CIRCLE_LENGTH -> no progress
   // strokeDashoffset = CIRCLE_LENGTH - (CIRCLE_LENGTH / 2) -> 50% progress
@@ -63,7 +65,7 @@ export function ProgressBar({ currentProgress }) {
         <Text className="text-lg font-bold">
           {/* If anything goes wrong and it overflows
            it fallbacks to 100 */}
-          {progressPercantage <= 100 ? progressPercantage : 100}%
+          {progressPercantage <= 100 ? parseInt(progressPercantage) : 100}%
         </Text>
         <Text>of {goal} ml </Text>
       </View>

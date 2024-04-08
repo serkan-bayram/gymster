@@ -1,9 +1,28 @@
-import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { Text, View } from "react-native";
 import { PrimaryButton } from "../primary-button";
-import { Picker } from "@react-native-picker/picker";
+import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
+import { useRef, useState } from "react";
+import { WaterPickers } from "./water-pickers";
+import { useWater } from "@/utils/water-context";
 
 export function WaterBottomSheet({ bottomSheetRef }) {
+  // Picker refs
+  const updatePickerRef = useRef(null);
+  const goalPickerRef = useRef(null);
+
+  const { updateValue, setUpdateValue, goalValue, setGoalValue } = useWater();
+
+  // Values that picked from picker
+  const [pickedUpdateValue, setPickedUpdateValue] = useState(updateValue);
+  const [pickedGoalValue, setPickedGoalValue] = useState(goalValue);
+
+  const handleSave = () => {
+    setUpdateValue(pickedUpdateValue);
+    setGoalValue(pickedGoalValue);
+
+    bottomSheetRef.current.close();
+  };
+
   return (
     <BottomSheet
       index={-1}
@@ -18,51 +37,32 @@ export function WaterBottomSheet({ bottomSheetRef }) {
               <Text className="text-lg font-bold">Update Value</Text>
               <PrimaryButton
                 onPress={() => updatePickerRef.current.focus()}
-                text={`${updateValue} ml`}
+                text={`${pickedUpdateValue} ml`}
                 type="outlined"
                 className="active:scale-105 ease-in-out transition-all w-1/2"
               />
             </View>
+
             <View className="flex flex-row items-center justify-between">
               <Text className="text-lg font-bold">Goal</Text>
               <PrimaryButton
                 onPress={() => goalPickerRef.current.focus()}
-                text={`${goalValue} ml`}
+                text={`${pickedGoalValue} ml`}
                 type="outlined"
                 className="active:scale-105 ease-in-out transition-all w-1/2"
               />
             </View>
-            <View className="hidden">
-              <Picker
-                ref={updatePickerRef}
-                selectedValue={updateValue}
-                onValueChange={(itemValue, itemIndex) =>
-                  setUpdateValue(itemValue)
-                }
-              >
-                <Picker.Item label="200 ml" value="200" />
-                <Picker.Item label="300 ml" value="300" />
-                <Picker.Item label="500 ml" value="500" />
-                <Picker.Item label="1000 ml" value="1000" />
-              </Picker>
-              <Picker
-                ref={goalPickerRef}
-                selectedValue={goalValue}
-                onValueChange={(itemValue, itemIndex) =>
-                  setGoalValue(itemValue)
-                }
-              >
-                <Picker.Item label="500 ml" value="500" />
-                <Picker.Item label="1000 ml" value="1000" />
-                <Picker.Item label="1500 ml" value="1500" />
-                <Picker.Item label="2000 ml" value="2000" />
-                <Picker.Item label="2500 ml" value="2500" />
-                <Picker.Item label="3000 ml" value="3000" />
-                <Picker.Item label="4000 ml" value="4000" />
-                <Picker.Item label="5000 ml" value="5000" />
-              </Picker>
-            </View>
+
+            <WaterPickers
+              pickedGoalValue={pickedGoalValue}
+              pickedUpdateValue={pickedUpdateValue}
+              setPickedGoalValue={setPickedGoalValue}
+              setPickedUpdateValue={setPickedUpdateValue}
+              updatePickerRef={updatePickerRef}
+              goalPickerRef={goalPickerRef}
+            />
           </View>
+
           <View className="flex flex-row justify-center items-center mt-16 gap-x-6 ">
             <PrimaryButton
               onPress={() => bottomSheetRef.current.close()}
@@ -70,7 +70,7 @@ export function WaterBottomSheet({ bottomSheetRef }) {
               type="danger"
               className="w-1/3"
             />
-            <PrimaryButton text="Save" className="w-1/3" />
+            <PrimaryButton onPress={handleSave} text="Save" className="w-1/3" />
           </View>
         </View>
       </BottomSheetView>

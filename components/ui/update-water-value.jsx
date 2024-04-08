@@ -1,10 +1,9 @@
 import { Pressable, Text, View } from "react-native";
 import { ExtractSvg, PlusSvg } from "./svg";
-import { DEFAULT_GOAL, DEFAULT_UPDATE_VALUE } from "../water";
+import { useWater } from "@/utils/water-context";
 
 export function UpdateWaterValue({ currentProgress, setCurrentProgress }) {
-  const updateValue = DEFAULT_UPDATE_VALUE;
-  const goal = DEFAULT_GOAL;
+  const { updateValue, goalValue: goal } = useWater();
 
   const handleClick = (type) => {
     let newProgress;
