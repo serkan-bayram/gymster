@@ -7,6 +7,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { WaterProvider } from "@/utils/water-context";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
+// TODO: tidy up colors
 export default function Tracking() {
   return (
     <GestureHandlerRootView className="flex-1">
