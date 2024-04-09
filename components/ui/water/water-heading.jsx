@@ -1,5 +1,5 @@
 import { Pressable, Text, View } from "react-native";
-import { EditSvg } from "./svg";
+import { EditSvg } from "../svg";
 
 export function WaterHeading({ bottomSheetRef }) {
   return (

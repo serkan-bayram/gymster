@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { ProgressBar } from "./circular-progressbar";
+import { ProgressBar } from "../circular-progressbar";
 import { UpdateWaterValue } from "./update-water-value";
 import { useState } from "react";
 

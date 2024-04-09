@@ -1,6 +1,7 @@
 import { Picker } from "@react-native-picker/picker";
 import { View } from "react-native";
 
+// A component to change default values of water section
 export function WaterPickers({
   pickedUpdateValue,
   pickedGoalValue,

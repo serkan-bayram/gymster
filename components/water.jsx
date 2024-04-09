@@ -1,7 +1,7 @@
 import { View } from "react-native";
-import { WaterContent } from "./ui/water-content";
-import { WaterHeading } from "./ui/water-heading";
-import { WaterBottomSheet } from "./ui/water-bottom-sheet";
+import { WaterContent } from "./ui/water/water-content";
+import { WaterHeading } from "./ui/water/water-heading";
+import { WaterBottomSheet } from "./ui/water/water-bottom-sheet";
 import { useRef } from "react";
 
 export function Water() {

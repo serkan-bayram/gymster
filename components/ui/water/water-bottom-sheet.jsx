@@ -1,10 +1,11 @@
 import { Text, View } from "react-native";
-import { PrimaryButton } from "../primary-button";
+import { PrimaryButton } from "../../primary-button";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { useRef, useState } from "react";
 import { WaterPickers } from "./water-pickers";
 import { useWater } from "@/utils/water-context";
 
+// Content of bottom sheet for water section
 export function WaterBottomSheet({ bottomSheetRef }) {
   // Picker refs
   const updatePickerRef = useRef(null);

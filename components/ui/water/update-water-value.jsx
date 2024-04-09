@@ -1,7 +1,8 @@
 import { Pressable, Text, View } from "react-native";
-import { ExtractSvg, PlusSvg } from "./svg";
+import { ExtractSvg, PlusSvg } from "../svg";
 import { useWater } from "@/utils/water-context";
 
+// This component is used to increase or decrease current water progress
 export function UpdateWaterValue({ currentProgress, setCurrentProgress }) {
   const { updateValue, goalValue: goal } = useWater();
 
