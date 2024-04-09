@@ -2,8 +2,10 @@ import { FlashList } from "@shopify/flash-list";
 import { cn } from "@/utils/cn";
 import { Text, View } from "react-native";
 import { AddMeal } from "./ui/add-meal";
+import { useRef, useState } from "react";
+import { MealsBottomSheet } from "./meals-bottom-sheet";
 
-export function Meals({ mealsBottomSheet, meals }) {
+export function Meals() {
   // We can specify the colors of meal background & texts
   // It's important to write full tailwind styles to make it work
   // TODO: make a better color palatte
@@ -36,6 +38,60 @@ export function Meals({ mealsBottomSheet, meals }) {
     return { bgColor, textColor };
   };
 
+  const mealsBottomSheetRef = useRef(null);
+
+  // This will come from DB
+  const mealsDB = [
+    {}, // Don't delete this, this a placeholder for add meal section
+    {
+      summary: "Eggs, Rice, Yoghurt",
+      calories: [
+        { type: "Kcal", value: "342" },
+        { type: "Protein", value: "13" },
+        { type: "Fat", value: "27" },
+        { type: "Carbs", value: "120" },
+      ],
+    },
+    {
+      summary: "Meat",
+      calories: [
+        { type: "Kcal", value: "300" },
+        { type: "Protein", value: "10" },
+        { type: "Fat", value: "20" },
+        { type: "Carbs", value: "200" },
+      ],
+    },
+    {
+      summary: "Meat",
+      calories: [
+        { type: "Kcal", value: "300" },
+        { type: "Protein", value: "10" },
+        { type: "Fat", value: "20" },
+        { type: "Carbs", value: "200" },
+      ],
+    },
+    {
+      summary: "Meat",
+      calories: [
+        { type: "Kcal", value: "300" },
+        { type: "Protein", value: "10" },
+        { type: "Fat", value: "20" },
+        { type: "Carbs", value: "200" },
+      ],
+    },
+    {
+      summary: "Meat",
+      calories: [
+        { type: "Kcal", value: "300" },
+        { type: "Protein", value: "10" },
+        { type: "Fat", value: "20" },
+        { type: "Carbs", value: "200" },
+      ],
+    },
+  ];
+
+  const [meals, setMeals] = useState(mealsDB);
+
   // TODO: a better idea is start showing from reverse it should
   // go like #5, #4, ....
 
@@ -49,7 +105,7 @@ export function Meals({ mealsBottomSheet, meals }) {
           estimatedItemSize={253}
           renderItem={({ item, index }) => {
             if (index === 0) {
-              return <AddMeal mealsBottomSheet={mealsBottomSheet} />;
+              return <AddMeal mealsBottomSheetRef={mealsBottomSheetRef} />;
             }
 
             const { bgColor, textColor } = getColor(index);
@@ -82,6 +138,10 @@ export function Meals({ mealsBottomSheet, meals }) {
           }}
         />
       </View>
+      <MealsBottomSheet
+        setMeals={setMeals}
+        mealsBottomSheetRef={mealsBottomSheetRef}
+      />
     </View>
   );
 }

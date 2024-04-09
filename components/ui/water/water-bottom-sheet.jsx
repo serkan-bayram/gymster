@@ -1,6 +1,6 @@
 import { Text, View } from "react-native";
 import { PrimaryButton } from "../../primary-button";
-import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
+import { BottomSheetView, BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useRef, useState } from "react";
 import { WaterPickers } from "./water-pickers";
 import { useWater } from "@/utils/water-context";
@@ -21,14 +21,13 @@ export function WaterBottomSheet({ bottomSheetRef }) {
     setUpdateValue(pickedUpdateValue);
     setGoalValue(pickedGoalValue);
 
-    bottomSheetRef.current.close();
+    bottomSheetRef.current.dismiss();
   };
 
   return (
-    <BottomSheet
-      index={-1}
+    <BottomSheetModal
       enablePanDownToClose={true}
-      snapPoints={[100, 500]}
+      snapPoints={[500]}
       ref={bottomSheetRef}
     >
       <BottomSheetView className="flex-1">
@@ -66,7 +65,7 @@ export function WaterBottomSheet({ bottomSheetRef }) {
 
           <View className="flex flex-row justify-center items-center mt-16 gap-x-6 ">
             <PrimaryButton
-              onPress={() => bottomSheetRef.current.close()}
+              onPress={() => bottomSheetRef.current.dismiss()}
               text="Cancel"
               type="danger"
               className="w-1/3"
@@ -75,6 +74,6 @@ export function WaterBottomSheet({ bottomSheetRef }) {
           </View>
         </View>
       </BottomSheetView>
-    </BottomSheet>
+    </BottomSheetModal>
   );
 }

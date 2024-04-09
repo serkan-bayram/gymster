@@ -1,19 +1,19 @@
-import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
+import { BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
 import { Text, TextInput, View } from "react-native";
 import { PrimaryButton } from "./primary-button";
 import { useRef, useState } from "react";
-import { Keyboard } from "react-native";
 
-export function MealsBottomSheet({ setMeals, mealsBottomSheet }) {
-  const [input, setInput] = useState("");
-
+export function MealsBottomSheet({ setMeals, mealsBottomSheetRef }) {
   const inputRef = useRef(null);
 
+  const [input, setInput] = useState("");
+
   // MAYBE separate textinput so it does not render the whole component
-  const handlePress = () => {
+  const handleSave = () => {
     // TODO: add a notification to let user know
     if (input.length <= 0) return;
 
+    // Add new meal to meals state
     setMeals((prevValues) => {
       const newArray = [...prevValues];
 
@@ -30,24 +30,22 @@ export function MealsBottomSheet({ setMeals, mealsBottomSheet }) {
       return newArray;
     });
 
+    closeBottomSheet();
+  };
+
+  const closeBottomSheet = () => {
     setInput("");
 
-    Keyboard.dismiss();
-
-    setTimeout(() => {
-      mealsBottomSheet.current.close();
-    }, 500);
+    mealsBottomSheetRef.current.dismiss();
   };
 
   return (
-    <BottomSheet
-      android_keyboardInputMode="adjustResize"
-      index={-1}
+    <BottomSheetModal
       enablePanDownToClose={true}
-      snapPoints={[100, 500]}
-      ref={mealsBottomSheet}
+      snapPoints={[500]}
+      ref={mealsBottomSheetRef}
     >
-      <BottomSheetView className="flex-1">
+      <BottomSheetView className="flex-1 ">
         <View className="p-5 flex gap-y-4">
           <View className="flex gap-y-2 justify-between">
             <Text className="text-lg font-bold">Enter your meal</Text>
@@ -64,26 +62,16 @@ export function MealsBottomSheet({ setMeals, mealsBottomSheet }) {
           </View>
           <View className="flex flex-row  gap-x-4 justify-center">
             <PrimaryButton
-              onPress={() => {
-                setInput("");
-                Keyboard.dismiss();
-
-                setTimeout(() => {
-                  mealsBottomSheet.current.close();
-                }, 500);
-              }}
+              onPress={closeBottomSheet}
               text="Cancel"
               type="danger"
               className="w-1/3"
             />
-            <PrimaryButton
-              onPress={handlePress}
-              text="Save"
-              className="w-1/3"
-            />
+
+            <PrimaryButton onPress={handleSave} text="Save" className="w-1/3" />
           </View>
         </View>
       </BottomSheetView>
-    </BottomSheet>
+    </BottomSheetModal>
   );
 }
