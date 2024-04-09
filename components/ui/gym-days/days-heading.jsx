@@ -3,9 +3,7 @@ import { PlusSvg, TickSvg } from "../svg";
 import { useState } from "react";
 import { cn } from "@/utils/cn";
 
-export function DaysHeading() {
-  const [wentToGYM, setWentToGYM] = useState(false);
-
+export function DaysHeading({ wentToGYM, setWentToGYM }) {
   const handleWentToGYM = () => {
     setWentToGYM(!wentToGYM);
   };
