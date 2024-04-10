@@ -1,8 +1,6 @@
 import { useSession } from "@/utils/session-context";
 import { Redirect, Stack } from "expo-router";
 
-// client id 155525349831-lg8mhs4ikhd0gki8vafooep9s1h2k60f.apps.googleusercontent.com
-
 export default function AppLayout() {
   const { session } = useSession();
 

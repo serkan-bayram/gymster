@@ -1,28 +1,62 @@
 import { StatusBar } from "expo-status-bar";
-import { View } from "react-native";
+import { Text, View } from "react-native";
 import { LandingMascot } from "@/components/ui/landing-mascot";
 import { LandingText } from "@/components/ui/landing-text";
 import { PrimaryButton } from "@/components/primary-button";
 import { Input } from "@/components/input";
 import { Link } from "expo-router";
-import { auth } from "@/firebaseConfig";
 import { useEffect, useState } from "react";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+
+import {
+  GoogleSignin,
+  statusCodes,
+} from "@react-native-google-signin/google-signin";
+import { useSession } from "@/utils/session-context";
 
 export default function App() {
-  const [email, setEmail] = useState(null);
-  const [password, setPassword] = useState(null);
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId:
+        "925921052788-ca77bp1oklsvdn453kuskdlhba6em8un.apps.googleusercontent.com",
+    });
+  }, []);
 
-  const handleSignIn = async () => {
+  const [userInfo, setUserInfo] = useState(null);
+  const { setSession } = useSession();
+
+  const signIn = async () => {
     try {
-      const response = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      console.log(response);
+      await GoogleSignin.hasPlayServices();
+
+      const userInfo = await GoogleSignin.signIn();
+
+      setUserInfo({ userInfo });
+      setSession({ userInfo });
+
+      console.log({ userInfo });
     } catch (error) {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        // user cancelled the login flow
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        // operation (e.g. sign in) is in progress already
+      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        // play services not available or outdated
+      } else {
+        // some other error happened
+      }
       console.log(error);
+    }
+  };
+
+  const signOut = async () => {
+    try {
+      await GoogleSignin.signOut();
+      setUserInfo({ user: null });
+
+      setSession({ user: null });
+      // Remember to remove the user from your app's state as well
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -31,6 +65,11 @@ export default function App() {
       <View className="flex-1  flex items-center gap-y-6">
         <LandingMascot />
         <LandingText />
+        {userInfo && (
+          <Text className="text-black">
+            aaaa{JSON.stringify(userInfo.user)}
+          </Text>
+        )}
       </View>
       <View
         className="flex-1 mt-12 rounded-tl-[40px] 
@@ -38,15 +77,12 @@ export default function App() {
           justify-center"
       >
         <View className="w-full gap-y-4 flex items-center">
-          <Input setState={setEmail} placeholder="Email" className="w-[80%]" />
-          <Input
-            setState={setPassword}
-            placeholder="Password"
-            className="w-[80%]"
-          />
-          <Link className="w-[80%]" href={"/tracking"} asChild>
-            <PrimaryButton onPress={handleSignIn} text="Get Started" />
-          </Link>
+          <Input placeholder="Email" className="w-[80%]" />
+          <Input placeholder="Password" className="w-[80%]" />
+          {/* <Link className="w-[80%]" href={"/tracking"} asChild> */}
+          <PrimaryButton onPress={() => signIn()} text="Get Started" />
+          <PrimaryButton onPress={() => signOut()} text="Sign out" />
+          {/* </Link> */}
         </View>
       </View>
       <StatusBar style="auto" />

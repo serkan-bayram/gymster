@@ -7,18 +7,19 @@ const AuthContext = createContext();
 export const SessionProvider = (props) => {
   const [session, setSession] = useState(null);
 
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      console.log(user);
+  // useEffect(() => {
+  //   onAuthStateChanged(auth, (user) => {
+  //     console.log(user);
 
-      setSession(user);
-    });
-  }, []);
+  //     setSession(user);
+  //   });
+  // }, []);
 
   return (
     <AuthContext.Provider
       value={{
         session,
+        setSession,
       }}
     >
       {props.children}

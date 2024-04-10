@@ -20,10 +20,10 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff",
-        "googleServicesFile": "./google-services.json"
+        "backgroundColor": "#ffffff"
       },
-      "package": "com.serkanbayram.gymster"
+      "googleServicesFile": "./google-services.json",
+      "package": "com.serkanbayram.gymsterandroid"
     },
     "web": {
       "favicon": "./assets/favicon.png"

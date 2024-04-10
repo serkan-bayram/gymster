@@ -35,3 +35,7 @@ yarn-error.*
 *.tsbuildinfo
 
 firebaseConfig.js
+
+google-services.json
+
+*.apk
