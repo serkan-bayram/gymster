@@ -1,5 +1,9 @@
 import { useSession } from "@/utils/session-context";
-import { Redirect, Stack } from "expo-router";
+import { Redirect, Slot } from "expo-router";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { StatusBar } from "expo-status-bar";
+import { View } from "react-native";
 
 export default function AppLayout() {
   const { session } = useSession();
@@ -13,5 +17,14 @@ export default function AppLayout() {
   }
 
   // This layout can be deferred because it's not the root layout.
-  return <Stack />;
+  return (
+    <GestureHandlerRootView className="flex-1">
+      <BottomSheetModalProvider>
+        <View className="pt-16 flex-1 gap-y-4 bg-background">
+          <Slot />
+          <StatusBar style="auto" />
+        </View>
+      </BottomSheetModalProvider>
+    </GestureHandlerRootView>
+  );
 }
