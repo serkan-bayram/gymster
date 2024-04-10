@@ -3,7 +3,7 @@ import { View } from "react-native";
 
 export function LandingMascot() {
   return (
-    <View className="flex-1 w-72 ">
+    <View className="flex-1  w-72 ">
       <Image
         className="flex-1"
         source={require("../../assets/landing-mascot.png")}
