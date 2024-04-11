@@ -12,9 +12,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.serkanbayram.gymster"
@@ -32,6 +30,8 @@
     },
     "plugins": [
       "expo-router",
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth",
       "@react-native-google-signin/google-signin",
       "expo-secure-store"
     ],

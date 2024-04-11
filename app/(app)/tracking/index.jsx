@@ -3,12 +3,17 @@ import { GYMDays } from "@/components/gym-days";
 import { Meals } from "@/components/meals";
 import { Water } from "@/components/water";
 import { WaterProvider } from "@/utils/water-context";
+import { PrimaryButton } from "@/components/primary-button";
+import { useSession } from "@/utils/session-context";
 
 // TODO: tidy up colors
 export default function Tracking() {
+  const { signOut } = useSession();
+
   return (
     <>
       <Heading heading={"Tracking"} />
+      <PrimaryButton text="Log out" onPress={signOut} />
       <GYMDays />
       <Meals />
       <WaterProvider>

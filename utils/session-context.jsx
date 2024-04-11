@@ -2,9 +2,11 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import auth from "@react-native-firebase/auth";
 
 const AuthContext = createContext();
 
+// TODO: I'dont know is AsyncStorage good for saving session
 export const SessionProvider = (props) => {
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -48,6 +50,13 @@ export const SessionProvider = (props) => {
 
       const userInfo = await GoogleSignin.signIn();
 
+      // Save user to firebase db
+      const googleCredential = auth.GoogleAuthProvider.credential(
+        userInfo.idToken
+      );
+
+      auth().signInWithCredential(googleCredential);
+
       setSession({ userInfo });
 
       try {
@@ -72,6 +81,7 @@ export const SessionProvider = (props) => {
       await GoogleSignin.signOut();
 
       setSession(null);
+      // TODO: Delete async storage
     } catch (error) {
       console.error("Error on sign out: ", error);
     } finally {
