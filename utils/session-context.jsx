@@ -3,8 +3,23 @@ import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import auth from "@react-native-firebase/auth";
+import firestore from "@react-native-firebase/firestore";
 
 const AuthContext = createContext();
+
+// Save user to DB if it is not already saved
+const saveUser = async (user) => {
+  const findUser = await firestore()
+    .collection("Users")
+    .where("email", "==", user.email)
+    .get();
+
+  if (findUser.docs.length <= 0) {
+    const usersCollection = firestore().collection("Users");
+
+    usersCollection.add(user).then(() => console.log("User is saved to DB."));
+  }
+};
 
 // TODO: I'dont know is AsyncStorage good for saving session
 export const SessionProvider = (props) => {
@@ -62,6 +77,15 @@ export const SessionProvider = (props) => {
       );
 
       auth().signInWithCredential(googleCredential);
+
+      const user = {
+        email: userInfo.user.email,
+        givenName: userInfo.user.givenName,
+        familyName: userInfo.user.familyName,
+        photo: userInfo.user.photo,
+      };
+
+      saveUser(user);
 
       try {
         // Save session to local storage
