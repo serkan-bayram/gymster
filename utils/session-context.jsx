@@ -20,12 +20,16 @@ export const SessionProvider = (props) => {
     readStorageSession();
   }, []);
 
+  // Check for session updates, if exists navigate to somewhere
   useEffect(() => {
     if (session) {
       router.replace("/tracking");
+    } else {
+      router.replace("/");
     }
   }, [session]);
 
+  // Read session from local storage and setSession if exists
   const readStorageSession = async () => {
     try {
       const value = await AsyncStorage.getItem("session");
@@ -42,31 +46,34 @@ export const SessionProvider = (props) => {
     try {
       setLoading(true);
 
+      // Extra check, if session exists navigate somewhere
       if (session) {
         router.replace("/tracking");
       }
 
+      // react native google signin codes
       await GoogleSignin.hasPlayServices();
 
       const userInfo = await GoogleSignin.signIn();
 
-      // Save user to firebase db
+      // Save user to firebase authentication
       const googleCredential = auth.GoogleAuthProvider.credential(
         userInfo.idToken
       );
 
       auth().signInWithCredential(googleCredential);
 
-      setSession({ userInfo });
-
       try {
+        // Save session to local storage
         const jsonValue = JSON.stringify({ userInfo });
+
         await AsyncStorage.setItem("session", jsonValue);
       } catch (error) {
         console.log("Error on AsyncStorage: ", error);
       }
 
-      router.replace("/tracking");
+      // Setting session with user info
+      setSession({ userInfo });
     } catch (error) {
       console.log("Error on sign in: ", error);
     } finally {
@@ -82,6 +89,9 @@ export const SessionProvider = (props) => {
 
       setSession(null);
       // TODO: Delete async storage
+
+      // TODO: We should need extra codes with
+      // signOut, check react native google signin package
     } catch (error) {
       console.error("Error on sign out: ", error);
     } finally {

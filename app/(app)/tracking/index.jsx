@@ -8,12 +8,9 @@ import { useSession } from "@/utils/session-context";
 
 // TODO: tidy up colors
 export default function Tracking() {
-  const { signOut } = useSession();
-
   return (
     <>
       <Heading heading={"Tracking"} />
-      <PrimaryButton text="Log out" onPress={signOut} />
       <GYMDays />
       <Meals />
       <WaterProvider>

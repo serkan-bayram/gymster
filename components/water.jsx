@@ -8,7 +8,7 @@ export function Water() {
   const bottomSheetRef = useRef(null);
 
   return (
-    <View className="flex-1 mt-2 ">
+    <View className="flex-1 mt-2">
       <WaterHeading bottomSheetRef={bottomSheetRef} />
       <WaterContent />
       <WaterBottomSheet bottomSheetRef={bottomSheetRef} />
