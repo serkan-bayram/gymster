@@ -8,16 +8,41 @@ import firestore from "@react-native-firebase/firestore";
 const AuthContext = createContext();
 
 // Save user to DB if it is not already saved
+// We can turn this into a cloud function
 const saveUser = async (user) => {
   const findUser = await firestore()
     .collection("Users")
-    .where("email", "==", user.email)
+    .where("uid", "==", user.uid)
     .get();
 
   if (findUser.docs.length <= 0) {
     const usersCollection = firestore().collection("Users");
 
     usersCollection.add(user).then(() => console.log("User is saved to DB."));
+  }
+};
+
+const saveSessionToLocalStorage = async (session) => {
+  try {
+    // Save session to local storage
+    const jsonSession = JSON.stringify(session);
+
+    await AsyncStorage.setItem("session", jsonSession);
+  } catch (error) {
+    console.log("Error on saving session to local storage: ", error);
+  }
+};
+
+// Read session from local storage and setSession if exists
+const readStorageSession = async (setSession) => {
+  try {
+    const readSession = await AsyncStorage.getItem("session");
+
+    if (readSession !== null) {
+      setSession(JSON.parse(readSession));
+    }
+  } catch (error) {
+    console.log("Can't read storage session: ", error);
   }
 };
 
@@ -32,7 +57,10 @@ export const SessionProvider = (props) => {
         "925921052788-ca77bp1oklsvdn453kuskdlhba6em8un.apps.googleusercontent.com",
     });
 
-    readStorageSession();
+    readStorageSession(setSession);
+
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber; // unsubscribe on unmount
   }, []);
 
   // Check for session updates, if exists navigate to somewhere
@@ -44,60 +72,39 @@ export const SessionProvider = (props) => {
     }
   }, [session]);
 
-  // Read session from local storage and setSession if exists
-  const readStorageSession = async () => {
-    try {
-      const value = await AsyncStorage.getItem("session");
+  function onAuthStateChanged(session) {
+    if (session) {
+      const user = {
+        uid: session.uid,
+        email: session.email,
+        displayName: session.displayName,
+        photoURL: session.photoURL,
+      };
 
-      if (value !== null) {
-        setSession(JSON.parse(value));
-      }
-    } catch (error) {
-      console.log("Can't read storage session: ", error);
+      saveUser(user);
+
+      console.log("User signed in!");
     }
-  };
+
+    setSession(session);
+    saveSessionToLocalStorage(session);
+  }
 
   const signIn = async () => {
     try {
       setLoading(true);
 
-      // Extra check, if session exists navigate somewhere
-      if (session) {
-        router.replace("/tracking");
-      }
-
-      // react native google signin codes
-      await GoogleSignin.hasPlayServices();
+      await GoogleSignin.hasPlayServices({
+        showPlayServicesUpdateDialog: true,
+      });
 
       const userInfo = await GoogleSignin.signIn();
 
-      // Save user to firebase authentication
       const googleCredential = auth.GoogleAuthProvider.credential(
         userInfo.idToken
       );
 
       auth().signInWithCredential(googleCredential);
-
-      const user = {
-        email: userInfo.user.email,
-        givenName: userInfo.user.givenName,
-        familyName: userInfo.user.familyName,
-        photo: userInfo.user.photo,
-      };
-
-      saveUser(user);
-
-      try {
-        // Save session to local storage
-        const jsonValue = JSON.stringify({ userInfo });
-
-        await AsyncStorage.setItem("session", jsonValue);
-      } catch (error) {
-        console.log("Error on AsyncStorage: ", error);
-      }
-
-      // Setting session with user info
-      setSession({ userInfo });
     } catch (error) {
       console.log("Error on sign in: ", error);
     } finally {
@@ -109,13 +116,11 @@ export const SessionProvider = (props) => {
     try {
       setLoading(true);
 
-      await GoogleSignin.signOut();
+      auth()
+        .signOut()
+        .then(() => console.log("User signed out!"));
 
-      setSession(null);
       // TODO: Delete async storage
-
-      // TODO: We should need extra codes with
-      // signOut, check react native google signin package
     } catch (error) {
       console.error("Error on sign out: ", error);
     } finally {
