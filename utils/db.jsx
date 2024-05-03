@@ -1,17 +1,29 @@
 import firestore from "@react-native-firebase/firestore";
 
-// Every user has a document in Trackings collection
-// That collects "tracking related" information
-// This function finds that Trackings document
-export async function findUserTrackings(uid) {
+// Find a Trackings document that in "same day" within timestamp by user id
+export async function findTrackingsDoc(uid, timestamp) {
+  const givenDate = new Date(timestamp.toDate());
+
+  const startOfDay = new Date(givenDate);
+  startOfDay.setHours(0, 0, 0, 0);
+  const endOfDay = new Date(givenDate);
+  endOfDay.setHours(23, 59, 59, 999);
+
+  const startTimestamp = firestore.Timestamp.fromDate(startOfDay);
+  const endTimestamp = firestore.Timestamp.fromDate(endOfDay);
+
   const trackingsRef = firestore().collection("Trackings");
-  const query = trackingsRef.where("uid", "==", uid);
+  const query = trackingsRef
+    .where("uid", "==", uid)
+    .where("createdAt", ">=", startTimestamp)
+    .where("createdAt", "<", endTimestamp)
+    .limit(1);
 
   const querySnapshot = await query.get();
 
-  const trackingsDocumentRef = querySnapshot.docs[0].ref;
+  const trackingsDoc = querySnapshot.docs[0].data();
 
-  return { trackingsDocumentRef };
+  return { trackingsDoc };
 }
 
 // There is a collection of hydration related informations

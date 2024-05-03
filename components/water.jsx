@@ -4,6 +4,7 @@ import { WaterHeading } from "./ui/water/water-heading";
 import { WaterBottomSheet } from "./ui/water/water-bottom-sheet";
 import { useRef } from "react";
 import {
+  findTrackingsDoc,
   findUserHydration,
   findUserTrackings,
   getServerTime,
@@ -20,7 +21,20 @@ export function Water() {
 
   const query = useQuery({
     queryKey: ["hydration"],
-    queryFn: () => handleHydration(session.uid),
+    queryFn: async () => {
+      const { serverTime } = await getServerTime();
+
+      if (serverTime) {
+        const { trackingsDoc } = await findTrackingsDoc(
+          session.uid,
+          serverTime.date
+        );
+
+        console.log("Trackings doc: ", trackingsDoc);
+      }
+
+      return "hello";
+    },
   });
 
   console.log(query.error);
