@@ -22,52 +22,48 @@ export async function findUserHydration(uid) {
 
   const hydrationCollectionRef = trackingsDocumentRef.collection("Hydration");
 
-  const querySnapshot = await hydrationCollectionRef.get();
+  const querySnapshot = await hydrationCollectionRef
+    .orderBy("date", "desc")
+    .get();
 
-  querySnapshot.forEach((documentSnapshot) => {
-    console.log(documentSnapshot.data());
-  });
+  // We show the latest hydration progress if is it equals with user's current date
+  const latestHydrationDoc = querySnapshot.docs[0].data();
 
-  return "hello";
+  return { querySnapshot, latestHydrationDoc };
 }
 
-// // Every user has a document under Users collection
-// // It looks like /Users/asdadsasddsadaasd
-// // This functions returns that path
-// export async function getUserDocumentPath(email) {
-//   const findUser = await firestore()
-//     .collection("Users")
-//     .where("email", "==", email)
-//     .get();
+// We have a document in the firestore that holds a timestamp
+// We need to update it with server time whenever we need trustable time
+export async function updateServerTime() {
+  const serverTimeRef = firestore().collection("ServerTimes");
 
-//   if (!findUser.empty) {
-//     // Path of the user's document.
-//     const documentPath = findUser.docs[0].ref.path;
-//     return documentPath;
-//   }
+  // There is only one document that holds this information
+  const querySnapshot = await serverTimeRef.limit(1).get();
 
-//   return { error: true, message: "User document path not found." };
-// }
+  const serverTimeObject = {
+    date: new firestore.FieldValue.serverTimestamp(),
+  };
 
-// // Get user's Trackings document
-// export async function getUserTrackingDocument(email) {
-//   const userDocumentPath = await getUserDocumentPath(email);
+  // We create first, if no document exists
+  if (querySnapshot.size === 0) {
+    await serverTimeRef.add(serverTimeObject);
+  } else {
+    // We update the document with latest server time
+    const documentToUpdate = querySnapshot.docs[0].ref.path;
 
-//   // We need the id of document to create ref
-//   const documentId = userDocumentPath.split("/")[1];
+    await firestore().doc(documentToUpdate).update(serverTimeObject);
+  }
 
-//   const userRef = firestore().collection("Users").doc(documentId);
+  return { updated: true };
+}
 
-//   const findTracking = await firestore()
-//     .collection("Trackings")
-//     .where("user", "==", userRef)
-//     .get();
+// We can use cloud functions instead of updateServerTime
+export async function getServerTime() {
+  const serverTimeRef = firestore().collection("ServerTimes");
 
-//   const data = findTracking.docs[0].data();
+  const querySnapshot = await serverTimeRef.limit(1).get();
 
-//   if (data) {
-//     console.log("User Trackings Document", data.deneme);
-//   }
+  const serverTime = querySnapshot.docs[0].data() || null;
 
-//   return "hello";
-// }
+  return { serverTime };
+}

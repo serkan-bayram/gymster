@@ -3,7 +3,12 @@ import { WaterContent } from "./ui/water/water-content";
 import { WaterHeading } from "./ui/water/water-heading";
 import { WaterBottomSheet } from "./ui/water/water-bottom-sheet";
 import { useRef } from "react";
-import { findUserHydration, findUserTrackings } from "@/utils/db";
+import {
+  findUserHydration,
+  findUserTrackings,
+  getServerTime,
+  updateServerTime,
+} from "@/utils/db";
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "@/utils/session-context";
 
@@ -14,11 +19,19 @@ export function Water() {
 
   const query = useQuery({
     queryKey: ["water"],
-    queryFn: () => findUserHydration(session.uid),
+    queryFn: async () => {
+      const { updated } = await updateServerTime(session.uid);
+
+      if (updated) {
+        const { serverTime } = await getServerTime();
+
+        return serverTime;
+      }
+    },
     gcTime: 0,
   });
 
-  console.log(query.error);
+  console.log(query.data);
 
   return (
     <View className="flex-1 mt-2">
