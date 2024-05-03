@@ -26,10 +26,19 @@ export async function findUserHydration(uid) {
     .orderBy("date", "desc")
     .get();
 
-  // We show the latest hydration progress if is it equals with user's current date
+  // We show the latest hydration progress if is it equals with server's current date
   const latestHydrationDoc = querySnapshot.docs[0].data();
 
   return { querySnapshot, latestHydrationDoc };
+}
+
+// updateUserHydration with a new value
+export async function updateUserHydration(documentToUpdate, newProgress) {
+  await firestore().doc(documentToUpdate).update({
+    progress: newProgress,
+  });
+
+  return { success: true };
 }
 
 // We have a document in the firestore that holds a timestamp
@@ -59,11 +68,15 @@ export async function updateServerTime() {
 
 // We can use cloud functions instead of updateServerTime
 export async function getServerTime() {
-  const serverTimeRef = firestore().collection("ServerTimes");
+  const { updated } = await updateServerTime();
 
-  const querySnapshot = await serverTimeRef.limit(1).get();
+  if (updated) {
+    const serverTimeRef = firestore().collection("ServerTimes");
 
-  const serverTime = querySnapshot.docs[0].data() || null;
+    const querySnapshot = await serverTimeRef.limit(1).get();
 
-  return { serverTime };
+    const serverTime = querySnapshot.docs[0].data();
+
+    return { serverTime };
+  }
 }

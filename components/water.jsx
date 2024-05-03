@@ -11,6 +11,7 @@ import {
 } from "@/utils/db";
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "@/utils/session-context";
+import { handleHydration } from "@/utils/handleHydration";
 
 export function Water() {
   const bottomSheetRef = useRef(null);
@@ -18,20 +19,11 @@ export function Water() {
   const { session } = useSession();
 
   const query = useQuery({
-    queryKey: ["water"],
-    queryFn: async () => {
-      const { updated } = await updateServerTime(session.uid);
-
-      if (updated) {
-        const { serverTime } = await getServerTime();
-
-        return serverTime;
-      }
-    },
-    gcTime: 0,
+    queryKey: ["hydration"],
+    queryFn: () => handleHydration(session.uid),
   });
 
-  console.log(query.data);
+  console.log(query.error);
 
   return (
     <View className="flex-1 mt-2">
