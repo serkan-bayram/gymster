@@ -1,5 +1,7 @@
 import firestore from "@react-native-firebase/firestore";
 
+/* ---- TRACKINGS ---- */
+
 // Find a Trackings document that in "same day" within timestamp by user id
 export async function findTrackingsDoc(uid, timestamp) {
   const givenDate = new Date(timestamp.toDate());
@@ -21,37 +23,34 @@ export async function findTrackingsDoc(uid, timestamp) {
 
   const querySnapshot = await query.get();
 
+  // Create document if not exists
+  if (querySnapshot.size === 0) {
+    await trackingsRef.add({
+      createdAt: new firestore.FieldValue.serverTimestamp(),
+      uid: uid,
+    });
+
+    return null;
+  }
+
   const trackingsDoc = querySnapshot.docs[0].data();
 
-  return { trackingsDoc };
+  const trackingsPath = querySnapshot.docs[0].ref.path;
+
+  return { trackingsRef, trackingsDoc, trackingsPath };
 }
 
-// There is a collection of hydration related informations
-// under every Trackings collection
-// This function finds that Hydration collection
-export async function findUserHydration(uid) {
-  const { trackingsDocumentRef } = await findUserTrackings(uid);
+/* ---- HYDRATION ---- */
 
-  const hydrationCollectionRef = trackingsDocumentRef.collection("Hydration");
+export async function updateHydrationProgress(trackingsPath, newProgress) {
+  await firestore()
+    .doc(trackingsPath)
+    .set({ hydration: { progress: parseInt(newProgress) } }, { merge: true });
 
-  const querySnapshot = await hydrationCollectionRef
-    .orderBy("date", "desc")
-    .get();
-
-  // We show the latest hydration progress if is it equals with server's current date
-  const latestHydrationDoc = querySnapshot.docs[0].data();
-
-  return { querySnapshot, latestHydrationDoc };
+  return true;
 }
 
-// updateUserHydration with a new value
-export async function updateUserHydration(documentToUpdate, newProgress) {
-  await firestore().doc(documentToUpdate).update({
-    progress: newProgress,
-  });
-
-  return { success: true };
-}
+/* ---- SERVER TIME ---- */
 
 // We have a document in the firestore that holds a timestamp
 // We need to update it with server time whenever we need trustable time

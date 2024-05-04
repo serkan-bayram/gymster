@@ -1,28 +1,76 @@
 import { Pressable, Text, View } from "react-native";
 import { ExtractSvg, PlusSvg } from "../svg";
 import { useWater } from "@/utils/water-context";
+import {
+  findTrackingsDoc,
+  getServerTime,
+  updateHydrationProgress,
+} from "@/utils/db";
+import { useMutation } from "@tanstack/react-query";
+import { useSession } from "@/utils/session-context";
+
+const useCalculateProgress = (type, currentProgress, goal, updateValue) => {
+  // If this happens somehow
+  if (currentProgress > goal) {
+    currentProgress = goal;
+  }
+
+  if (type === "increase") {
+    const calculation = currentProgress + updateValue;
+
+    // We check for any overflow, if new calculation is bigger than
+    // goal, just return goal
+    const newProgress = calculation >= goal ? goal : calculation;
+    return newProgress;
+  } else {
+    const calculation = currentProgress - updateValue;
+
+    const newProgress = calculation <= 0 ? 0 : calculation;
+    return newProgress;
+  }
+};
 
 // This component is used to increase or decrease current water progress
 export function UpdateWaterValue({ currentProgress, setCurrentProgress }) {
   const { updateValue, goalValue: goal } = useWater();
 
   const handleClick = (type) => {
-    let newProgress;
-
-    if (type === "increase") {
-      const calculation = currentProgress + updateValue;
-
-      // We check for any overflow, if new calculation is bigger than
-      // goal, just return goal
-      newProgress = calculation >= goal ? goal : calculation;
-    } else {
-      const calculation = currentProgress - updateValue;
-
-      newProgress = calculation <= 0 ? 0 : calculation;
-    }
+    const newProgress = useCalculateProgress(
+      type,
+      currentProgress,
+      goal,
+      updateValue
+    );
 
     setCurrentProgress(newProgress);
+
+    mutation.mutate({ newProgress: newProgress });
   };
+
+  const { session } = useSession();
+
+  // TODO: This needs a debounce
+  // TODO: for some reason mutation key is not working properly try again
+  const mutation = useMutation({
+    mutationFn: async ({ newProgress }) => {
+      // Upddate & get server time
+      const { serverTime } = await getServerTime();
+
+      if (serverTime) {
+        const foundTrackingsDoc = await findTrackingsDoc(
+          session.uid,
+          serverTime.date
+        );
+
+        const { trackingsPath } = foundTrackingsDoc;
+
+        const isProgressUptaded = await updateHydrationProgress(
+          trackingsPath,
+          newProgress
+        );
+      }
+    },
+  });
 
   return (
     <View

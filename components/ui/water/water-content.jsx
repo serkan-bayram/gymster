@@ -3,9 +3,10 @@ import { ProgressBar } from "../circular-progressbar";
 import { UpdateWaterValue } from "./update-water-value";
 import { useState } from "react";
 
-export function WaterContent({ progress }) {
+export function WaterContent({ fetchedProgress }) {
   // How many ml water did user drink
-  const [currentProgress, setCurrentProgress] = useState(progress || 0);
+  // TODO: maybe moving this state to useWater can be useful
+  const [currentProgress, setCurrentProgress] = useState(fetchedProgress || 0);
 
   return (
     <View className="flex-1 flex-row px-4  gap-y-2">

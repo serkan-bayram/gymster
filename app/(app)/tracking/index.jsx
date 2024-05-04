@@ -7,7 +7,6 @@ import { PrimaryButton } from "@/components/primary-button";
 import { useSession } from "@/utils/session-context";
 import { findTrackingsDoc, getServerTime } from "@/utils/db";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
 import { Text, View } from "react-native";
 
 // TODO: tidy up colors
@@ -17,20 +16,29 @@ export default function Tracking() {
   const query = useQuery({
     queryKey: ["tracking"],
     queryFn: async () => {
+      // Upddate & get server time
       const { serverTime } = await getServerTime();
 
       if (serverTime) {
-        const { trackingsDoc } = await findTrackingsDoc(
+        const foundTrackingsDoc = await findTrackingsDoc(
           session.uid,
           serverTime.date
         );
 
-        console.log("Trackings doc: ", trackingsDoc);
+        // Trackings document is just created so there is not any value in it
+        if (foundTrackingsDoc === null) {
+          return null;
+        }
 
+        const { trackingsDoc } = foundTrackingsDoc;
+
+        // If any hydration document was created
         if (!!trackingsDoc.hydration) {
-          const fetchedProgress = trackingsDoc.hydration;
+          const fetchedHydrationProgress = parseInt(
+            trackingsDoc.hydration.progress
+          );
 
-          return { fetchedProgress };
+          return { fetchedHydrationProgress };
         }
       }
 
@@ -46,8 +54,6 @@ export default function Tracking() {
       </View>
     );
 
-  const { fetchedProgress } = query.data;
-
   return (
     <>
       <Heading heading={"Tracking"} />
@@ -55,7 +61,7 @@ export default function Tracking() {
       <GYMDays />
       <Meals />
       <WaterProvider>
-        <Water progress={fetchedProgress} />
+        <Water fetchedProgress={query.data?.fetchedHydrationProgress || null} />
       </WaterProvider>
     </>
   );

@@ -14,6 +14,7 @@ const R = CIRCLE_LENGTH / (2 * Math.PI);
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
+// TODO: There is sooo much bandage on this one component, we need to make it simpler
 export function ProgressBar({ currentProgress }) {
   const { goalValue: goal } = useWater();
 
@@ -25,7 +26,8 @@ export function ProgressBar({ currentProgress }) {
 
   // if currentPercantage is 1000 and goal is 2000
   // progressPercantage would be 50
-  const progressPercantage = (currentProgress * 100) / goal;
+  const progressPercantage =
+    goal <= currentProgress ? 100 : (currentProgress * 100) / goal;
 
   // 100                  75
   // 400(CIRCLE_LENGTH)    ?

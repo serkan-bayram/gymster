@@ -18,8 +18,8 @@ export function WaterBottomSheet({ bottomSheetRef }) {
   const [pickedGoalValue, setPickedGoalValue] = useState(goalValue);
 
   const handleSave = () => {
-    setUpdateValue(pickedUpdateValue);
-    setGoalValue(pickedGoalValue);
+    setUpdateValue(parseInt(pickedUpdateValue));
+    setGoalValue(parseInt(pickedGoalValue));
 
     bottomSheetRef.current.dismiss();
   };
