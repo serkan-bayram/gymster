@@ -10,6 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Text, View } from "react-native";
 
 // TODO: tidy up colors
+// TODO: We get too many server times, maybe make a provider, loading are always same
 export default function Tracking() {
   const { signOut, session } = useSession();
 

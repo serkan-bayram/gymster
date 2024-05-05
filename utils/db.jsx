@@ -1,4 +1,5 @@
 import firestore from "@react-native-firebase/firestore";
+import { daysInMonth } from "./days-in-month";
 
 /* ---- TRACKINGS ---- */
 
@@ -50,14 +51,51 @@ export async function updateHydrationProgress(trackingsPath, newProgress) {
   return true;
 }
 
-/* ---- STREAK ---- */
+/* ---- GYM Days ---- */
 
-export async function updateStreak(trackingsPath, wentToGYM) {
+export async function updateGYMDays(trackingsPath, wentToGYM) {
   await firestore()
     .doc(trackingsPath)
     .set({ wentToGYM: wentToGYM }, { merge: true });
 
   return true;
+}
+
+// Find documents that wentToGYM field is true
+// Looks timestamp's month
+export async function getGYMDays(uid, timestamp) {
+  const givenDate = new Date(timestamp.toDate());
+
+  const daysCount = daysInMonth(givenDate.getMonth(), givenDate.getFullYear());
+
+  const startOfMonth = new Date(givenDate);
+  startOfMonth.setDate(2);
+  const endOfMonth = new Date(givenDate);
+  endOfMonth.setDate(parseInt(daysCount) + 1);
+
+  const startTimestamp = firestore.Timestamp.fromDate(startOfMonth);
+  const endTimestamp = firestore.Timestamp.fromDate(endOfMonth);
+
+  const trackingsRef = firestore().collection("Trackings");
+  const query = trackingsRef
+    .where("uid", "==", uid)
+    .where("createdAt", ">=", startTimestamp)
+    .where("createdAt", "<", endTimestamp)
+    .where("wentToGYM", "==", true);
+
+  const querySnapshot = await query.get();
+
+  const wentToGYMDays = [];
+
+  querySnapshot.forEach((documentSnapshot) => {
+    const { createdAt } = documentSnapshot.data();
+
+    const date = new Date(createdAt.toDate());
+
+    wentToGYMDays.push(date.getDate());
+  });
+
+  return wentToGYMDays;
 }
 
 /* ---- SERVER TIME ---- */
