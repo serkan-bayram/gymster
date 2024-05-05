@@ -50,6 +50,16 @@ export async function updateHydrationProgress(trackingsPath, newProgress) {
   return true;
 }
 
+/* ---- STREAK ---- */
+
+export async function updateStreak(trackingsPath, wentToGYM) {
+  await firestore()
+    .doc(trackingsPath)
+    .set({ wentToGYM: wentToGYM }, { merge: true });
+
+  return true;
+}
+
 /* ---- SERVER TIME ---- */
 
 // We have a document in the firestore that holds a timestamp

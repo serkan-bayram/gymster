@@ -43,6 +43,7 @@ export function DaysContainer({ wentToGYM }) {
  border-secondary bg-[#FBF3D5] rounded-2xl p-2 overflow-hidden"
     >
       <Text className="absolute top-2 right-2">{year}</Text>
+
       <FlashList
         initialScrollIndex={todaysMonth}
         data={months}

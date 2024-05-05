@@ -64,7 +64,7 @@ export function UpdateWaterValue({ currentProgress, setCurrentProgress }) {
 
         const { trackingsPath } = foundTrackingsDoc;
 
-        const isProgressUptaded = await updateHydrationProgress(
+        const isUpdated = await updateHydrationProgress(
           trackingsPath,
           newProgress
         );
