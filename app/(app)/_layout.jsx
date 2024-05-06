@@ -1,5 +1,5 @@
 import { useSession } from "@/utils/session-context";
-import { Redirect, Slot } from "expo-router";
+import { Redirect, Slot, Stack } from "expo-router";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { StatusBar } from "expo-status-bar";
@@ -21,7 +21,16 @@ export default function AppLayout() {
     <GestureHandlerRootView className="flex-1">
       <BottomSheetModalProvider>
         <View className="pt-16 flex-1 gap-y-4 bg-background">
-          <Slot />
+          <Stack>
+            <Stack.Screen
+              name="tracking/index"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="profile/index"
+              options={{ headerShown: false }}
+            />
+          </Stack>
           <StatusBar style="auto" />
         </View>
       </BottomSheetModalProvider>

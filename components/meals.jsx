@@ -107,14 +107,3 @@ export function Meals({ fetchedMeals }) {
     </View>
   );
 }
-
-// {item.nutritions.map((nutrition, index) => (
-//   <View key={index}>
-//     <Text className={cn("text-center text-lg", textColor)}>
-//       {}
-//     </Text>
-//     <Text className={cn("text-center", textColor)}>
-//       {calorie.type}
-//     </Text>
-//   </View>
-// ))}

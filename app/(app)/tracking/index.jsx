@@ -12,7 +12,7 @@ import { Text, View } from "react-native";
 // TODO: tidy up colors
 // TODO: We get too many server times, maybe make a provider, loading are always same
 export default function Tracking() {
-  const { signOut, session } = useSession();
+  const { session } = useSession();
 
   const query = useQuery({
     queryKey: ["tracking"],
@@ -48,12 +48,9 @@ export default function Tracking() {
       </View>
     );
 
-  console.log(query.data?.meals);
-
   return (
     <>
       <Heading heading={"Tracking"} />
-      <PrimaryButton text="Log out" onPress={signOut} />
       <GYMDays fetchedWentToGYM={query.data?.wentToGYM || false} />
       <Meals fetchedMeals={query.data?.meals || []} />
       <WaterProvider>
