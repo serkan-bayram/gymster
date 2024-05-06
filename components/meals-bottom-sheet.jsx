@@ -2,33 +2,73 @@ import { BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
 import { Text, TextInput, View } from "react-native";
 import { PrimaryButton } from "./primary-button";
 import { useRef, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { findTrackingsDoc, getServerTime, updateMeals } from "@/utils/db";
+import { useSession } from "@/utils/session-context";
 
-export function MealsBottomSheet({ setMeals, mealsBottomSheetRef }) {
+export function MealsBottomSheet({
+  setMeals,
+  mealsBottomSheetRef,
+  fetchedMeals,
+}) {
   const inputRef = useRef(null);
 
   const [input, setInput] = useState("");
+
+  const { session } = useSession();
+
+  const mutation = useMutation({
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["tracking"] });
+    },
+    mutationFn: async (newMeal) => {
+      // Upddate & get server time
+      const { serverTime } = await getServerTime();
+
+      if (serverTime) {
+        const foundTrackingsDoc = await findTrackingsDoc(
+          session.uid,
+          serverTime.date
+        );
+
+        // Remove empty {} at first index
+        const shifted = [...newMeal];
+        shifted.shift();
+
+        const { trackingsPath } = foundTrackingsDoc;
+
+        const isUpdated = await updateMeals(trackingsPath, shifted);
+      }
+    },
+  });
 
   // MAYBE separate textinput so it does not render the whole component
   const handleSave = () => {
     // TODO: add a notification to let user know
     if (input.length <= 0) return;
 
+    let newMeal;
+
     // Add new meal to meals state
     setMeals((prevValues) => {
-      const newArray = [...prevValues];
+      newMeal = [...prevValues];
 
-      newArray.push({
-        summary: input,
-        calories: [
-          { type: "Kcal", value: "342" },
-          { type: "Protein", value: "13" },
-          { type: "Fat", value: "27" },
-          { type: "Carbs", value: "120" },
-        ],
+      newMeal.push({
+        userInput: input,
+        nutritions: {
+          kcal: "342",
+          protein: "13",
+          fat: "27",
+          carbs: "120",
+        },
       });
 
-      return newArray;
+      return newMeal;
     });
+
+    if (newMeal) {
+      mutation.mutate(newMeal);
+    }
 
     closeBottomSheet();
   };
@@ -57,7 +97,7 @@ export function MealsBottomSheet({ setMeals, mealsBottomSheetRef }) {
               className="border rounded-xl  p-2 h-24"
               textAlignVertical="top"
               placeholderTextColor={"gray"}
-              placeholder="More details, better results with stats. ✨"
+              placeholder="More detail means better results with stats. ✨"
             />
           </View>
           <View className="flex flex-row  gap-x-4 justify-center">

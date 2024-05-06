@@ -5,7 +5,7 @@ import { AddMeal } from "./ui/add-meal";
 import { useRef, useState } from "react";
 import { MealsBottomSheet } from "./meals-bottom-sheet";
 
-export function Meals() {
+export function Meals({ fetchedMeals }) {
   // We can specify the colors of meal background & texts
   // It's important to write full tailwind styles to make it work
   // TODO: make a better color palatte
@@ -40,65 +40,15 @@ export function Meals() {
 
   const mealsBottomSheetRef = useRef(null);
 
-  // This will come from DB
-  const mealsDB = [
-    {}, // Don't delete this, this a placeholder for add meal section
-    {
-      summary: "Eggs, Rice, Yoghurt",
-      calories: [
-        { type: "Kcal", value: "342" },
-        { type: "Protein", value: "13" },
-        { type: "Fat", value: "27" },
-        { type: "Carbs", value: "120" },
-      ],
-    },
-    {
-      summary: "Meat",
-      calories: [
-        { type: "Kcal", value: "300" },
-        { type: "Protein", value: "10" },
-        { type: "Fat", value: "20" },
-        { type: "Carbs", value: "200" },
-      ],
-    },
-    {
-      summary: "Meat",
-      calories: [
-        { type: "Kcal", value: "300" },
-        { type: "Protein", value: "10" },
-        { type: "Fat", value: "20" },
-        { type: "Carbs", value: "200" },
-      ],
-    },
-    {
-      summary: "Meat",
-      calories: [
-        { type: "Kcal", value: "300" },
-        { type: "Protein", value: "10" },
-        { type: "Fat", value: "20" },
-        { type: "Carbs", value: "200" },
-      ],
-    },
-    {
-      summary: "Meat",
-      calories: [
-        { type: "Kcal", value: "300" },
-        { type: "Protein", value: "10" },
-        { type: "Fat", value: "20" },
-        { type: "Carbs", value: "200" },
-      ],
-    },
-  ];
-
-  const [meals, setMeals] = useState(mealsDB);
+  // TODO: TODO: TODO: It goes crazy if ...fetchedMeals is null
+  const [meals, setMeals] = useState([{}, ...fetchedMeals]);
 
   // TODO: a better idea is start showing from reverse it should
   // go like #5, #4, ....
-
   return (
     <View className="flex px-4 mt-2">
       <Text className="text-lg mb-2">What did you eat today?</Text>
-      <View className="h-30 ">
+      <View className="h-32">
         <FlashList
           horizontal={true}
           data={meals}
@@ -110,28 +60,39 @@ export function Meals() {
 
             const { bgColor, textColor } = getColor(index);
 
+            // We fetch meals from firestore and firestore does not guarantee any order for map types
+            // Lets sort them as we want
+            const newNutritions = {
+              Kcal: item?.nutritions["kcal"],
+              Carbs: item?.nutritions["carbs"],
+              Protein: item?.nutritions["protein"],
+              Fat: item?.nutritions["fat"],
+            };
+
             return (
               <View
                 className={cn(
-                  `mr-4 border-2  border-secondary self-start rounded-2xl p-3`,
+                  `mr-4 border-2  max-w-[250px]  border-secondary self-start rounded-2xl p-3`,
                   bgColor
                 )}
               >
-                <Text className={cn(`text-lg`, textColor)}>
-                  <Text className="font-bold">#{index}</Text> {item.summary}
+                <Text numberOfLines={1} className={cn(`text-lg`, textColor)}>
+                  <Text className="font-bold ">#{index}</Text> {item.userInput}
                 </Text>
 
-                <View className="mt-3 flex flex-row gap-x-4">
-                  {item.calories.map((calorie, index) => (
-                    <View key={index}>
-                      <Text className={cn("text-center text-lg", textColor)}>
-                        {calorie.value}
-                      </Text>
-                      <Text className={cn("text-center", textColor)}>
-                        {calorie.type}
-                      </Text>
-                    </View>
-                  ))}
+                <View className="mt-3 flex flex-row justify-center gap-x-4">
+                  {Object.keys(newNutritions).map((key, index) => {
+                    return (
+                      <View key={index}>
+                        <Text className={cn("text-center text-lg", textColor)}>
+                          {newNutritions[key]}
+                        </Text>
+                        <Text className={cn("text-center", textColor)}>
+                          {key}
+                        </Text>
+                      </View>
+                    );
+                  })}
                 </View>
               </View>
             );
@@ -139,9 +100,21 @@ export function Meals() {
         />
       </View>
       <MealsBottomSheet
+        fetchedMeals={fetchedMeals}
         setMeals={setMeals}
         mealsBottomSheetRef={mealsBottomSheetRef}
       />
     </View>
   );
 }
+
+// {item.nutritions.map((nutrition, index) => (
+//   <View key={index}>
+//     <Text className={cn("text-center text-lg", textColor)}>
+//       {}
+//     </Text>
+//     <Text className={cn("text-center", textColor)}>
+//       {calorie.type}
+//     </Text>
+//   </View>
+// ))}

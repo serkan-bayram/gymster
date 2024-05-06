@@ -6,10 +6,10 @@ import { useQuery } from "@tanstack/react-query";
 import { getGYMDays, getServerTime } from "@/utils/db";
 import { useSession } from "@/utils/session-context";
 
-export function GYMDays({ wentToGYMToday }) {
+export function GYMDays({ fetchedWentToGYM }) {
   const { session } = useSession();
 
-  const [wentToGYM, setWentToGYM] = useState(wentToGYMToday);
+  const [wentToGYM, setWentToGYM] = useState(fetchedWentToGYM);
 
   // This query gets the days that user went to gym
   const query = useQuery({

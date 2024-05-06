@@ -52,8 +52,8 @@ export default function Tracking() {
     <>
       <Heading heading={"Tracking"} />
       <PrimaryButton text="Log out" onPress={signOut} />
-      <GYMDays wentToGYMToday={query.data?.wentToGYM || false} />
-      <Meals />
+      <GYMDays fetchedWentToGYM={query.data?.wentToGYM || false} />
+      <Meals fetchedMeals={query.data?.meals} />
       <WaterProvider>
         <Water fetchedProgress={query.data?.hydration?.progress || null} />
       </WaterProvider>

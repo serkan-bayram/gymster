@@ -51,12 +51,22 @@ export async function updateHydrationProgress(trackingsPath, newProgress) {
   return true;
 }
 
-/* ---- GYM Days ---- */
+/* ---- GYM DAYS ---- */
 
 export async function updateGYMDays(trackingsPath, wentToGYM) {
   await firestore()
     .doc(trackingsPath)
     .set({ wentToGYM: wentToGYM }, { merge: true });
+
+  return true;
+}
+
+/* ---- MEALS ---- */
+
+export async function updateMeals(trackingsPath, newMeal) {
+  const arrayUnion = firestore.FieldValue.arrayUnion(...newMeal);
+
+  await firestore().doc(trackingsPath).update({ meals: arrayUnion });
 
   return true;
 }

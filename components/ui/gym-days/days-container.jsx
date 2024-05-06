@@ -7,7 +7,7 @@ import { useEffect, useRef } from "react";
 import { Text, View } from "react-native";
 
 // TODO: Calculations on this component are very expensive find a way to fix it
-export function DaysContainer({ wentToGYM, wentToGYMDays }) {
+export function DaysContainer({ wentToGYMDays }) {
   const query = useQuery({
     queryKey: ["gymDays"],
     queryFn: async () => {
