@@ -33,14 +33,7 @@ export default function Tracking() {
 
         const { trackingsDoc } = foundTrackingsDoc;
 
-        // If any hydration document was created
-        if (!!trackingsDoc.hydration) {
-          const fetchedHydrationProgress = parseInt(
-            trackingsDoc.hydration.progress
-          );
-
-          return { fetchedHydrationProgress };
-        }
+        return trackingsDoc;
       }
 
       return null;
@@ -59,10 +52,10 @@ export default function Tracking() {
     <>
       <Heading heading={"Tracking"} />
       <PrimaryButton text="Log out" onPress={signOut} />
-      <GYMDays />
+      <GYMDays wentToGYMToday={query.data?.wentToGYM || false} />
       <Meals />
       <WaterProvider>
-        <Water fetchedProgress={query.data?.fetchedHydrationProgress || null} />
+        <Water fetchedProgress={query.data?.hydration?.progress || null} />
       </WaterProvider>
     </>
   );

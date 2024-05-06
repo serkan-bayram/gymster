@@ -6,10 +6,10 @@ import { useQuery } from "@tanstack/react-query";
 import { getGYMDays, getServerTime } from "@/utils/db";
 import { useSession } from "@/utils/session-context";
 
-export function GYMDays() {
+export function GYMDays({ wentToGYMToday }) {
   const { session } = useSession();
 
-  const [wentToGYM, setWentToGYM] = useState(false);
+  const [wentToGYM, setWentToGYM] = useState(wentToGYMToday);
 
   // This query gets the days that user went to gym
   const query = useQuery({
@@ -18,19 +18,10 @@ export function GYMDays() {
       const { serverTime } = await getServerTime();
 
       if (serverTime) {
-        const serverDate = new Date(serverTime.date.toDate());
-
-        const todaysDate = serverDate.getDate();
-
         // Is an array that contains day numbers that user went to gym
         const wentToGYMDays = await getGYMDays(session.uid, serverTime.date);
 
-        // Did user went to gym today
-        const wentToGYMToday = wentToGYMDays.includes(todaysDate);
-
-        setWentToGYM(wentToGYMToday);
-
-        return { wentToGYMDays, wentToGYMToday };
+        return { wentToGYMDays };
       }
 
       return null;
