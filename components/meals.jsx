@@ -72,7 +72,7 @@ export function Meals({ fetchedMeals }) {
             return (
               <View
                 className={cn(
-                  `mr-4 border-2  max-w-[250px]  border-secondary self-start rounded-2xl p-3`,
+                  `mr-4 border-2 h-full max-w-[250px]  border-secondary self-start rounded-2xl p-3`,
                   bgColor
                 )}
               >

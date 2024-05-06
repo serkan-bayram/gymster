@@ -48,12 +48,14 @@ export default function Tracking() {
       </View>
     );
 
+  console.log(query.data?.meals);
+
   return (
     <>
       <Heading heading={"Tracking"} />
       <PrimaryButton text="Log out" onPress={signOut} />
       <GYMDays fetchedWentToGYM={query.data?.wentToGYM || false} />
-      <Meals fetchedMeals={query.data?.meals} />
+      <Meals fetchedMeals={query.data?.meals || []} />
       <WaterProvider>
         <Water fetchedProgress={query.data?.hydration?.progress || null} />
       </WaterProvider>
