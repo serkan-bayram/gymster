@@ -151,7 +151,7 @@ export async function updateServerTime() {
 }
 
 // We can use cloud functions instead of updateServerTime
-export async function getServerTime() {
+export async function getServerTime(): Promise<FirebaseFirestoreTypes.DocumentData | null> {
   const { updated } = await updateServerTime();
 
   if (updated) {
@@ -161,6 +161,8 @@ export async function getServerTime() {
 
     const serverTime = querySnapshot.docs[0].data();
 
-    return { serverTime };
+    return serverTime;
   }
+
+  return null;
 }

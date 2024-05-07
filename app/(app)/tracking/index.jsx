@@ -3,7 +3,6 @@ import { GYMDays } from "@/components/gym-days";
 import { Meals } from "@/components/meals";
 import { Water } from "@/components/water";
 import { WaterProvider } from "@/utils/water-context";
-import { PrimaryButton } from "@/components/primary-button";
 import { useSession } from "@/utils/session-context";
 import { findTrackingsDoc, getServerTime } from "@/utils/db";
 import { useQuery } from "@tanstack/react-query";
@@ -18,7 +17,7 @@ export default function Tracking() {
     queryKey: ["tracking"],
     queryFn: async () => {
       // Upddate & get server time
-      const { serverTime } = await getServerTime();
+      const serverTime = await getServerTime();
 
       if (serverTime) {
         const foundTrackingsDoc = await findTrackingsDoc(

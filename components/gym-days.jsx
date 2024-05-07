@@ -15,7 +15,7 @@ export function GYMDays({ fetchedWentToGYM }) {
   const query = useQuery({
     queryKey: ["wentToGYMDays"],
     queryFn: async () => {
-      const { serverTime } = await getServerTime();
+      const serverTime = await getServerTime();
 
       if (serverTime) {
         // Is an array that contains day numbers that user went to gym

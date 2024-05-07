@@ -54,7 +54,7 @@ export function UpdateWaterValue({ currentProgress, setCurrentProgress }) {
   const mutation = useMutation({
     mutationFn: async ({ newProgress }) => {
       // Upddate & get server time
-      const { serverTime } = await getServerTime();
+      const serverTime = await getServerTime();
 
       if (serverTime) {
         const foundTrackingsDoc = await findTrackingsDoc(

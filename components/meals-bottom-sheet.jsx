@@ -23,7 +23,7 @@ export function MealsBottomSheet({
     },
     mutationFn: async (newMeal) => {
       // Upddate & get server time
-      const { serverTime } = await getServerTime();
+      const serverTime = await getServerTime();
 
       if (serverTime) {
         const foundTrackingsDoc = await findTrackingsDoc(

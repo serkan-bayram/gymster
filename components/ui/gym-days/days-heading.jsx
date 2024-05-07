@@ -27,7 +27,7 @@ export function DaysHeading({ wentToGYM, setWentToGYM }) {
       await queryClient.cancelQueries({ queryKey: ["wentToGYMDays"] });
 
       // Upddate & get server time
-      const { serverTime } = await getServerTime();
+      const serverTime = await getServerTime();
 
       if (serverTime) {
         const foundTrackingsDoc = await findTrackingsDoc(

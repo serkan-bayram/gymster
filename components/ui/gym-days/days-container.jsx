@@ -11,7 +11,7 @@ export function DaysContainer({ wentToGYMDays }) {
   const query = useQuery({
     queryKey: ["gymDays"],
     queryFn: async () => {
-      const { serverTime } = await getServerTime();
+      const serverTime = await getServerTime();
 
       if (serverTime) {
         const serverDate = new Date(serverTime.date.toDate());
