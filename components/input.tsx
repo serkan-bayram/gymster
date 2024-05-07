@@ -1,7 +1,17 @@
 import { TextInput } from "react-native";
 import { cn } from "../utils/cn";
 
-export function Input({ placeholder, className, setState, ...props }) {
+interface TextInputProps extends TextInput {
+  placeholder?: string;
+  className?: string;
+}
+
+export function Input({
+  placeholder,
+  className,
+  setState,
+  ...props
+}: TextInputProps) {
   return (
     <TextInput
       {...props}

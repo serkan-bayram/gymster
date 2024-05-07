@@ -1,10 +1,15 @@
-import firestore from "@react-native-firebase/firestore";
+import firestore, {
+  FirebaseFirestoreTypes,
+} from "@react-native-firebase/firestore";
 import { daysInMonth } from "./days-in-month";
 
 /* ---- TRACKINGS ---- */
 
 // Find a Trackings document that in "same day" within timestamp by user id
-export async function findTrackingsDoc(uid, timestamp) {
+export async function findTrackingsDoc(
+  uid: string,
+  timestamp: FirebaseFirestoreTypes.Timestamp
+) {
   const givenDate = new Date(timestamp.toDate());
 
   const startOfDay = new Date(givenDate);
@@ -26,8 +31,9 @@ export async function findTrackingsDoc(uid, timestamp) {
 
   // Create document if not exists
   if (querySnapshot.size === 0) {
+    // TODO: I removed the new keyword but I don't know will it work
     await trackingsRef.add({
-      createdAt: new firestore.FieldValue.serverTimestamp(),
+      createdAt: firestore.FieldValue.serverTimestamp(),
       uid: uid,
     });
 
@@ -43,17 +49,20 @@ export async function findTrackingsDoc(uid, timestamp) {
 
 /* ---- HYDRATION ---- */
 
-export async function updateHydrationProgress(trackingsPath, newProgress) {
+export async function updateHydrationProgress(
+  trackingsPath: string,
+  newProgress: number
+) {
   await firestore()
     .doc(trackingsPath)
-    .set({ hydration: { progress: parseInt(newProgress) } }, { merge: true });
+    .set({ hydration: { progress: newProgress } }, { merge: true });
 
   return true;
 }
 
 /* ---- GYM DAYS ---- */
 
-export async function updateGYMDays(trackingsPath, wentToGYM) {
+export async function updateGYMDays(trackingsPath: string, wentToGYM: boolean) {
   await firestore()
     .doc(trackingsPath)
     .set({ wentToGYM: wentToGYM }, { merge: true });
@@ -63,7 +72,10 @@ export async function updateGYMDays(trackingsPath, wentToGYM) {
 
 /* ---- MEALS ---- */
 
-export async function updateMeals(trackingsPath, newMeal) {
+export async function updateMeals(
+  trackingsPath: string,
+  newMeal: Array<Object>
+) {
   const arrayUnion = firestore.FieldValue.arrayUnion(...newMeal);
 
   await firestore().doc(trackingsPath).update({ meals: arrayUnion });
@@ -73,7 +85,10 @@ export async function updateMeals(trackingsPath, newMeal) {
 
 // Find documents that wentToGYM field is true
 // Looks timestamp's month
-export async function getGYMDays(uid, timestamp) {
+export async function getGYMDays(
+  uid: string,
+  timestamp: FirebaseFirestoreTypes.Timestamp
+) {
   const givenDate = new Date(timestamp.toDate());
 
   const daysCount = daysInMonth(givenDate.getMonth(), givenDate.getFullYear());
@@ -81,7 +96,7 @@ export async function getGYMDays(uid, timestamp) {
   const startOfMonth = new Date(givenDate);
   startOfMonth.setDate(2);
   const endOfMonth = new Date(givenDate);
-  endOfMonth.setDate(parseInt(daysCount) + 1);
+  endOfMonth.setDate(daysCount + 1);
 
   const startTimestamp = firestore.Timestamp.fromDate(startOfMonth);
   const endTimestamp = firestore.Timestamp.fromDate(endOfMonth);
@@ -95,7 +110,7 @@ export async function getGYMDays(uid, timestamp) {
 
   const querySnapshot = await query.get();
 
-  const wentToGYMDays = [];
+  const wentToGYMDays: Array<number> = [];
 
   querySnapshot.forEach((documentSnapshot) => {
     const { createdAt } = documentSnapshot.data();
@@ -119,7 +134,7 @@ export async function updateServerTime() {
   const querySnapshot = await serverTimeRef.limit(1).get();
 
   const serverTimeObject = {
-    date: new firestore.FieldValue.serverTimestamp(),
+    date: firestore.FieldValue.serverTimestamp(),
   };
 
   // We create first, if no document exists
