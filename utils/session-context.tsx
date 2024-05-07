@@ -2,14 +2,32 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import auth from "@react-native-firebase/auth";
+import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 
-const AuthContext = createContext();
+interface AuthContextType {
+  session: FirebaseAuthTypes.User | null;
+  setSession: React.Dispatch<
+    React.SetStateAction<FirebaseAuthTypes.User | null>
+  >;
+  signIn: () => Promise<void>;
+  signOut: () => Promise<void>;
+  loading: boolean;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const AuthContext = createContext<AuthContextType | null>(null);
+
+interface User {
+  uid: string;
+  email: string;
+  displayName: string | null;
+  photoURL: string | null;
+}
 
 // Save user to DB if it is not already saved
 // We can turn this into a cloud function
-const saveUser = async (user) => {
+const saveUser = async (user: User) => {
   const findUser = await firestore()
     .collection("Users")
     .where("uid", "==", user.uid)
@@ -22,7 +40,9 @@ const saveUser = async (user) => {
   }
 };
 
-const saveSessionToLocalStorage = async (session) => {
+const saveSessionToLocalStorage = async (
+  session: FirebaseAuthTypes.User | null
+) => {
   try {
     // Save session to local storage
     const jsonSession = JSON.stringify(session);
@@ -34,7 +54,11 @@ const saveSessionToLocalStorage = async (session) => {
 };
 
 // Read session from local storage and setSession if exists
-const readStorageSession = async (setSession) => {
+const readStorageSession = async (
+  setSession: React.Dispatch<
+    React.SetStateAction<FirebaseAuthTypes.User | null>
+  >
+) => {
   try {
     const readSession = await AsyncStorage.getItem("session");
 
@@ -47,10 +71,11 @@ const readStorageSession = async (setSession) => {
 };
 
 // TODO: I'dont know is AsyncStorage good for saving session
-export const SessionProvider = (props) => {
-  const [session, setSession] = useState(null);
-  const [loading, setLoading] = useState(false);
+export const SessionProvider = (props: React.PropsWithChildren) => {
+  const [session, setSession] = useState<FirebaseAuthTypes.User | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
+  session;
   useEffect(() => {
     GoogleSignin.configure({
       webClientId:
@@ -72,13 +97,14 @@ export const SessionProvider = (props) => {
     }
   }, [session]);
 
-  function onAuthStateChanged(session) {
+  function onAuthStateChanged(session: FirebaseAuthTypes.User | null) {
     if (session) {
-      const user = {
+      // This user object will be saved to db
+      const user: User = {
         uid: session.uid,
-        email: session.email,
-        displayName: session.displayName,
-        photoURL: session.photoURL,
+        email: session.email || "",
+        displayName: session.displayName || null,
+        photoURL: session.photoURL || null,
       };
 
       saveUser(user);
@@ -86,7 +112,7 @@ export const SessionProvider = (props) => {
       console.log("User signed in!");
     }
 
-    setSession(session);
+    setSession(session ? session : null);
     saveSessionToLocalStorage(session);
   }
 
