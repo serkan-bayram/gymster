@@ -32,7 +32,7 @@ export default function AppLayout() {
   return (
     <GestureHandlerRootView className="flex-1">
       <BottomSheetModalProvider>
-        <View className="pt-16 mb-16 flex-1 gap-y-4 bg-background">
+        <View className="pt-16 mb-16 flex-1 bg-background gap-y-4">
           <Stack>
             <Stack.Screen
               name="tracking/index"

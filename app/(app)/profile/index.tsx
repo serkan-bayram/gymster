@@ -12,7 +12,11 @@ export default function Profile() {
         <View className="w-24 h-24 rounded-full bg-black ">
           <Image
             className="flex-1 rounded-full border"
-            source={require("@/assets/hammy.png")}
+            source={
+              session?.photoURL
+                ? session.photoURL
+                : require("@/assets/hammy.png")
+            }
             contentFit="cover"
           />
         </View>

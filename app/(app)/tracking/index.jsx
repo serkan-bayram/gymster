@@ -15,10 +15,13 @@ export default function Tracking() {
   const { session } = useSession();
   const { serverTime } = useTime();
 
+  // TODO: Some values does not rerender currently when user changed
   const query = useQuery({
     queryKey: ["tracking"],
     queryFn: async () => {
       if (serverTime) {
+        console.log("fetched");
+
         const foundTrackingsDoc = await findTrackingsDoc(
           session.uid,
           serverTime.date
@@ -46,7 +49,7 @@ export default function Tracking() {
     );
 
   return (
-    <ScrollView className="">
+    <ScrollView className="bg-background">
       <Heading heading={"Tracking"} />
       <GYMDays fetchedWentToGYM={query.data?.wentToGYM || false} />
       <Meals fetchedMeals={query.data?.meals || []} />
