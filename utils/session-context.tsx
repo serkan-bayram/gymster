@@ -16,7 +16,14 @@ interface AuthContextType {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const AuthContext = createContext<AuthContextType | null>(null);
+const AuthContext = createContext<AuthContextType>({
+  session: null,
+  setSession: () => {},
+  signIn: async () => {},
+  signOut: async () => {},
+  loading: false,
+  setLoading: () => {},
+});
 
 interface User {
   uid: string;
@@ -75,7 +82,6 @@ export const SessionProvider = (props: React.PropsWithChildren) => {
   const [session, setSession] = useState<FirebaseAuthTypes.User | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  session;
   useEffect(() => {
     GoogleSignin.configure({
       webClientId:

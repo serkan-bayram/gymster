@@ -1,13 +1,15 @@
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import { DaysHeading } from "./ui/gym-days/days-heading";
 import { DaysContainer } from "./ui/gym-days/days-container";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getGYMDays, getServerTime } from "@/utils/db";
+import { getGYMDays } from "@/utils/db";
 import { useSession } from "@/utils/session-context";
+import { useTime } from "@/utils/time-context";
 
 export function GYMDays({ fetchedWentToGYM }) {
   const { session } = useSession();
+  const { serverTime } = useTime();
 
   const [wentToGYM, setWentToGYM] = useState(fetchedWentToGYM);
 
@@ -15,8 +17,6 @@ export function GYMDays({ fetchedWentToGYM }) {
   const query = useQuery({
     queryKey: ["wentToGYMDays"],
     queryFn: async () => {
-      const serverTime = await getServerTime();
-
       if (serverTime) {
         // Is an array that contains day numbers that user went to gym
         const wentToGYMDays = await getGYMDays(session.uid, serverTime.date);

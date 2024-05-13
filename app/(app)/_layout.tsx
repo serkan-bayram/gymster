@@ -1,9 +1,10 @@
 import { useSession } from "@/utils/session-context";
-import { Redirect, Slot, Stack } from "expo-router";
+import { Redirect, Stack } from "expo-router";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { StatusBar } from "expo-status-bar";
-import { View } from "react-native";
+import { Text, View } from "react-native";
+import { TimeProvider, useTime } from "@/utils/time-context";
 
 export default function AppLayout() {
   const { session } = useSession();
@@ -14,6 +15,16 @@ export default function AppLayout() {
     // On web, static rendering will stop here as the user is not authenticated
     // in the headless Node process that the pages are rendered in.
     return <Redirect href="/" />;
+  }
+
+  const { isLoading } = useTime();
+
+  if (isLoading) {
+    return (
+      <View>
+        <Text className="text-blue-400">Loading...</Text>
+      </View>
+    );
   }
 
   // This layout can be deferred because it's not the root layout.

@@ -1,18 +1,16 @@
 import { cn } from "@/utils/cn";
 import { daysInMonth } from "@/utils/days-in-month";
-import { getServerTime } from "@/utils/db";
-import { FlashList } from "@shopify/flash-list";
+import { useTime } from "@/utils/time-context";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useRef } from "react";
 import { Text, View } from "react-native";
 
 // TODO: Calculations on this component are very expensive find a way to fix it
 export function DaysContainer({ wentToGYMDays }) {
+  const { serverTime } = useTime();
+
   const query = useQuery({
     queryKey: ["gymDays"],
     queryFn: async () => {
-      const serverTime = await getServerTime();
-
       if (serverTime) {
         const serverDate = new Date(serverTime.date.toDate());
 

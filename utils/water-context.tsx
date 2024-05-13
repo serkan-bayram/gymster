@@ -18,12 +18,8 @@ export const DEFAULT_UPDATE_VALUE = 200;
 // Default goal is 2000 ml
 export const DEFAULT_GOAL = 2000;
 
-type WaterProviderType = {
-  children: React.ReactNode;
-};
-
 // TODO: Save goal and update values to local storage
-export const WaterProvider = ({ children }: WaterProviderType) => {
+export const WaterProvider = ({ children }: { children: React.ReactNode }) => {
   const [updateValue, setUpdateValue] = useState(DEFAULT_UPDATE_VALUE);
   const [goalValue, setGoalValue] = useState(DEFAULT_GOAL);
 

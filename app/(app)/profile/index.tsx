@@ -16,7 +16,7 @@ export default function Profile() {
             contentFit="cover"
           />
         </View>
-        <Text className="text-lg font-bold">{session.displayName}</Text>
+        <Text className="text-lg font-bold">{session?.displayName}</Text>
       </View>
       <PrimaryButton
         className="absolute bottom-8"

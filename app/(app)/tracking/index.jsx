@@ -4,21 +4,19 @@ import { Meals } from "@/components/meals";
 import { Water } from "@/components/water";
 import { WaterProvider } from "@/utils/water-context";
 import { useSession } from "@/utils/session-context";
-import { findTrackingsDoc, getServerTime } from "@/utils/db";
+import { findTrackingsDoc } from "@/utils/db";
 import { useQuery } from "@tanstack/react-query";
 import { Text, View } from "react-native";
+import { useTime } from "@/utils/time-context";
 
 // TODO: tidy up colors
-// TODO: We get too many server times, maybe make a provider, loading are always same
 export default function Tracking() {
   const { session } = useSession();
+  const { serverTime } = useTime();
 
   const query = useQuery({
     queryKey: ["tracking"],
     queryFn: async () => {
-      // Upddate & get server time
-      const serverTime = await getServerTime();
-
       if (serverTime) {
         const foundTrackingsDoc = await findTrackingsDoc(
           session.uid,
@@ -39,8 +37,7 @@ export default function Tracking() {
     },
   });
 
-  // TODO: isFetching vs isLoading vs isPending LEARN
-  if (query.isFetching)
+  if (query.isPending)
     return (
       <View className="flex-1 flex items-center justify-center">
         <Text>Loading...</Text>
