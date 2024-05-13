@@ -1,6 +1,5 @@
 import { Pressable, Text, View } from "react-native";
 import { EditSvg } from "../svg";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useCallback } from "react";
 
 export function WaterHeading({ bottomSheetRef }) {

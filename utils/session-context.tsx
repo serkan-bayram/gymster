@@ -148,11 +148,15 @@ export const SessionProvider = (props: React.PropsWithChildren) => {
     try {
       setLoading(true);
 
+      GoogleSignin.revokeAccess();
+
       auth()
         .signOut()
-        .then(() => console.log("User signed out!"));
+        .then(async () => {
+          await AsyncStorage.removeItem("session");
 
-      // TODO: Delete async storage
+          console.log("User signed out!");
+        });
     } catch (error) {
       console.error("Error on sign out: ", error);
     } finally {

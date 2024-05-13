@@ -4,7 +4,8 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { StatusBar } from "expo-status-bar";
 import { Text, View } from "react-native";
-import { TimeProvider, useTime } from "@/utils/time-context";
+import { useTime } from "@/utils/time-context";
+import { TabBar } from "@/components/tab-bar";
 
 export default function AppLayout() {
   const { session } = useSession();
@@ -31,7 +32,7 @@ export default function AppLayout() {
   return (
     <GestureHandlerRootView className="flex-1">
       <BottomSheetModalProvider>
-        <View className="pt-16 flex-1 gap-y-4 bg-background">
+        <View className="pt-16 mb-16 flex-1 gap-y-4 bg-background">
           <Stack>
             <Stack.Screen
               name="tracking/index"
@@ -44,6 +45,7 @@ export default function AppLayout() {
           </Stack>
           <StatusBar style="auto" />
         </View>
+        <TabBar />
       </BottomSheetModalProvider>
     </GestureHandlerRootView>
   );

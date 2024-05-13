@@ -8,6 +8,7 @@ import { findTrackingsDoc } from "@/utils/db";
 import { useQuery } from "@tanstack/react-query";
 import { Text, View } from "react-native";
 import { useTime } from "@/utils/time-context";
+import { ScrollView } from "react-native-gesture-handler";
 
 // TODO: tidy up colors
 export default function Tracking() {
@@ -45,13 +46,13 @@ export default function Tracking() {
     );
 
   return (
-    <>
+    <ScrollView className="">
       <Heading heading={"Tracking"} />
       <GYMDays fetchedWentToGYM={query.data?.wentToGYM || false} />
       <Meals fetchedMeals={query.data?.meals || []} />
       <WaterProvider>
         <Water fetchedProgress={query.data?.hydration?.progress || null} />
       </WaterProvider>
-    </>
+    </ScrollView>
   );
 }

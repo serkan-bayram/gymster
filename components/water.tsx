@@ -13,7 +13,7 @@ export function Water({ fetchedProgress }: WaterProps) {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
 
   return (
-    <View className="flex-1 mt-2">
+    <View className="flex-1  mt-2">
       <WaterHeading bottomSheetRef={bottomSheetRef} />
       <WaterContent fetchedProgress={fetchedProgress} />
       <WaterBottomSheet bottomSheetRef={bottomSheetRef} />
