@@ -1,15 +1,33 @@
 import { Pressable, Text, View } from "react-native";
 import { PlusSvg, TickSvg } from "../svg";
-import { useState } from "react";
 import { cn } from "@/utils/cn";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { findTrackingsDoc, getServerTime, updateGYMDays } from "@/utils/db";
+import { useMutation } from "@tanstack/react-query";
+import { findTrackingsDoc, getServerTime, updateWentToGYM } from "@/utils/db";
 import { useSession } from "@/utils/session-context";
+import { useTime } from "@/utils/time-context";
 
-export function DaysHeading({ wentToGYM, setWentToGYM }) {
-  const queryClient = useQueryClient();
+export function DaysHeading({ wentToGYM, setWentToGYM, setWentToGYMDays }) {
+  // We can use the serverTime that already loaded for optimistic updates
+  // But we don't use it for the real mutation for security purposes
+  const { serverTime } = useTime();
 
   const handleWentToGYM = () => {
+    const serverDate = new Date(serverTime.date.toDate());
+    const todaysDate = serverDate.getDate();
+
+    // Optimistic updates
+    // Add todays date if not already added
+    setWentToGYMDays((prevValues) => {
+      if (prevValues.includes(todaysDate)) {
+        const updatedDays = prevValues.filter((days) => days !== todaysDate);
+        return updatedDays;
+      }
+
+      const updatedDays = [...prevValues];
+      updatedDays.push(todaysDate);
+      return updatedDays;
+    });
+
     mutation.mutate({ wentToGYM: !wentToGYM });
 
     setWentToGYM(!wentToGYM);
@@ -20,12 +38,8 @@ export function DaysHeading({ wentToGYM, setWentToGYM }) {
   // This mutation updates the wentToGYM field of related document
   // TODO: Add optimistic updates
   const mutation = useMutation({
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["wentToGYMDays"] });
-    },
+    mutationKey: ["updateWentToGYM"],
     mutationFn: async ({ wentToGYM }) => {
-      await queryClient.cancelQueries({ queryKey: ["wentToGYMDays"] });
-
       // Upddate & get server time
       const serverTime = await getServerTime();
 
@@ -37,7 +51,7 @@ export function DaysHeading({ wentToGYM, setWentToGYM }) {
 
         const { trackingsPath } = foundTrackingsDoc;
 
-        const isUpdated = await updateGYMDays(trackingsPath, wentToGYM);
+        await updateWentToGYM(trackingsPath, wentToGYM);
       }
     },
   });

@@ -8,8 +8,9 @@ import { Text, View } from "react-native";
 export function DaysContainer({ wentToGYMDays }) {
   const { serverTime } = useTime();
 
+  // This query returns the calendar of current month
   const query = useQuery({
-    queryKey: ["gymDays"],
+    queryKey: ["GYMCalendar"],
     queryFn: async () => {
       if (serverTime) {
         const serverDate = new Date(serverTime.date.toDate());

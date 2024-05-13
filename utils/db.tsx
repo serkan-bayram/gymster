@@ -62,7 +62,10 @@ export async function updateHydrationProgress(
 
 /* ---- GYM DAYS ---- */
 
-export async function updateGYMDays(trackingsPath: string, wentToGYM: boolean) {
+export async function updateWentToGYM(
+  trackingsPath: string,
+  wentToGYM: boolean
+) {
   await firestore()
     .doc(trackingsPath)
     .set({ wentToGYM: wentToGYM }, { merge: true });

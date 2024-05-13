@@ -12,6 +12,7 @@ export function GYMDays({ fetchedWentToGYM }) {
   const { serverTime } = useTime();
 
   const [wentToGYM, setWentToGYM] = useState(fetchedWentToGYM);
+  const [wentToGYMDays, setWentToGYMDays] = useState([]);
 
   // This query gets the days that user went to gym
   const query = useQuery({
@@ -20,6 +21,8 @@ export function GYMDays({ fetchedWentToGYM }) {
       if (serverTime) {
         // Is an array that contains day numbers that user went to gym
         const wentToGYMDays = await getGYMDays(session.uid, serverTime.date);
+
+        setWentToGYMDays(wentToGYMDays);
 
         return { wentToGYMDays };
       }
@@ -30,11 +33,12 @@ export function GYMDays({ fetchedWentToGYM }) {
 
   return (
     <View className="flex gap-y-2 mt-4 px-4">
-      <DaysHeading wentToGYM={wentToGYM} setWentToGYM={setWentToGYM} />
-      <DaysContainer
-        wentToGYMDays={query.data?.wentToGYMDays || []}
+      <DaysHeading
+        setWentToGYMDays={setWentToGYMDays}
         wentToGYM={wentToGYM}
+        setWentToGYM={setWentToGYM}
       />
+      <DaysContainer wentToGYMDays={wentToGYMDays} wentToGYM={wentToGYM} />
     </View>
   );
 }
