@@ -67,7 +67,7 @@ export function ProgressBar({ currentProgress }) {
         <Text className="text-lg font-bold">
           {/* If anything goes wrong and it overflows
            it fallbacks to 100 */}
-          {progressPercantage <= 100 ? parseInt(progressPercantage) : 100}%
+          %{progressPercantage <= 100 ? parseInt(progressPercantage) : 100}
         </Text>
         <Text>of {goal} ml </Text>
       </View>

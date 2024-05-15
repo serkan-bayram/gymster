@@ -47,7 +47,7 @@ export function Meals({ fetchedMeals }) {
   // go like #5, #4, ....
   return (
     <View className="flex mt-2">
-      <Text className="text-lg mb-2">What did you eat today?</Text>
+      <Text className="text-lg mb-2">Bugün ne yedin?</Text>
       <View className="h-32">
         <FlashList
           horizontal={true}

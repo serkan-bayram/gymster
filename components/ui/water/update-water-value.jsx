@@ -96,7 +96,7 @@ export function UpdateWaterValue({ currentProgress, setCurrentProgress }) {
           <ExtractSvg width="20" height="20" fill="#7AA2E3" />
         </Pressable>
       </View>
-      <Text>by {updateValue} ml</Text>
+      <Text>{updateValue} ml kadar</Text>
     </View>
   );
 }

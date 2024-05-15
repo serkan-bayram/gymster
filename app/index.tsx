@@ -20,11 +20,11 @@ export default function App() {
       </View>
       <View
         className="p-24 pt-12 rounded-tl-[40px] 
-          rounded-tr-[40px] bg-primary border-2 border-b-0 flex items-center 
+          rounded-tr-[40px] bg-secondary border-2 border-b-0 flex items-center 
           justify-center"
       >
         <View className="w-full gap-y-2 flex items-center">
-          <Text className="text-lg text-white font-bold">Let's start</Text>
+          <Text className="text-lg text-white font-bold">Başlayalım</Text>
           <GoogleSigninButton
             size={GoogleSigninButton.Size.Wide}
             color={GoogleSigninButton.Color.Light}

@@ -25,7 +25,7 @@ export function WaterPickers({
           })
         }
       >
-        <Picker.Item label="Cancel" value="none" />
+        <Picker.Item label="İptal" value="none" />
         <Picker.Item label="200 ml" value="200" />
         <Picker.Item label="300 ml" value="300" />
         <Picker.Item label="500 ml" value="500" />
@@ -45,7 +45,7 @@ export function WaterPickers({
           })
         }
       >
-        <Picker.Item label="Cancel" value="none" />
+        <Picker.Item label="İptal" value="none" />
         <Picker.Item label="500 ml" value="500" />
         <Picker.Item label="1000 ml" value="1000" />
         <Picker.Item label="1500 ml" value="1500" />

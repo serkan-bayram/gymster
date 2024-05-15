@@ -12,7 +12,7 @@ export function AddMeal({ mealsBottomSheetRef }) {
       border-secondary self-start rounded-3xl p-3 w-32 h-full"
     >
       <PlusSvg width={50} height={50} fill={"white"} />
-      <Text className="text-white mt-2 font-bold">Add Meal</Text>
+      <Text className="text-white mt-2 font-bold">Öğün Ekle</Text>
     </Pressable>
   );
 }

@@ -88,7 +88,7 @@ export function MealsBottomSheet({
       <BottomSheetView className="flex-1 ">
         <View className="p-5 flex gap-y-4">
           <View className="flex gap-y-2 justify-between">
-            <Text className="text-lg font-bold">Enter your meal</Text>
+            <Text className="text-lg font-bold">Öğününü anlat</Text>
             <TextInput
               ref={inputRef}
               value={input}
@@ -97,18 +97,22 @@ export function MealsBottomSheet({
               className="border rounded-xl  p-2 h-24"
               textAlignVertical="top"
               placeholderTextColor={"gray"}
-              placeholder="More detail means better results with stats. ✨"
+              placeholder="Ne kadar çok detay girerseniz, o kadar doğru değerler oluşur. ✨"
             />
           </View>
           <View className="flex flex-row  gap-x-4 justify-center">
             <PrimaryButton
               onPress={closeBottomSheet}
-              text="Cancel"
+              text="Vazgeç"
               type="danger"
               className="w-1/3"
             />
 
-            <PrimaryButton onPress={handleSave} text="Save" className="w-1/3" />
+            <PrimaryButton
+              onPress={handleSave}
+              text="Kaydet"
+              className="w-1/3"
+            />
           </View>
         </View>
       </BottomSheetView>

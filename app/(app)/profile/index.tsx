@@ -6,17 +6,15 @@ import { Text, View } from "react-native";
 export default function Profile() {
   const { session, signOut } = useSession();
 
+  const photoURL = session?.photoURL;
+
   return (
     <View className="flex-1 bg-background flex items-center pt-16">
       <View className="flex items-center gap-y-2">
         <View className="w-24 h-24 rounded-full bg-black ">
           <Image
             className="flex-1 rounded-full border"
-            source={
-              session?.photoURL
-                ? session.photoURL
-                : require("@/assets/hammy.png")
-            }
+            source={photoURL ? photoURL : require("@/assets/hammy.png")}
             contentFit="cover"
           />
         </View>
@@ -24,7 +22,7 @@ export default function Profile() {
       </View>
       <PrimaryButton
         className="absolute bottom-8"
-        text="Log out"
+        text="Çıkış yap"
         onPress={signOut}
       />
     </View>

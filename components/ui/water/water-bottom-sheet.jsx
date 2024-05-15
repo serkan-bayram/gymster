@@ -34,22 +34,22 @@ export function WaterBottomSheet({ bottomSheetRef }) {
         <View className="p-5">
           <View className="flex gap-y-8">
             <View className="flex flex-row items-center justify-between">
-              <Text className="text-lg font-bold">Update Value</Text>
+              <Text className="text-lg font-bold">Güncelleme Değeri</Text>
               <PrimaryButton
                 onPress={() => updatePickerRef.current.focus()}
                 text={`${pickedUpdateValue} ml`}
                 type="outlined"
-                className="active:scale-105 ease-in-out transition-all w-1/2"
+                className="active:scale-105 ease-in-out transition-all w-1/3"
               />
             </View>
 
             <View className="flex flex-row items-center justify-between">
-              <Text className="text-lg font-bold">Goal</Text>
+              <Text className="text-lg font-bold">Günlük Hedef</Text>
               <PrimaryButton
                 onPress={() => goalPickerRef.current.focus()}
                 text={`${pickedGoalValue} ml`}
                 type="outlined"
-                className="active:scale-105 ease-in-out transition-all w-1/2"
+                className="active:scale-105 ease-in-out transition-all w-1/3"
               />
             </View>
 
@@ -66,11 +66,15 @@ export function WaterBottomSheet({ bottomSheetRef }) {
           <View className="flex flex-row justify-center items-center mt-16 gap-x-6 ">
             <PrimaryButton
               onPress={() => bottomSheetRef.current.dismiss()}
-              text="Cancel"
+              text="Vazgeç"
               type="danger"
               className="w-1/3"
             />
-            <PrimaryButton onPress={handleSave} text="Save" className="w-1/3" />
+            <PrimaryButton
+              onPress={handleSave}
+              text="Kaydet"
+              className="w-1/3"
+            />
           </View>
         </View>
       </BottomSheetView>

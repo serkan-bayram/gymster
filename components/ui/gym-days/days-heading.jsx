@@ -58,7 +58,7 @@ export function DaysHeading({ wentToGYM, setWentToGYM, setWentToGYMDays }) {
 
   return (
     <View className="flex flex-row mb-2 justify-between items-center">
-      <Text className="text-lg">Streak</Text>
+      <Text className="text-lg">Seri</Text>
       <Pressable
         className={cn(
           `flex flex-row p-1 px-2 rounded-lg bg-white
@@ -74,7 +74,7 @@ export function DaysHeading({ wentToGYM, setWentToGYM, setWentToGYMDays }) {
             "text-white": wentToGYM,
           })}
         >
-          Went to GYM
+          Egzersiz Yaptım
         </Text>
         {wentToGYM ? (
           <View className="rotate-45">
