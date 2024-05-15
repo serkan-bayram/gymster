@@ -17,13 +17,14 @@ export function CardWithLink({
   return (
     <Link asChild href={href}>
       <Pressable
-        className="bg-[#FBF3D5] active:bg-[#FBF3D5]/50 transition-all
+        className="bg-primary active:bg-primary/50 transition-all
      relative p-4 border-2 h-48 mt-6 rounded-3xl"
       >
         <View className="flex">
           <Text className="text-lg font-semibold">{subText}</Text>
           <Text className="text-xl font-bold ">{text}</Text>
         </View>
+
         <View className="flex-1 absolute -bottom-12 -right-4 -z-10">
           <Image
             className="flex-1 h-48 w-48"
@@ -32,7 +33,8 @@ export function CardWithLink({
             transition={300}
           />
         </View>
-        <View className="absolute bottom-2 left-2 -scale-x-100 ">
+
+        <View className="absolute bottom-4 left-4 -scale-x-100 ">
           <AntDesign name="enter" size={32} color="black" />
         </View>
       </Pressable>
