@@ -58,7 +58,7 @@ export function DaysHeading({ wentToGYM, setWentToGYM, setWentToGYMDays }) {
 
   return (
     <View className="flex flex-row mb-2 justify-between items-center">
-      <Text className="text-lg">Seri</Text>
+      <Text className="text-lg font-semibold">Seri</Text>
       <Pressable
         className={cn(
           `flex flex-row p-1 px-2 rounded-lg bg-white

@@ -17,15 +17,15 @@ export function CardWithLink({
   return (
     <Link asChild href={href}>
       <Pressable
-        className="bg-primary active:bg-primary/50 transition-all
-     relative p-4 border-2 h-48 mt-6 rounded-3xl"
+        className="bg-primary active:opacity-50 transition-all
+     relative p-4 border-2 h-48 mt-6 rounded-3xl overflow-hidden "
       >
         <View className="flex">
           <Text className="text-lg font-semibold">{subText}</Text>
           <Text className="text-xl font-bold ">{text}</Text>
         </View>
 
-        <View className="flex-1 absolute -bottom-12 -right-4 -z-10">
+        <View className="flex-1 absolute -bottom-12 -right-4">
           <Image
             className="flex-1 h-48 w-48"
             contentFit="contain"
