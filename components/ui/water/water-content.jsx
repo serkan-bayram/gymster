@@ -9,7 +9,7 @@ export function WaterContent({ fetchedProgress }) {
   const [currentProgress, setCurrentProgress] = useState(fetchedProgress || 0);
 
   return (
-    <View className="flex-1 flex-row px-4 h-40 gap-y-2">
+    <View className="flex-1 flex-row  h-40 gap-y-2">
       <ProgressBar currentProgress={currentProgress} />
       <UpdateWaterValue
         currentProgress={currentProgress}

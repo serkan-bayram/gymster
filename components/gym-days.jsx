@@ -32,7 +32,7 @@ export function GYMDays({ fetchedWentToGYM }) {
   });
 
   return (
-    <View className="flex gap-y-2 mt-4 px-4">
+    <View className="flex gap-y-2 mt-4">
       <DaysHeading
         setWentToGYMDays={setWentToGYMDays}
         wentToGYM={wentToGYM}

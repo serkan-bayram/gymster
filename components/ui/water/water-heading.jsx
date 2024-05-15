@@ -8,7 +8,7 @@ export function WaterHeading({ bottomSheetRef }) {
   }, []);
 
   return (
-    <View className="flex flex-row px-4 justify-between items-center">
+    <View className="flex flex-row  justify-between items-center">
       <Text className="text-lg mb-2">Hydration</Text>
       <Pressable onPress={handlePresentModalPress}>
         <EditSvg width={"25"} height={"25"} fill={"black"} />

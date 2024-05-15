@@ -35,7 +35,7 @@ export function DaysContainer({ wentToGYMDays }) {
   return (
     <View
       className="w-full h-48 border-2 
- border-secondary bg-[#FBF3D5] rounded-2xl p-2 overflow-hidden"
+ border-secondary bg-primary rounded-2xl p-2 overflow-hidden"
     >
       <View className="flex gap-y-2 mb-2">
         <Text className="font-bold">{query.data?.monthName}</Text>
@@ -47,7 +47,7 @@ export function DaysContainer({ wentToGYMDays }) {
                 key={index}
                 className={cn(
                   `w-8 h-8 flex items-center justify-center
-                      bg-secondary rounded-full`,
+                      bg-black rounded-full`,
                   {
                     "bg-green-600": wentToGYMDays.includes(index + 1),
                   }

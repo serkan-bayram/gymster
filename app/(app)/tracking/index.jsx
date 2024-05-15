@@ -47,7 +47,7 @@ export default function Tracking() {
     );
 
   return (
-    <ScrollView className="bg-background">
+    <ScrollView showsVerticalScrollIndicator={false} className="bg-background ">
       <Heading heading={"Tracking"} />
       <GYMDays fetchedWentToGYM={query.data?.wentToGYM || false} />
       <Meals fetchedMeals={query.data?.meals || []} />

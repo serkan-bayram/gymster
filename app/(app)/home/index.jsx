@@ -9,7 +9,7 @@ export default function Home() {
   const firstName = session.displayName.split(" ")[0];
 
   return (
-    <ScrollView className="bg-background px-4">
+    <ScrollView className="bg-background ">
       <Heading heading={`Hoş geldin, ${firstName}`} />
       <CardWithLink
         href="/tracking"

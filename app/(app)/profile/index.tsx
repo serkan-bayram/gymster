@@ -7,7 +7,7 @@ export default function Profile() {
   const { session, signOut } = useSession();
 
   return (
-    <View className="flex-1 flex items-center pt-16">
+    <View className="flex-1 bg-background flex items-center pt-16">
       <View className="flex items-center gap-y-2">
         <View className="w-24 h-24 rounded-full bg-black ">
           <Image

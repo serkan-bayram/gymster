@@ -46,7 +46,7 @@ export function Meals({ fetchedMeals }) {
   // TODO: a better idea is start showing from reverse it should
   // go like #5, #4, ....
   return (
-    <View className="flex px-4 mt-2">
+    <View className="flex mt-2">
       <Text className="text-lg mb-2">What did you eat today?</Text>
       <View className="h-32">
         <FlashList
