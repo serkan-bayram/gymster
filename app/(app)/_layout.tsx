@@ -42,6 +42,7 @@ export default function AppLayout() {
               name="profile/index"
               options={{ headerShown: false }}
             />
+            <Stack.Screen name="home/index" options={{ headerShown: false }} />
           </Stack>
           <StatusBar style="auto" />
         </View>

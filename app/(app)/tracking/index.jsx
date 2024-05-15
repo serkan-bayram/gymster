@@ -20,8 +20,6 @@ export default function Tracking() {
     queryKey: ["tracking"],
     queryFn: async () => {
       if (serverTime) {
-        console.log("fetched");
-
         const foundTrackingsDoc = await findTrackingsDoc(
           session.uid,
           serverTime.date

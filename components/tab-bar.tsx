@@ -40,6 +40,13 @@ export function TabBar() {
     w-full p-1 h-16 flex-row justify-evenly bg-background border  border-black/30
      border-x-0 border-b-0"
     >
+      <Route href="/home" name="Home">
+        <Entypo
+          name="home"
+          size={24}
+          color={pathname === "/home" ? "#EA8140" : "#1B1B1B"}
+        />
+      </Route>
       <Route href="/tracking" name="Tracking">
         <Entypo
           name="circular-graph"
