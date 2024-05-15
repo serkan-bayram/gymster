@@ -1,66 +1,47 @@
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Link, usePathname } from "expo-router";
-import { cn } from "@/utils/cn";
-
-function Route({
-  children,
-  href,
-  name,
-}: {
-  children: React.ReactNode;
-  href: string;
-  name: string;
-}) {
-  const pathname = usePathname();
-
-  return (
-    <Link href={href}>
-      <View className={cn("flex gap-y-1 items-center ")}>
-        {children}
-        <Text
-          className={cn("text-xs font-bold text-secondary", {
-            "text-primary": pathname === href,
-          })}
-        >
-          {name}
-        </Text>
-      </View>
-    </Link>
-  );
-}
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 export function TabBar() {
   const pathname = usePathname();
 
+  const activeColor = "#fff";
+  const inactiveColor = "#414d5e";
+
   return (
     <View
-      className="absolute  bottom-0 left-0
-    w-full p-1 h-16 flex-row justify-evenly bg-background border  border-black/30
-     border-x-0 border-b-0"
+      className="absolute bottom-0 left-0
+    w-full  h-[80px] bg-background
+     "
     >
-      <Route href="/home" name="Home">
-        <Entypo
-          name="home"
-          size={24}
-          color={pathname === "/home" ? "#EA8140" : "#1B1B1B"}
-        />
-      </Route>
-      <Route href="/tracking" name="Tracking">
-        <Entypo
-          name="circular-graph"
-          size={24}
-          color={pathname === "/tracking" ? "#EA8140" : "#1B1B1B"}
-        />
-      </Route>
-      <Route href="/profile" name="Profile">
-        <FontAwesome
-          name="user-circle-o"
-          size={24}
-          color={pathname === "/profile" ? "#EA8140" : "#1B1B1B"}
-        />
-      </Route>
+      <View
+        className="flex mx-4 justify-evenly  p-4 px-0 rounded-full 
+      flex-row items-center bg-black"
+      >
+        <Link href={"/home"}>
+          <Entypo
+            name="home"
+            size={30}
+            color={pathname === "/home" ? activeColor : inactiveColor}
+          />
+        </Link>
+        <Link href={"/tracking"}>
+          <MaterialIcons
+            name="auto-graph"
+            size={30}
+            color={pathname === "/tracking" ? activeColor : inactiveColor}
+          />
+        </Link>
+        <Link href={"/profile"}>
+          <FontAwesome
+            name="user-circle-o"
+            size={30}
+            color={pathname === "/profile" ? activeColor : inactiveColor}
+          />
+        </Link>
+      </View>
     </View>
   );
 }
