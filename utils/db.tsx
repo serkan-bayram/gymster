@@ -73,19 +73,6 @@ export async function updateWentToGYM(
   return true;
 }
 
-/* ---- MEALS ---- */
-
-export async function updateMeals(
-  trackingsPath: string,
-  newMeal: Array<Object>
-) {
-  const arrayUnion = firestore.FieldValue.arrayUnion(...newMeal);
-
-  await firestore().doc(trackingsPath).update({ meals: arrayUnion });
-
-  return true;
-}
-
 // Find documents that wentToGYM field is true
 // Looks timestamp's month
 export async function getGYMDays(
@@ -124,6 +111,43 @@ export async function getGYMDays(
   });
 
   return wentToGYMDays;
+}
+
+/* ---- USER INFO ---- */
+
+// Find user document and update with user info
+export async function updateUserInfo(
+  userObject: {
+    age?: number;
+    weight?: number;
+    gender?: string;
+  },
+  uid: string
+) {
+  const userRef = firestore().collection("Users");
+  const query = userRef.where("uid", "==", uid).limit(1);
+
+  const querySnapshot = await query.get();
+
+  querySnapshot.forEach(async (documentSnapshot) => {
+    const userPath = documentSnapshot.ref.path;
+    const path = userPath.split("Users/")[1];
+
+    await firestore().collection("Users").doc(path).update(userObject);
+  });
+}
+
+/* ---- MEALS ---- */
+
+export async function updateMeals(
+  trackingsPath: string,
+  newMeal: Array<Object>
+) {
+  const arrayUnion = firestore.FieldValue.arrayUnion(...newMeal);
+
+  await firestore().doc(trackingsPath).update({ meals: arrayUnion });
+
+  return true;
 }
 
 /* ---- SERVER TIME ---- */

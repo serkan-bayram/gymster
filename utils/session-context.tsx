@@ -82,6 +82,9 @@ export const SessionProvider = (props: React.PropsWithChildren) => {
   const [session, setSession] = useState<FirebaseAuthTypes.User | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
+  // Check is user info screen skipped before
+  const [didSkipped, setDidSkipped] = useState<string | null>(null);
+
   useEffect(() => {
     GoogleSignin.configure({
       webClientId:
@@ -97,7 +100,11 @@ export const SessionProvider = (props: React.PropsWithChildren) => {
   // Check for session updates, if exists navigate to somewhere
   useEffect(() => {
     if (session) {
-      router.replace("/userInfo");
+      if (didSkipped) {
+        router.replace("/home");
+      } else {
+        router.replace("/userInfo");
+      }
     } else {
       router.replace("/");
     }
@@ -125,6 +132,9 @@ export const SessionProvider = (props: React.PropsWithChildren) => {
   const signIn = async () => {
     try {
       setLoading(true);
+
+      const didSkipped = await AsyncStorage.getItem("skipped");
+      setDidSkipped(didSkipped);
 
       await GoogleSignin.hasPlayServices({
         showPlayServicesUpdateDialog: true,

@@ -1,23 +1,28 @@
-import { TextInput } from "react-native";
+import { TextInput, TextInputProps } from "react-native";
 import { cn } from "../utils/cn";
+import { Dispatch, SetStateAction } from "react";
 
-interface TextInputProps extends TextInput {
+interface InputProps extends TextInputProps {
   placeholder?: string;
   className?: string;
+  onChangeText?: Dispatch<SetStateAction<string | undefined>>;
+  value?: string;
 }
 
 export function Input({
   placeholder,
   className,
-  setState,
+  onChangeText,
+  value,
   ...props
-}: TextInputProps) {
+}: InputProps) {
   return (
     <TextInput
-      {...props}
-      onChangeText={setState}
+      value={value}
+      onChangeText={onChangeText}
       placeholder={placeholder}
-      className={cn(className, "bg-white  border-2 p-3 rounded-xl")}
+      className={cn("bg-white  border-2 p-3 rounded-xl", className)}
+      {...props}
     />
   );
 }

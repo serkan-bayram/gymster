@@ -7,6 +7,13 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 export function TabBar() {
   const pathname = usePathname();
 
+  // There will be no TabBar in these paths
+  const hiddenPaths = ["/userInfo"];
+
+  if (hiddenPaths.includes(pathname)) {
+    return null;
+  }
+
   const activeColor = "#fff";
   const inactiveColor = "#414d5e";
 
