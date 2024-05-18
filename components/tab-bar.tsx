@@ -12,8 +12,8 @@ export function TabBar() {
 
   return (
     <View
-      className="relative bottom-0 left-0
-    w-full  h-[80px] bg-background
+      className="absolute bottom-0 left-0
+    w-full  h-[80px] 
      "
     >
       <View

@@ -97,7 +97,7 @@ export const SessionProvider = (props: React.PropsWithChildren) => {
   // Check for session updates, if exists navigate to somewhere
   useEffect(() => {
     if (session) {
-      router.replace("/tracking");
+      router.replace("/userInfo");
     } else {
       router.replace("/");
     }

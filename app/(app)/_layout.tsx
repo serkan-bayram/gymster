@@ -32,7 +32,7 @@ export default function AppLayout() {
   return (
     <GestureHandlerRootView className="flex-1">
       <BottomSheetModalProvider>
-        <View className="pt-16 px-4 flex-1 bg-background gap-y-4">
+        <View className="flex-1 bg-red-500">
           <Stack>
             <Stack.Screen
               name="tracking/index"
@@ -43,6 +43,10 @@ export default function AppLayout() {
               options={{ headerShown: false }}
             />
             <Stack.Screen name="home/index" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="userInfo/index"
+              options={{ headerShown: false }}
+            />
           </Stack>
           <TabBar />
 

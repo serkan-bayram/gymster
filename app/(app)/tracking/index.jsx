@@ -47,13 +47,15 @@ export default function Tracking() {
     );
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false} className="bg-background ">
-      <Heading heading={"Takip"} />
-      <GYMDays fetchedWentToGYM={query.data?.wentToGYM || false} />
-      <Meals fetchedMeals={query.data?.meals || []} />
-      <WaterProvider>
-        <Water fetchedProgress={query.data?.hydration?.progress || null} />
-      </WaterProvider>
-    </ScrollView>
+    <View className="pt-16 pb-20 px-4 bg-background">
+      <ScrollView showsVerticalScrollIndicator={false} className=" ">
+        <Heading heading={"Takip"} />
+        <GYMDays fetchedWentToGYM={query.data?.wentToGYM || false} />
+        <Meals fetchedMeals={query.data?.meals || []} />
+        <WaterProvider>
+          <Water fetchedProgress={query.data?.hydration?.progress || null} />
+        </WaterProvider>
+      </ScrollView>
+    </View>
   );
 }
