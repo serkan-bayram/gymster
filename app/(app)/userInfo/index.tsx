@@ -75,6 +75,8 @@ export default function UserInfo() {
   };
 
   // This screen will be only shown at first sign in
+  // TODO: Skipped true is not enough
+  // We need to check which account for is skipped
   const handleSkip = async () => {
     // Save to local storage
     const jsonSkipped = JSON.stringify({ skipped: true });

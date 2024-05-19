@@ -4,6 +4,7 @@ import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
+import { useQuery } from "@tanstack/react-query";
 
 interface AuthContextType {
   session: FirebaseAuthTypes.User | null;
@@ -85,6 +86,18 @@ export const SessionProvider = (props: React.PropsWithChildren) => {
   // Check is user info screen skipped before
   const [didSkipped, setDidSkipped] = useState<string | null>(null);
 
+  const checkDidSkipped = async () => {
+    const didSkipped = await AsyncStorage.getItem("skipped");
+    setDidSkipped(didSkipped);
+
+    return true;
+  };
+
+  useQuery({
+    queryKey: ["skip"],
+    queryFn: checkDidSkipped,
+  });
+
   useEffect(() => {
     GoogleSignin.configure({
       webClientId:
@@ -133,8 +146,8 @@ export const SessionProvider = (props: React.PropsWithChildren) => {
     try {
       setLoading(true);
 
-      const didSkipped = await AsyncStorage.getItem("skipped");
-      setDidSkipped(didSkipped);
+      // Set local storage if UserInfo screen has skipped before
+      await checkDidSkipped();
 
       await GoogleSignin.hasPlayServices({
         showPlayServicesUpdateDialog: true,
