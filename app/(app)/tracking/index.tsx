@@ -10,7 +10,6 @@ import { Text, View } from "react-native";
 import { useTime } from "@/utils/time-context";
 import { ScrollView } from "react-native-gesture-handler";
 
-// TODO: tidy up colors
 export default function Tracking() {
   const { session } = useSession();
   const { serverTime } = useTime();
@@ -19,7 +18,7 @@ export default function Tracking() {
   const query = useQuery({
     queryKey: ["tracking"],
     queryFn: async () => {
-      if (serverTime) {
+      if (serverTime && session) {
         const foundTrackingsDoc = await findTrackingsDoc(
           session.uid,
           serverTime.date
@@ -48,7 +47,7 @@ export default function Tracking() {
 
   return (
     <View className="pt-16 pb-20 px-4 bg-background">
-      <ScrollView showsVerticalScrollIndicator={false} className=" ">
+      <ScrollView showsVerticalScrollIndicator={false}>
         <Heading heading={"Takip"} />
         <GYMDays fetchedWentToGYM={query.data?.wentToGYM || false} />
         <Meals fetchedMeals={query.data?.meals || []} />

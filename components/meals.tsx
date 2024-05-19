@@ -5,50 +5,71 @@ import { AddMeal } from "./ui/add-meal";
 import { useRef, useState } from "react";
 import { MealsBottomSheet } from "./meals-bottom-sheet";
 
-export function Meals({ fetchedMeals }) {
-  // We can specify the colors of meal background & texts
-  // It's important to write full tailwind styles to make it work
-  // TODO: make a better color palatte
-  const colorPalattes = [
-    { textColor: "text-white", color: "bg-[#453F78]" },
-    { textColor: "text-white", color: "bg-[#FA7070]" },
-    { textColor: "text-white", color: "bg-[#C08B5C]" },
-    { textColor: "text-black", color: "bg-[#FBF3D5]" },
-  ];
+type Nutritions = {
+  carbs: string;
+  fat: string;
+  kcal: string;
+  protein: string;
+};
 
-  const getColor = (index) => {
-    // Default colors if something wents wrong while
-    // choosing color palatte
-    let bgColor = "bg-black";
-    let textColor = "text-white";
+type Meal = {
+  nutritions: Nutritions;
+  userInput: string;
+};
 
-    // Choosing the right color palatte according to
-    // index of meal
-    colorPalattes.forEach((palatte, palatteIndex) => {
-      if (index > colorPalattes.length - 1) {
-        index = index % 4;
-      }
+type FetchedMeals = Meal[];
 
-      if (palatteIndex === index) {
-        bgColor = palatte.color;
-        textColor = palatte.textColor;
-      }
-    });
+// We can specify the colors of meal background & texts
+const colorPalattes = [
+  { textColor: "text-white", color: "bg-[#453F78]" },
+  { textColor: "text-white", color: "bg-[#FA7070]" },
+  { textColor: "text-white", color: "bg-[#C08B5C]" },
+  { textColor: "text-black", color: "bg-[#FBF3D5]" },
+];
 
-    return { bgColor, textColor };
-  };
+const getColor = (index: number) => {
+  // Default colors if something wents wrong while
+  // choosing color palatte
+  let bgColor = "bg-black";
+  let textColor = "text-white";
 
+  // Choosing the right color palatte according to
+  // index of meal
+  colorPalattes.forEach((palatte, palatteIndex) => {
+    if (index > colorPalattes.length - 1) {
+      index = index % 4;
+    }
+
+    if (palatteIndex === index) {
+      bgColor = palatte.color;
+      textColor = palatte.textColor;
+    }
+  });
+
+  return { bgColor, textColor };
+};
+
+export function Meals({ fetchedMeals }: { fetchedMeals: FetchedMeals }) {
   const mealsBottomSheetRef = useRef(null);
 
+  const placeholderForAddMeal = {
+    nutritions: { carbs: "", fat: "", kcal: "", protein: "" },
+    userInput: "",
+  };
+
   // TODO: TODO: TODO: It goes crazy if ...fetchedMeals is null
-  const [meals, setMeals] = useState([{}, ...fetchedMeals]);
+  const [meals, setMeals] = useState<FetchedMeals>([
+    placeholderForAddMeal,
+    ...fetchedMeals,
+  ]);
 
   // TODO: a better idea is start showing from reverse it should
   // go like #5, #4, ....
   return (
     <View className="flex mt-2">
       <Text className="text-lg font-semibold mb-2">Bugün ne yedin?</Text>
-      <View className="h-32">
+
+      <View className="h-32 flex flex-row">
         <FlashList
           horizontal={true}
           data={meals}
@@ -63,10 +84,10 @@ export function Meals({ fetchedMeals }) {
             // We fetch meals from firestore and firestore does not guarantee any order for map types
             // Lets sort them as we want
             const newNutritions = {
-              Kcal: item?.nutritions["kcal"],
-              Carbs: item?.nutritions["carbs"],
-              Protein: item?.nutritions["protein"],
-              Fat: item?.nutritions["fat"],
+              Kcal: item.nutritions["kcal"],
+              Carbs: item.nutritions["carbs"],
+              Protein: item.nutritions["protein"],
+              Fat: item.nutritions["fat"],
             };
 
             return (
@@ -85,7 +106,7 @@ export function Meals({ fetchedMeals }) {
                     return (
                       <View key={index}>
                         <Text className={cn("text-center text-lg", textColor)}>
-                          {newNutritions[key]}
+                          {newNutritions[key as keyof typeof newNutritions]}
                         </Text>
                         <Text className={cn("text-center", textColor)}>
                           {key}

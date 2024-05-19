@@ -5,7 +5,7 @@ import { Dispatch, SetStateAction } from "react";
 interface InputProps extends TextInputProps {
   placeholder?: string;
   className?: string;
-  onChangeText?: Dispatch<SetStateAction<string | undefined>>;
+  onChangeText: Dispatch<SetStateAction<string>>;
   value?: string;
 }
 

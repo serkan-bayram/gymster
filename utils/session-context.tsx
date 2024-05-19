@@ -121,7 +121,7 @@ export const SessionProvider = (props: React.PropsWithChildren) => {
     } else {
       router.replace("/");
     }
-  }, [session]);
+  }, [session, didSkipped]);
 
   function onAuthStateChanged(session: FirebaseAuthTypes.User | null) {
     if (session) {

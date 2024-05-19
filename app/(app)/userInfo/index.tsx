@@ -20,9 +20,9 @@ import { useSession } from "@/utils/session-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function UserInfo() {
-  const [age, setAge] = useState<string | undefined>();
-  const [weight, setWeight] = useState<string | undefined>();
-  const [gender, setGender] = useState<string | undefined>();
+  const [age, setAge] = useState<string>("");
+  const [weight, setWeight] = useState<string>("");
+  const [gender, setGender] = useState<string>("");
 
   const pickerRef = useRef<any>(null);
 
@@ -31,53 +31,38 @@ export default function UserInfo() {
 
   const handlePress = async () => {
     // This object will be saved to DB
-    let saveObject = {};
 
-    if (!!age && age.length > 0) {
-      const result = validateAge(age);
-
-      if (!result) {
+    if (age.length > 0 && weight.length > 0 && gender.length > 0) {
+      if (
+        !validateAge(age) ||
+        !validateWeight(weight) ||
+        !validateGender(gender)
+      ) {
         return;
       }
 
-      saveObject = { ...saveObject, age: age };
-    }
+      const saveObject = {
+        age: parseInt(age),
+        weight: parseFloat(weight),
+        gender: gender,
+      };
 
-    if (!!weight && weight.length > 0) {
-      const result = validateWeight(weight);
+      if (session && Object.keys(saveObject).length > 0) {
+        await updateUserInfo(saveObject, session.uid);
 
-      if (!result) {
-        return;
+        saveSkip();
+
+        router.replace("/home");
+      } else {
+        Alert.alert("Hata", "Herhangi bir bilgi girmediniz.");
       }
-
-      saveObject = { ...saveObject, weight: weight };
-    }
-
-    if (!!gender && gender.length > 0) {
-      const result = validateGender(gender);
-
-      if (!result) {
-        return;
-      }
-
-      if (gender.length > 0) {
-        saveObject = { ...saveObject, gender: gender };
-      }
-    }
-
-    if (session && Object.keys(saveObject).length > 0) {
-      await updateUserInfo(saveObject, session.uid);
-      handleSkip();
-      router.replace("/home");
-    } else {
-      Alert.alert("Hata", "Herhangi bir bilgi girmediniz.");
     }
   };
 
   // This screen will be only shown at first sign in
   // TODO: Skipped true is not enough
   // We need to check which account for is skipped
-  const handleSkip = async () => {
+  const saveSkip = async () => {
     // Save to local storage
     const jsonSkipped = JSON.stringify({ skipped: true });
 
@@ -97,13 +82,14 @@ export default function UserInfo() {
       p-1 px-3"
           asChild
         >
-          <Pressable onPress={handleSkip}>
+          <Pressable onPress={saveSkip}>
             <Text>Atla</Text>
           </Pressable>
         </Link>
         <Text className="font-bold w-full text-3xl">
           Bize biraz kendinden bahset. ✨
         </Text>
+
         <Input
           className="w-full"
           placeholder="Yaşın"
@@ -131,6 +117,7 @@ export default function UserInfo() {
             placeholder="Cinsiyetin"
             className="w-full text-black"
             editable={false}
+            onChangeText={() => {}}
           />
         </Pressable>
 

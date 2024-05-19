@@ -31,7 +31,6 @@ export async function findTrackingsDoc(
 
   // Create document if not exists
   if (querySnapshot.size === 0) {
-    // TODO: I removed the new keyword but I don't know will it work
     await trackingsRef.add({
       createdAt: firestore.FieldValue.serverTimestamp(),
       uid: uid,
@@ -118,9 +117,9 @@ export async function getGYMDays(
 // Find user document and update with user info
 export async function updateUserInfo(
   userObject: {
-    age?: number;
-    weight?: number;
-    gender?: string;
+    age: number;
+    weight: number;
+    gender: string;
   },
   uid: string
 ) {
