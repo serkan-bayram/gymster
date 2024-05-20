@@ -1,5 +1,5 @@
 import { Heading } from "@/components/heading";
-import { Meal } from "@/components/meals";
+import { Meal, getColor } from "@/components/meals";
 import { MealDetail } from "@/components/ui/meal-detail";
 import { getAllMeals } from "@/utils/db";
 import { useSession } from "@/utils/session-context";
@@ -81,9 +81,17 @@ export default function MealsDetails() {
           return (
             <View key={Crypto.randomUUID()} className="mt-6 ">
               <Text className="text-lg font-semibold mb-3">{meal.day}</Text>
-              {meal.meals.map((detail: Meal) => (
-                <MealDetail key={Crypto.randomUUID()} detail={detail} />
-              ))}
+              {meal.meals.map((detail: Meal, index: number) => {
+                const colors = getColor(index);
+
+                return (
+                  <MealDetail
+                    colors={colors}
+                    key={Crypto.randomUUID()}
+                    detail={detail}
+                  />
+                );
+              })}
             </View>
           );
         })}

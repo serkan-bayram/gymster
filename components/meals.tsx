@@ -29,7 +29,7 @@ const colorPalattes = [
   { textColor: "text-black", color: "bg-[#FBF3D5]" },
 ];
 
-const getColor = (index: number) => {
+export const getColor = (index: number) => {
   // Default colors if something wents wrong while
   // choosing color palatte
   let bgColor = "bg-black";
