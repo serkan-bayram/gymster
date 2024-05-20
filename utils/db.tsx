@@ -149,6 +149,22 @@ export async function updateMeals(
   return true;
 }
 
+// Returns the all meals that user has saved
+export async function getAllMeals(uid: string) {
+  const trackingsRef = firestore().collection("Trackings");
+  const query = trackingsRef.where("uid", "==", uid).orderBy("meals", "desc");
+
+  const querySnapshot = await query.get();
+
+  const meals: FirebaseFirestoreTypes.DocumentData[] = [];
+
+  querySnapshot.forEach((documentSnapshot) => {
+    meals.push(documentSnapshot.data());
+  });
+
+  return meals;
+}
+
 /* ---- SERVER TIME ---- */
 
 // We have a document in the firestore that holds a timestamp

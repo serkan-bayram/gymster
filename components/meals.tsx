@@ -4,6 +4,8 @@ import { Text, View } from "react-native";
 import { AddMeal } from "./ui/add-meal";
 import { useRef, useState } from "react";
 import { MealsBottomSheet } from "./meals-bottom-sheet";
+import { Octicons } from "@expo/vector-icons";
+import { Link } from "expo-router";
 
 type Nutritions = {
   carbs: string;
@@ -12,7 +14,7 @@ type Nutritions = {
   protein: string;
 };
 
-type Meal = {
+export type Meal = {
   nutritions: Nutritions;
   userInput: string;
 };
@@ -67,7 +69,12 @@ export function Meals({ fetchedMeals }: { fetchedMeals: FetchedMeals }) {
   // go like #5, #4, ....
   return (
     <View className="flex mt-2">
-      <Text className="text-lg font-semibold mb-2">Bugün ne yedin?</Text>
+      <View className="flex flex-row justify-between">
+        <Text className="text-lg font-semibold mb-2">Bugün ne yedin?</Text>
+        <Link href={"/meals-details"}>
+          <Octicons name="link-external" size={24} color="black" />
+        </Link>
+      </View>
 
       <View className="h-32 flex flex-row">
         <FlashList
@@ -81,7 +88,8 @@ export function Meals({ fetchedMeals }: { fetchedMeals: FetchedMeals }) {
 
             const { bgColor, textColor } = getColor(index);
 
-            // We fetch meals from firestore and firestore does not guarantee any order for map types
+            // We fetch meals from firestore and firestore does
+            // not guarantee any order for map types
             // Lets sort them as we want
             const newNutritions = {
               Kcal: item.nutritions["kcal"],
@@ -108,6 +116,7 @@ export function Meals({ fetchedMeals }: { fetchedMeals: FetchedMeals }) {
                         <Text className={cn("text-center text-lg", textColor)}>
                           {newNutritions[key as keyof typeof newNutritions]}
                         </Text>
+
                         <Text className={cn("text-center", textColor)}>
                           {key}
                         </Text>

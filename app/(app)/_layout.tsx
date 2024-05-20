@@ -47,6 +47,10 @@ export default function AppLayout() {
               name="userInfo/index"
               options={{ headerShown: false }}
             />
+            <Stack.Screen
+              name="meals-details/index"
+              options={{ headerShown: false }}
+            />
           </Stack>
           <TabBar />
 
