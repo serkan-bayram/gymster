@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "925921052788",
+    "project_id": "gymster-9970d",
+    "storage_bucket": "gymster-9970d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:925921052788:android:9f3fddf607da753f1de921",
+        "android_client_info": {
+          "package_name": "com.serkanbayram.gymsterandroid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "925921052788-ioq9bfe11d2md1nbmvt7gnkltva5j5s2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.serkanbayram.gymsterandroid",
+            "certificate_hash": "2985ffaf1c921b61381c492b552ed62038ceaf0d"
+          }
+        },
+        {
+          "client_id": "925921052788-ca77bp1oklsvdn453kuskdlhba6em8un.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9AXV1UkpiiaH4vwjFRXJyttgXqknfgJ4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "925921052788-ca77bp1oklsvdn453kuskdlhba6em8un.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

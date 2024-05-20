@@ -6,8 +6,9 @@ import { useSession } from "@/utils/session-context";
 import { FirebaseFirestoreTypes } from "@react-native-firebase/firestore";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import * as Crypto from "expo-crypto";
 
 type DateObject = {
   day: string;
@@ -64,8 +65,6 @@ export default function MealsDetails() {
     },
   });
 
-  console.log("Query error: ", query.error);
-
   if (query.isPending) {
     return (
       <View className="flex-1 justify-center items-center">
@@ -75,13 +74,19 @@ export default function MealsDetails() {
   }
 
   return (
-    <View className="flex-1 pt-16 pb-20 px-4 bg-background">
+    <View className="flex-1 pt-16 pb-24 px-4 bg-background">
       <ScrollView showsVerticalScrollIndicator={false}>
         <Heading heading={"Öğün Ayrıntıları"} />
-        <View className="mt-6 ">
-          <Text className="text-lg font-semibold mb-3">19 Mayıs</Text>
-          <MealDetail />
-        </View>
+        {meals?.map((meal) => {
+          return (
+            <View key={Crypto.randomUUID()} className="mt-6 ">
+              <Text className="text-lg font-semibold mb-3">{meal.day}</Text>
+              {meal.meals.map((detail: Meal) => (
+                <MealDetail key={Crypto.randomUUID()} detail={detail} />
+              ))}
+            </View>
+          );
+        })}
       </ScrollView>
     </View>
   );

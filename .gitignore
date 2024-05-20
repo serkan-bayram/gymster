@@ -36,7 +36,7 @@ yarn-error.*
 
 firebaseConfig.js
 
-google-services.json
+# google-services.json
 
 *.apk
 

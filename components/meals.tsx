@@ -7,7 +7,7 @@ import { MealsBottomSheet } from "./meals-bottom-sheet";
 import { Octicons } from "@expo/vector-icons";
 import { Link } from "expo-router";
 
-type Nutritions = {
+export type Nutritions = {
   carbs: string;
   fat: string;
   kcal: string;
