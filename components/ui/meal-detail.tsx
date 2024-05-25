@@ -1,110 +1,93 @@
 import { useEffect, useState } from "react";
 import { Pressable, Text, View } from "react-native";
-import Animated, {
-  useSharedValue,
-  withSpring,
-  withTiming,
-} from "react-native-reanimated";
+
 import { Meal, Nutritions } from "../meals";
 import * as Crypto from "expo-crypto";
 import { cn } from "@/utils/cn";
 import { AntDesign } from "@expo/vector-icons";
-
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
-const AnimatedIcon = Animated.createAnimatedComponent(AntDesign);
+import { Image, ImageSource } from "expo-image";
 
 function Nutrition({
   value,
   type,
-  textColor,
+  isLast,
+  iconSrc,
 }: {
   value: string;
   type: string;
-  textColor: string;
+  isLast?: boolean;
+  iconSrc: ImageSource;
 }) {
   return (
-    <View>
-      <Text className={cn("text-center font-bold text-lg", textColor)}>
-        {value}
-      </Text>
-      <Text className={cn("text-center", textColor)}>{type}</Text>
+    <View className="flex flex-row ">
+      <View className={cn({ "mr-4": !isLast })}>
+        <View className="flex flex-row items-center ">
+          <View className="w-5 h-5 mr-1">
+            <Image className="flex-1" contentFit="contain" source={iconSrc} />
+          </View>
+          <Text className={cn(" text-center font-bold text-lg text-secondary")}>
+            {value}
+          </Text>
+        </View>
+        <Text className={cn("text-center text-secondary")}>{type}</Text>
+      </View>
+      {!isLast && <View className="mr-4 h-full w-[1px] bg-gray"></View>}
     </View>
   );
 }
 
-export function MealDetail({
-  detail,
-  colors,
-}: {
-  detail: Meal;
-  colors: { bgColor: string; textColor: string };
-}) {
+export function MealDetail({ detail }: { detail: Meal }) {
   const { userInput, nutritions } = detail;
-  const { bgColor, textColor } = colors;
-
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-
-  // Nutritions height
-  const maxHeight = useSharedValue<number>(0);
-  // Icon rotation
-  const rotate = useSharedValue<string>("0deg");
-
-  const handlePress = () => {
-    setIsOpen((prevValue) => !prevValue);
-  };
-
-  useEffect(() => {
-    if (isOpen) {
-      maxHeight.value = withTiming(400, {
-        duration: 300,
-      });
-
-      rotate.value = withSpring("180deg");
-    } else {
-      maxHeight.value = withTiming(0, { duration: 300 });
-
-      rotate.value = withSpring("0deg");
-    }
-  }, [isOpen]);
 
   return (
-    <AnimatedPressable
-      onPress={handlePress}
-      className={cn(
-        "active:opacity-75 transition-all w-full p-2 border rounded-lg mb-1",
-        bgColor
-      )}
-    >
+    <View className="w-full p-2 border rounded-xl my-2 border-gray ">
       <View className="flex flex-row justify-between items-center">
         <Text
           numberOfLines={1}
-          className={cn("text-lg w-[90%] my-1", textColor)}
+          className={cn("text-secondary  text-lg w-[90%]")}
         >
           {userInput}
         </Text>
-        <AnimatedIcon
-          name="down"
-          size={24}
-          color="white"
-          style={{ transform: [{ rotate }] }}
-        />
       </View>
-      <Animated.View
-        style={{ maxHeight }}
-        className="flex flex-row justify-evenly "
-      >
+      <View className="flex flex-row mt-4 justify-evenly">
         {nutritions &&
-          (Object.keys(nutritions) as (keyof Nutritions)[]).map((nutrition) => {
-            return (
-              <Nutrition
-                textColor={textColor}
-                key={Crypto.randomUUID()}
-                type={nutrition}
-                value={nutritions[nutrition]}
-              />
-            );
-          })}
-      </Animated.View>
-    </AnimatedPressable>
+          (Object.keys(nutritions) as (keyof Nutritions)[]).map(
+            (nutrition, index) => {
+              const isLast =
+                index + 1 === Object.keys(nutritions).length ? true : false;
+
+              let iconSrc;
+
+              switch (nutrition) {
+                case "carbs":
+                  iconSrc = require("@/assets/nutritions/starch.png");
+                  break;
+                case "protein":
+                  iconSrc = require("@/assets/nutritions/proteins.png");
+                  break;
+                case "fat":
+                  iconSrc = require("@/assets/nutritions/trans-fats-free.png");
+                  break;
+                case "kcal":
+                  iconSrc = require("@/assets/nutritions/fire.png");
+                  break;
+                default:
+                  iconSrc = require("@/assets/nutritions/fire.png");
+                  break;
+              }
+
+              return (
+                <Nutrition
+                  iconSrc={iconSrc}
+                  key={Crypto.randomUUID()}
+                  type={nutrition}
+                  value={nutritions[nutrition]}
+                  isLast={isLast}
+                />
+              );
+            }
+          )}
+      </View>
+    </View>
   );
 }
