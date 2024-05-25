@@ -1,10 +1,7 @@
-import { useEffect, useState } from "react";
-import { Pressable, Text, View } from "react-native";
-
+import { Text, View } from "react-native";
 import { Meal, Nutritions } from "../meals";
 import * as Crypto from "expo-crypto";
 import { cn } from "@/utils/cn";
-import { AntDesign } from "@expo/vector-icons";
 import { Image, ImageSource } from "expo-image";
 
 function Nutrition({
@@ -49,7 +46,7 @@ export function MealDetail({ detail }: { detail: Meal }) {
           {userInput}
         </Text>
       </View>
-      <View className="flex flex-row mt-4 justify-evenly">
+      <View className="p-2 flex flex-row mt-4 justify-evenly">
         {nutritions &&
           (Object.keys(nutritions) as (keyof Nutritions)[]).map(
             (nutrition, index) => {

@@ -1,100 +1,67 @@
 import { Meal } from "@/components/meals";
-import { MealDetail } from "@/components/ui/meal-detail";
 import { getAllMeals } from "@/utils/db";
 import { useSession } from "@/utils/session-context";
 import { FirebaseFirestoreTypes } from "@react-native-firebase/firestore";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Text, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import * as Crypto from "expo-crypto";
-import { Image, ImageSource } from "expo-image";
-import { cn } from "@/utils/cn";
-import { Feather } from "@expo/vector-icons";
+import { StatusBar } from "expo-status-bar";
+import { MealsDetailsHeader } from "@/components/meals-details/meals-details-header";
+import { MemoizedMeals } from "@/components/meals-details/memoized-meals";
+
+type Sums = {
+  carbs: number;
+  protein: number;
+  fat: number;
+  kcal: number;
+};
 
 type DateObject = {
   day: string;
   year: number;
   meals: Meal;
+  sums: Sums;
 };
 
-function MealsDetailsHeaderItem({
-  measurement,
-  type,
-  backgroundColor,
-  iconSrc,
-  textColor,
-}: {
-  measurement: string;
-  type: string;
-  backgroundColor: string;
-  iconSrc: ImageSource;
-  textColor?: string;
-}) {
-  return (
-    <View
-      className={cn(
-        "bg-primary pr-6 py-2 pl-2 w-20 rounded-lg",
-        backgroundColor
-      )}
-    >
-      <View className="w-6 h-6">
-        <Image source={iconSrc} className="flex-1" contentFit="cover" />
-      </View>
-      <View className="flex mt-1">
-        <View className="flex">
-          <Text className={cn("font-bold", textColor)}>{measurement}</Text>
-          <Text className={cn("", textColor)}>{type}</Text>
-        </View>
-      </View>
-    </View>
-  );
-}
-
-function MealsDetailsHeader() {
-  return (
-    <View className="w-full h-52 bg-green-600 rounded-b-3xl pt-12 px-2">
-      <View className="w-full flex flex-row justify-between">
-        <View className="flex flex-row items-center">
-          <Feather name="calendar" size={20} color="white" />
-          <Text className="text-background font-bold ml-1">20 Mayıs</Text>
-        </View>
-        <Text className="text-green-200">Toplam Değerler</Text>
-      </View>
-      <View className="mt-8 flex flex-row justify-evenly">
-        <MealsDetailsHeaderItem
-          backgroundColor="bg-primary"
-          measurement="320"
-          type="carbs"
-          iconSrc={require("@/assets/nutritions/starch.png")}
-        />
-        <MealsDetailsHeaderItem
-          backgroundColor="bg-lightBlue"
-          measurement="320"
-          type="protein"
-          iconSrc={require("@/assets/nutritions/proteins.png")}
-        />
-        <MealsDetailsHeaderItem
-          backgroundColor="bg-secondary"
-          measurement="320"
-          type="fat"
-          textColor="text-background"
-          iconSrc={require("@/assets/nutritions/trans-fats-free.png")}
-        />
-        <MealsDetailsHeaderItem
-          backgroundColor="bg-background"
-          measurement="320"
-          type="kcal"
-          iconSrc={require("@/assets/nutritions/fire.png")}
-        />
-      </View>
-    </View>
-  );
-}
+export type MealsDetailsObject = {
+  y?: number;
+  day: string;
+  sums: Sums;
+};
 
 export default function MealsDetails() {
   const { session } = useSession();
   const [meals, setMeals] = useState<FirebaseFirestoreTypes.DocumentData[]>();
+
+  // How much we scrolled, header is calculated
+  const [scrollViewY, setScrollViewY] = useState<number>(0);
+
+  // The meal that we show on the header
+  const [currentMeal, setCurrentMeal] = useState<MealsDetailsObject>();
+
+  // This array have the position y of days
+  const mealsLayoutsRef = useRef<MealsDetailsObject[]>([]);
+
+  useEffect(() => {
+    if (mealsLayoutsRef.current.length > 0) {
+      // Meals that we passed via scrolling
+      const biggerThan: MealsDetailsObject[] = [];
+
+      const layoutsArray = mealsLayoutsRef.current;
+
+      layoutsArray.forEach((layout) => {
+        if (layout.y) {
+          if (scrollViewY + 100 > layout.y) {
+            biggerThan.push(layout);
+          }
+        }
+      });
+
+      // .at(-1) is the one that we should show to the user
+      setCurrentMeal(biggerThan.at(-1));
+    }
+  }, [scrollViewY, mealsLayoutsRef.current.length]);
 
   // Get all meals
   const query = useQuery({
@@ -122,16 +89,40 @@ export default function MealsDetails() {
           const day = date.toLocaleDateString("tr-TR", options);
           const year = date.getFullYear();
 
+          const sums: Sums = {
+            carbs: 0,
+            protein: 0,
+            fat: 0,
+            kcal: 0,
+          };
+
+          meal.meals.forEach((meal: Meal) => {
+            const nutritions = meal?.nutritions;
+
+            sums.carbs += parseFloat(nutritions?.carbs);
+            sums.protein += parseFloat(nutritions?.protein);
+            sums.fat += parseFloat(nutritions?.fat);
+            sums.kcal += parseFloat(nutritions?.kcal);
+          });
+
           // what has eaten in which date in which year
           const dateObject: DateObject = {
             day: day,
             year: year,
             meals: meal.meals,
+            sums: sums,
           };
 
           mealsArray.push(dateObject);
         });
 
+        // We show this on first mount
+        const currentMeal: MealsDetailsObject = {
+          day: mealsArray[0].day,
+          sums: mealsArray[0].sums,
+        };
+
+        setCurrentMeal(currentMeal);
         setMeals(mealsArray);
 
         return meals;
@@ -141,7 +132,7 @@ export default function MealsDetails() {
     },
   });
 
-  if (query.isPending) {
+  if (query.isPending || !currentMeal) {
     return (
       <View className="flex-1 justify-center items-center">
         <Text>Yükleniyor...</Text>
@@ -154,19 +145,17 @@ export default function MealsDetails() {
       <ScrollView
         stickyHeaderIndices={[0]}
         showsVerticalScrollIndicator={false}
+        onScroll={(event) => {
+          const layout = event.nativeEvent.contentOffset;
+
+          // 208 is the height of MealsDetailsHeader
+          setScrollViewY(layout.y + 208);
+        }}
       >
-        <MealsDetailsHeader />
-        {meals?.map((meal) => {
-          return (
-            <View key={Crypto.randomUUID()} className="flex-1 mt-4 px-4">
-              <Text className="text-lg font-semibold mb-2">{meal.day}</Text>
-              {meal.meals.map((detail: Meal, index: number) => {
-                return <MealDetail key={Crypto.randomUUID()} detail={detail} />;
-              })}
-            </View>
-          );
-        })}
+        <MealsDetailsHeader currentMeal={currentMeal} />
+        <MemoizedMeals meals={meals} mealsLayoutsRef={mealsLayoutsRef} />
       </ScrollView>
+      <StatusBar style="light" />
     </View>
   );
 }
