@@ -116,7 +116,7 @@ export const SessionProvider = (props: React.PropsWithChildren) => {
       if (didSkipped) {
         router.replace("/home");
       } else {
-        router.replace("/userInfo");
+        router.replace("/user-info");
       }
     } else {
       router.replace("/");

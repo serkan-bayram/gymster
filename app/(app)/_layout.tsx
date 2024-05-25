@@ -44,7 +44,7 @@ export default function AppLayout() {
             />
             <Stack.Screen name="home/index" options={{ headerShown: false }} />
             <Stack.Screen
-              name="userInfo/index"
+              name="user-info/index"
               options={{ headerShown: false }}
             />
             <Stack.Screen

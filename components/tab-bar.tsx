@@ -8,7 +8,7 @@ export function TabBar() {
   const pathname = usePathname();
 
   // There will be no TabBar in these paths
-  const hiddenPaths = ["/userInfo"];
+  const hiddenPaths = ["/user-info"];
 
   if (hiddenPaths.includes(pathname)) {
     return null;
