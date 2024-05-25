@@ -3,6 +3,7 @@ import { Entypo } from "@expo/vector-icons";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Link, usePathname } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { FontAwesome6 } from "@expo/vector-icons";
 
 export function TabBar() {
   const pathname = usePathname();
@@ -32,6 +33,13 @@ export function TabBar() {
             name="home"
             size={30}
             color={pathname === "/home" ? activeColor : inactiveColor}
+          />
+        </Link>
+        <Link href={"/running"}>
+          <FontAwesome6
+            name="person-running"
+            size={30}
+            color={pathname === "/running" ? activeColor : inactiveColor}
           />
         </Link>
         <Link href={"/tracking"}>

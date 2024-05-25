@@ -44,7 +44,8 @@
     "tailwind-merge": "^2.2.2",
     "typescript": "^5.3.0",
     "zod": "^3.23.8",
-    "expo-crypto": "~12.8.1"
+    "expo-crypto": "~12.8.1",
+    "expo-haptics": "~12.8.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
