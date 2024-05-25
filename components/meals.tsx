@@ -1,6 +1,6 @@
 import { FlashList } from "@shopify/flash-list";
 import { cn } from "@/utils/cn";
-import { Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import { AddMeal } from "./ui/add-meal";
 import { useRef, useState } from "react";
 import { MealsBottomSheet } from "./meals-bottom-sheet";
@@ -99,32 +99,37 @@ export function Meals({ fetchedMeals }: { fetchedMeals: FetchedMeals }) {
             };
 
             return (
-              <View
-                className={cn(
-                  `mr-4 border-2 h-full max-w-[250px]  border-secondary self-start rounded-2xl p-3`,
-                  bgColor
-                )}
-              >
-                <Text numberOfLines={1} className={cn(`text-lg`, textColor)}>
-                  <Text className="font-bold ">#{index}</Text> {item.userInput}
-                </Text>
+              <Link asChild href={"/meals-details"}>
+                <Pressable
+                  className={cn(
+                    `mr-4 border-2 h-full max-w-[250px] active:opacity-50 transition-all  border-secondary self-start rounded-2xl p-3`,
+                    bgColor
+                  )}
+                >
+                  <Text numberOfLines={1} className={cn(`text-lg`, textColor)}>
+                    <Text className="font-bold ">#{index}</Text>{" "}
+                    {item.userInput}
+                  </Text>
 
-                <View className="mt-3 flex flex-row justify-center gap-x-4">
-                  {Object.keys(newNutritions).map((key, index) => {
-                    return (
-                      <View key={index}>
-                        <Text className={cn("text-center text-lg", textColor)}>
-                          {newNutritions[key as keyof typeof newNutritions]}
-                        </Text>
+                  <View className="mt-3 flex flex-row justify-center gap-x-4">
+                    {Object.keys(newNutritions).map((key, index) => {
+                      return (
+                        <View key={index}>
+                          <Text
+                            className={cn("text-center text-lg", textColor)}
+                          >
+                            {newNutritions[key as keyof typeof newNutritions]}
+                          </Text>
 
-                        <Text className={cn("text-center", textColor)}>
-                          {key}
-                        </Text>
-                      </View>
-                    );
-                  })}
-                </View>
-              </View>
+                          <Text className={cn("text-center", textColor)}>
+                            {key}
+                          </Text>
+                        </View>
+                      );
+                    })}
+                  </View>
+                </Pressable>
+              </Link>
             );
           }}
         />

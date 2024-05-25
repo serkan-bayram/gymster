@@ -19,7 +19,9 @@ export function MealsBottomSheet({
 
   const mutation = useMutation({
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["tracking"] });
+      await queryClient.invalidateQueries({
+        queryKey: ["tracking", "mealsDetails"],
+      });
     },
     mutationFn: async (newMeal) => {
       // Upddate & get server time

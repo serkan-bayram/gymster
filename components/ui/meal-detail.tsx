@@ -1,11 +1,17 @@
 import { useEffect, useState } from "react";
 import { Pressable, Text, View } from "react-native";
-import Animated, { useSharedValue, withTiming } from "react-native-reanimated";
+import Animated, {
+  useSharedValue,
+  withSpring,
+  withTiming,
+} from "react-native-reanimated";
 import { Meal, Nutritions } from "../meals";
 import * as Crypto from "expo-crypto";
 import { cn } from "@/utils/cn";
+import { AntDesign } from "@expo/vector-icons";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+const AnimatedIcon = Animated.createAnimatedComponent(AntDesign);
 
 function Nutrition({
   value,
@@ -38,7 +44,10 @@ export function MealDetail({
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
+  // Nutritions height
   const maxHeight = useSharedValue<number>(0);
+  // Icon rotation
+  const rotate = useSharedValue<string>("0deg");
 
   const handlePress = () => {
     setIsOpen((prevValue) => !prevValue);
@@ -47,24 +56,42 @@ export function MealDetail({
   useEffect(() => {
     if (isOpen) {
       maxHeight.value = withTiming(400, {
-        duration: 100,
+        duration: 300,
       });
+
+      rotate.value = withSpring("180deg");
     } else {
-      maxHeight.value = withTiming(0, { duration: 100 });
+      maxHeight.value = withTiming(0, { duration: 300 });
+
+      rotate.value = withSpring("0deg");
     }
   }, [isOpen]);
 
   return (
     <AnimatedPressable
       onPress={handlePress}
-      className={cn("w-full p-2  border rounded-lg my-1", bgColor)}
+      className={cn(
+        "active:opacity-75 transition-all w-full p-2 border rounded-lg mb-1",
+        bgColor
+      )}
     >
-      <Text numberOfLines={1} className={cn("text-lg", textColor)}>
-        {userInput}
-      </Text>
+      <View className="flex flex-row justify-between items-center">
+        <Text
+          numberOfLines={1}
+          className={cn("text-lg w-[90%] my-1", textColor)}
+        >
+          {userInput}
+        </Text>
+        <AnimatedIcon
+          name="down"
+          size={24}
+          color="white"
+          style={{ transform: [{ rotate }] }}
+        />
+      </View>
       <Animated.View
         style={{ maxHeight }}
-        className="flex flex-row justify-evenly"
+        className="flex flex-row justify-evenly "
       >
         {nutritions &&
           (Object.keys(nutritions) as (keyof Nutritions)[]).map((nutrition) => {
