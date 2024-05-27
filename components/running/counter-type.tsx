@@ -7,7 +7,7 @@ type CountTypeProps = {
   type: "s" | "dk" | "sn";
 };
 
-export function CountType({ count, type }: CountTypeProps) {
+export function CounterType({ count, type }: CountTypeProps) {
   return (
     <View className="flex flex-row items-center mr-2">
       <Text

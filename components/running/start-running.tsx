@@ -1,14 +1,15 @@
 import { Pressable, Text, View } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 
 export function StartRunning({
-  setShowModal,
+  bottomSheetRef,
 }: {
-  setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+  bottomSheetRef: React.RefObject<BottomSheetModal | null>;
 }) {
   return (
     <Pressable
-      onPress={() => setShowModal((prevValue) => !prevValue)}
+      onPress={() => bottomSheetRef?.current?.present()}
       className="w-full h-34 bg-primary 
   border-2 rounded-3xl flex mt-8 p-3 active:opacity-50 transition-all"
     >
