@@ -14,7 +14,15 @@ const requestPermissions = async (taskName: string) => {
 
     if (backgroundStatus === "granted") {
       await Location.startLocationUpdatesAsync(taskName, {
-        accuracy: Location.Accuracy.Balanced,
+        accuracy: Location.Accuracy.Highest,
+        timeInterval: 1000,
+        distanceInterval: 1,
+        showsBackgroundLocationIndicator: true,
+        foregroundService: {
+          notificationTitle: "Koşu İstatistikleri Hesaplanıyor",
+          notificationBody: "Koşmaya devam et!",
+          notificationColor: "#000",
+        },
       });
 
       return true;
