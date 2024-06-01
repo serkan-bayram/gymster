@@ -1,11 +1,32 @@
 import { Heading } from "@/components/heading";
 import { StartRunning } from "@/components/running/start-running";
 import { BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Text, View } from "react-native";
 import { RunningCounter } from "@/components/running/running-counter";
 import { CounterControllers } from "@/components/running/counter-controllers";
 import { RunningStats } from "@/components/running/running-stats";
+
+import * as TaskManager from "expo-task-manager";
+
+const LOCATION_TASK_NAME = "running-location-task";
+
+TaskManager.defineTask(
+  LOCATION_TASK_NAME,
+  ({ data, error }: { data: any; error: any }) => {
+    if (error) {
+      console.log("Error: ", error);
+      // Error occurred - check `error.message` for more details.
+      return;
+    }
+    if (data) {
+      const { locations } = data;
+
+      console.log("locations: ", locations);
+      // do something with the locations captured in the background
+    }
+  }
+);
 
 export type RunTime = {
   hours: number;
@@ -22,7 +43,10 @@ export default function Running() {
     <View className="pt-16 pb-20 px-4 bg-background flex-1">
       <Heading heading={"Koşu"} />
 
-      <StartRunning bottomSheetRef={bottomSheetRef} />
+      <StartRunning
+        taskName={LOCATION_TASK_NAME}
+        bottomSheetRef={bottomSheetRef}
+      />
 
       <BottomSheetModal
         handleStyle={{ display: "none" }}

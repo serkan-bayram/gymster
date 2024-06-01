@@ -16,6 +16,8 @@ web-build/
 *.key
 *.mobileprovision
 
+bun.lockb
+
 # Metro
 .metro-health-check*
 
