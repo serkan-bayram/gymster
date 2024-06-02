@@ -4,7 +4,7 @@ import { BottomSheetModal } from "@gorhom/bottom-sheet";
 
 import * as Location from "expo-location";
 
-const requestPermissions = async (taskName: string) => {
+const requestPermissions = async () => {
   const { status: foregroundStatus } =
     await Location.requestForegroundPermissionsAsync();
 
@@ -13,18 +13,6 @@ const requestPermissions = async (taskName: string) => {
       await Location.requestBackgroundPermissionsAsync();
 
     if (backgroundStatus === "granted") {
-      await Location.startLocationUpdatesAsync(taskName, {
-        accuracy: Location.Accuracy.Highest,
-        timeInterval: 1000,
-        distanceInterval: 1,
-        showsBackgroundLocationIndicator: true,
-        foregroundService: {
-          notificationTitle: "Koşu İstatistikleri Hesaplanıyor",
-          notificationBody: "Koşmaya devam et!",
-          notificationColor: "#000",
-        },
-      });
-
       return true;
     }
   }
@@ -34,13 +22,11 @@ const requestPermissions = async (taskName: string) => {
 
 export function StartRunning({
   bottomSheetRef,
-  taskName,
 }: {
   bottomSheetRef: React.RefObject<BottomSheetModal | null>;
-  taskName: string;
 }) {
   const handlePress = async () => {
-    const isGranted = await requestPermissions(taskName);
+    const isGranted = await requestPermissions();
 
     if (!isGranted) {
       Alert.alert("Konum izni vermeden devam edemezsiniz.");

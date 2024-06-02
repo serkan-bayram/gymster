@@ -1,7 +1,7 @@
 import { Heading } from "@/components/heading";
 import { StartRunning } from "@/components/running/start-running";
 import { BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Text, View } from "react-native";
 import { RunningCounter } from "@/components/running/running-counter";
 import { CounterControllers } from "@/components/running/counter-controllers";
@@ -11,6 +11,7 @@ import { LocationObject, LocationObjectCoords } from "expo-location";
 import { RootState, store } from "@/utils/state/store";
 import { setLocation } from "@/utils/state/location/locationSlice";
 import { useSelector } from "react-redux";
+import * as Location from "expo-location";
 
 const LOCATION_TASK_NAME = "running-location-task";
 
@@ -53,14 +54,39 @@ export default function Running() {
 
   console.log("location: ", location);
 
+  useEffect(() => {
+    try {
+      (async () => {
+        if (isRunning) {
+          await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
+            accuracy: Location.Accuracy.Highest,
+            timeInterval: 1000,
+            distanceInterval: 1,
+            showsBackgroundLocationIndicator: true,
+            foregroundService: {
+              notificationTitle: "Koşu İstatistikleri Hesaplanıyor",
+              notificationBody: "Koşmaya devam et!",
+              notificationColor: "#000",
+            },
+          });
+
+          return;
+        }
+
+        if (await Location.hasStartedLocationUpdatesAsync(LOCATION_TASK_NAME)) {
+          await Location.stopLocationUpdatesAsync(LOCATION_TASK_NAME);
+        }
+      })();
+    } catch (error) {
+      console.log("Error: ", error);
+    }
+  }, [isRunning]);
+
   return (
     <View className="pt-16 pb-20 px-4 bg-background flex-1">
       <Heading heading={"Koşu"} />
 
-      <StartRunning
-        taskName={LOCATION_TASK_NAME}
-        bottomSheetRef={bottomSheetRef}
-      />
+      <StartRunning bottomSheetRef={bottomSheetRef} />
 
       <BottomSheetModal
         handleStyle={{ display: "none" }}
@@ -88,30 +114,3 @@ export default function Running() {
     </View>
   );
 }
-
-// const useLocation = (isRunning: boolean) => {
-//   const [location, setLocation] = useState<LocationObjectCoords | null>(null);
-
-//   // Get coords from localStorage if user is running
-//   useEffect(() => {
-//     const coordsInterval = setInterval(async () => {
-//       const localIsRunning = await AsyncStorage.getItem("isRunning");
-
-//       console.log("localIsRunning: ", localIsRunning);
-
-//       if (localIsRunning) {
-//         if (isRunning || JSON.parse(localIsRunning)) {
-//           const currentCoords = await AsyncStorage.getItem("coords");
-
-//           if (currentCoords) {
-//             setLocation(JSON.parse(currentCoords));
-//           }
-//         }
-//       }
-//     }, 3000);
-
-//     return () => clearInterval(coordsInterval);
-//   }, []);
-
-//   return { location };
-// };
