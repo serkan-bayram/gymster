@@ -2,14 +2,16 @@ import { RunTime } from "@/app/(app)/running";
 import { Text, View } from "react-native";
 import { CounterType } from "./counter-type";
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/utils/state/store";
+import { setRunTime } from "@/utils/state/running/runningSlice";
 
-export function RunningCounter({ isRunning }: { isRunning: boolean }) {
-  // How long did user ran
-  const [runTime, setRunTime] = useState<RunTime>({
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-  });
+export function RunningCounter() {
+  const { isRunning, runTime } = useSelector(
+    (state: RootState) => state.running
+  );
+
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     let runTimeInterval: NodeJS.Timeout | undefined;
@@ -17,31 +19,29 @@ export function RunningCounter({ isRunning }: { isRunning: boolean }) {
     if (isRunning) {
       // Count how much time have passed since running started
       runTimeInterval = setInterval(() => {
-        setRunTime((prevValue) => {
-          const newRunTime: RunTime = { ...prevValue };
+        const newRunTime: RunTime = { ...runTime };
 
-          if (newRunTime.seconds >= 59) {
-            newRunTime.minutes += 1;
-            newRunTime.seconds = 0;
-          }
+        if (newRunTime.seconds >= 59) {
+          newRunTime.minutes += 1;
+          newRunTime.seconds = 0;
+        }
 
-          if (newRunTime.minutes >= 59) {
-            newRunTime.hours += 1;
-            newRunTime.minutes = 0;
-            newRunTime.seconds = 0;
-          }
+        if (newRunTime.minutes >= 59) {
+          newRunTime.hours += 1;
+          newRunTime.minutes = 0;
+          newRunTime.seconds = 0;
+        }
 
-          newRunTime.seconds += 1;
+        newRunTime.seconds += 1;
 
-          return newRunTime;
-        });
+        dispatch(setRunTime(newRunTime));
       }, 1000);
     }
 
     return () => {
       if (runTimeInterval) clearInterval(runTimeInterval);
     };
-  }, [isRunning]);
+  }, [isRunning, runTime]);
 
   return (
     <View>
