@@ -7,13 +7,13 @@ import { Divider } from "../ui/divider";
 import { memo } from "react";
 import { selectRuns } from "@/utils/state/running/runningSlice";
 
-export const MemoizedRuns = memo(function Runs() {
+export const Runs = memo(() => {
   const runs = useSelector(selectRuns);
 
   return (
     runs.length > 0 && (
       <>
-        <View className="h-[1px] w-full bg-gray my-6"></View>
+        <Divider type="horizontal" dividerClassName="my-4" />
 
         <View className="flex gap-y-5">
           {runs.map((run, index) => {

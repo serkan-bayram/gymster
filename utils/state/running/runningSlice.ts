@@ -21,7 +21,7 @@ interface RunningState {
   runs: Run[];
 }
 
-const initialState: RunningState = {
+export const initialState: RunningState = {
   isRunning: false,
   run: {
     averageSpeed: 0,
@@ -80,6 +80,7 @@ const runningSlice = createSlice({
 
       state.runs = [...state.runs, newRun];
     },
+    discardRun: () => initialState,
   },
   // Async functions
   extraReducers: (builder) => {
@@ -96,6 +97,6 @@ const runningSlice = createSlice({
   },
 });
 
-export const { setRunTime, saveRun } = runningSlice.actions;
+export const { setRunTime, saveRun, discardRun } = runningSlice.actions;
 
 export default runningSlice.reducer;

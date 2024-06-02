@@ -23,7 +23,7 @@ export const PrimaryButton = forwardRef<View, PrimaryButtonProps>(
           className,
           {
             "bg-red-500 active:bg-red-300": type === "danger",
-            "bg-white border": type === "outlined",
+            "bg-transparent border border-secondary": type === "outlined",
           }
         )}
         {...otherProps}
