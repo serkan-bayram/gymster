@@ -8,6 +8,9 @@ import { CounterControllers } from "@/components/running/counter-controllers";
 import { RunningStats } from "@/components/running/running-stats";
 import * as TaskManager from "expo-task-manager";
 import { LocationObject, LocationObjectCoords } from "expo-location";
+import { RootState, store } from "@/utils/state/store";
+import { setLocation } from "@/utils/state/location/locationSlice";
+import { useSelector } from "react-redux";
 
 const LOCATION_TASK_NAME = "running-location-task";
 
@@ -28,10 +31,9 @@ TaskManager.defineTask(
     }
 
     if (data) {
-      // Save coords to localStorage
       const { latitude, longitude } = data.locations[0].coords;
 
-      const coordObject = { latitude: latitude, longitude: longitude };
+      store.dispatch(setLocation({ latitude: latitude, longitude: longitude }));
     }
   }
 );
@@ -46,6 +48,10 @@ export default function Running() {
   const [isRunning, setIsRunning] = useState<boolean>(false);
 
   const bottomSheetRef = useRef<BottomSheetModal>(null);
+
+  const location = useSelector((state: RootState) => state.location);
+
+  console.log("location: ", location);
 
   return (
     <View className="pt-16 pb-20 px-4 bg-background flex-1">
