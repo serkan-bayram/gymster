@@ -7,9 +7,7 @@ import { AppDispatch, RootState } from "@/utils/state/store";
 import { setRunTime } from "@/utils/state/running/runningSlice";
 
 export function RunningCounter() {
-  const { isRunning, runTime } = useSelector(
-    (state: RootState) => state.running
-  );
+  const { isRunning, run } = useSelector((state: RootState) => state.running);
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -19,7 +17,7 @@ export function RunningCounter() {
     if (isRunning) {
       // Count how much time have passed since running started
       runTimeInterval = setInterval(() => {
-        const newRunTime: RunTime = { ...runTime };
+        const newRunTime: RunTime = { ...run.runTime };
 
         if (newRunTime.seconds >= 59) {
           newRunTime.minutes += 1;
@@ -41,14 +39,14 @@ export function RunningCounter() {
     return () => {
       if (runTimeInterval) clearInterval(runTimeInterval);
     };
-  }, [isRunning, runTime]);
+  }, [isRunning, run.runTime]);
 
   return (
     <View>
       <View className="flex flex-row">
-        <CounterType count={runTime.hours} type="s" />
-        <CounterType count={runTime.minutes} type="dk" />
-        <CounterType count={runTime.seconds} type="sn" />
+        <CounterType count={run.runTime.hours} type="s" />
+        <CounterType count={run.runTime.minutes} type="dk" />
+        <CounterType count={run.runTime.seconds} type="sn" />
       </View>
       <View>
         <Text className="font-semibold text-xl">Süredir koşuyorsun!</Text>

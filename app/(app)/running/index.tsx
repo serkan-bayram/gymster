@@ -1,17 +1,22 @@
 import { Heading } from "@/components/heading";
 import { StartRunning } from "@/components/running/start-running";
-import { BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
-import { useEffect, useRef, useState } from "react";
+import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import { useRef, useState } from "react";
 import { Text, View } from "react-native";
 import { RunningCounter } from "@/components/running/running-counter";
 import { CounterControllers } from "@/components/running/counter-controllers";
 import { RunningStats } from "@/components/running/running-stats";
 import * as TaskManager from "expo-task-manager";
 import { LocationObject } from "expo-location";
-import { store } from "@/utils/state/store";
+import { AppDispatch, RootState, store } from "@/utils/state/store";
 import { setLocation } from "@/utils/state/location/locationSlice";
-import { Runs } from "@/components/running/runs";
-import { LOCATION_TASK_NAME } from "@/utils/state/running/runningSlice";
+import { MemoizedRuns } from "@/components/running/runs";
+import {
+  LOCATION_TASK_NAME,
+  saveRun,
+  stopRunning,
+} from "@/utils/state/running/runningSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 TaskManager.defineTask(
   LOCATION_TASK_NAME,
@@ -46,6 +51,14 @@ export type RunTime = {
 export default function Running() {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
 
+  const dispatch = useDispatch<AppDispatch>();
+
+  const handleStop = () => {
+    dispatch(stopRunning());
+
+    dispatch(saveRun());
+  };
+
   return (
     <View className="pt-16 pb-20 px-4 bg-background flex-1">
       <Heading heading={"Koşu"} />
@@ -58,27 +71,22 @@ export default function Running() {
         snapPoints={[700]}
         ref={bottomSheetRef}
       >
-        <BottomSheetView className="flex-1 ">
-          <View className="p-4 px-6 ">
+        <BottomSheetScrollView stickyHeaderIndices={[0]}>
+          <View className="px-6 bg-white pb-4">
             <View className="mt-6 flex flex-row justify-between items-center">
               <RunningCounter />
 
-              <CounterControllers />
+              <CounterControllers handlePress={handleStop} />
             </View>
-
+          </View>
+          <View className="p-4 px-6 pt-0">
             <View className="h-[1px] w-full bg-gray my-6"></View>
 
             <RunningStats />
 
-            {[].length > 0 && (
-              <>
-                <View className="h-[1px] w-full bg-gray my-6"></View>
-
-                <Runs />
-              </>
-            )}
+            <MemoizedRuns />
           </View>
-        </BottomSheetView>
+        </BottomSheetScrollView>
       </BottomSheetModal>
     </View>
   );

@@ -4,11 +4,7 @@ import { AntDesign } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/utils/state/store";
-import {
-  setIsRunning,
-  startRunning,
-  stopRunning,
-} from "@/utils/state/running/runningSlice";
+import { startRunning, stopRunning } from "@/utils/state/running/runningSlice";
 
 export function CounterControllers({
   handlePress,
