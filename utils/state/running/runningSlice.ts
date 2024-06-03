@@ -1,25 +1,13 @@
-import { RunTime } from "@/app/(app)/running";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 import * as Location from "expo-location";
 import { RootState } from "../store";
 import { calculateDistance } from "@/utils/calculate-distance";
+import { LocationState, Run } from "@/utils/types";
 
 export const LOCATION_TASK_NAME = "running-location-task";
 
 // This slice is responsible for the running that currently happening
-
-export interface Run {
-  averageSpeed: number;
-  distance: number;
-  runTime: RunTime;
-}
-
-export interface LocationState {
-  latitude: number;
-  longitude: number;
-  timestamp: number;
-}
 
 interface RunningState {
   locations: LocationState[];

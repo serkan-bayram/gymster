@@ -19,9 +19,6 @@ import {
 import { useDispatch } from "react-redux";
 import { Divider } from "@/components/ui/divider";
 import { RunningButtons } from "@/components/running/running-buttons";
-import { useQuery } from "@tanstack/react-query";
-import { getRuns } from "@/utils/db";
-import { useSession } from "@/utils/session-context";
 import { PastRuns } from "@/components/running/past-runs";
 
 TaskManager.defineTask(
@@ -54,12 +51,6 @@ TaskManager.defineTask(
     }
   }
 );
-
-export type RunTime = {
-  hours: number;
-  minutes: number;
-  seconds: number;
-};
 
 export default function Running() {
   const bottomSheetRef = useRef<BottomSheetModal>(null);

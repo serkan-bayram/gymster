@@ -7,26 +7,26 @@ import { useEffect, useState } from "react";
 export function Metrics() {
   const [currentStepCount, setCurrentStepCount] = useState(0);
 
-  const subscribe = async () => {
-    const isAvailable = await Pedometer.isAvailableAsync();
+  // const subscribe = async () => {
+  //   const isAvailable = await Pedometer.isAvailableAsync();
 
-    if (isAvailable) {
-      const isGranted = (await Pedometer.getPermissionsAsync()).granted;
+  //   if (isAvailable) {
+  //     const isGranted = (await Pedometer.getPermissionsAsync()).granted;
 
-      if (isGranted) {
-        return Pedometer.watchStepCount((result) => {
-          setCurrentStepCount(result.steps);
-        });
-      } else {
-        await Pedometer.requestPermissionsAsync();
-      }
-    }
-  };
+  //     if (isGranted) {
+  //       return Pedometer.watchStepCount((result) => {
+  //         setCurrentStepCount(result.steps);
+  //       });
+  //     } else {
+  //       await Pedometer.requestPermissionsAsync();
+  //     }
+  //   }
+  // };
 
-  useEffect(() => {
-    const subscription = subscribe();
-    // return () => subscription && subscription.remove();
-  }, []);
+  // useEffect(() => {
+  //   const subscription = subscribe();
+  //   // return () => subscription && subscription.remove();
+  // }, []);
 
   return (
     <View className="mt-6 ">

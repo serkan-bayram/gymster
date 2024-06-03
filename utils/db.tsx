@@ -2,6 +2,7 @@ import firestore, {
   FirebaseFirestoreTypes,
 } from "@react-native-firebase/firestore";
 import { daysInMonth } from "./days-in-month";
+import { RunsDB } from "./types";
 
 /* ---- TRACKINGS ---- */
 
@@ -169,6 +170,33 @@ export async function getAllMeals(uid: string) {
   });
 
   return meals;
+}
+
+/* ---- RUNS ---- */
+
+export async function getRuns(uid: string): Promise<RunsDB[]> {
+  const runsRef = firestore().collection("Runs");
+  const query = runsRef.where("uid", "==", uid).orderBy("createdAt", "desc");
+
+  const querySnapshot = await query.get();
+
+  const runs: RunsDB[] = [];
+
+  querySnapshot.forEach((documentSnapshot) => {
+    let data = documentSnapshot.data() as RunsDB;
+
+    const date = new Date(data.createdAt.toDate());
+    const month = date.toLocaleDateString("tr-TR", { month: "long" });
+    const day = date.getDay();
+
+    const dateAsText = `${day} ${month}`;
+
+    data = { ...data, dateAsText: dateAsText };
+
+    runs.push(data);
+  });
+
+  return runs;
 }
 
 /* ---- SERVER TIME ---- */

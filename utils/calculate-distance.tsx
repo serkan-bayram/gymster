@@ -1,5 +1,6 @@
 import { LocationState } from "./state/running/runningSlice";
 
+// Haversine formula
 export function calculateDistance(
   coord1: LocationState,
   coord2: LocationState

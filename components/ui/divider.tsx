@@ -7,13 +7,16 @@ interface Divider {
 }
 
 export function Divider({ type, dividerClassName }: Divider) {
-  return type === "vertical" ? (
+  return (
     <View
-      className={cn("h-full w-[1px] bg-gray my-0", dividerClassName)}
-    ></View>
-  ) : (
-    <View
-      className={cn("h-[1px] w-full bg-gray my-0", dividerClassName)}
+      className={cn(
+        "bg-gray my-0",
+        {
+          "h-full w-[1px]": type === "vertical",
+          "h-[1px] w-full": type === "horizontal",
+        },
+        dividerClassName
+      )}
     ></View>
   );
 }

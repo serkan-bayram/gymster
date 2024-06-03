@@ -36,10 +36,12 @@ export function RunningButtons({
     );
   };
 
+  const handleSave = () => {};
+
   return (
     <View className="flex flex-row gap-x-4 px-6 pb-6 mt-auto">
       <PrimaryButton onPress={handleDiscard} type="outlined" text="Vazgeç" />
-      <PrimaryButton text="Kaydet" className="flex-1" />
+      <PrimaryButton text="Koşuyu Kaydet" className="flex-1" />
     </View>
   );
 }

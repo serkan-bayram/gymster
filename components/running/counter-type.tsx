@@ -22,7 +22,7 @@ export function CounterType({ count, type, readOnly }: CountTypeProps) {
       <Text
         className={cn("text-2xl ", {
           "text-black/20": count === 0,
-          "text-lg": readOnly,
+          "text-md": readOnly,
         })}
       >
         {type}

@@ -7,6 +7,35 @@ import { Divider } from "../ui/divider";
 import { memo } from "react";
 import { selectRuns } from "@/utils/state/running/runningSlice";
 import Animated, { FadeInUp } from "react-native-reanimated";
+import { Run } from "@/utils/types";
+
+export function RunRow({ run }: { run: Run }) {
+  return (
+    <View className="flex flex-row items-center  ">
+      <View className="flex flex-row">
+        <CounterType readOnly={true} count={run.runTime.hours} type="s" />
+        <CounterType readOnly={true} count={run.runTime.minutes} type="dk" />
+        <CounterType readOnly={true} count={run.runTime.seconds} type="sn" />
+      </View>
+
+      <Divider type="vertical" />
+
+      <View className="flex flex-row mx-3 items-center">
+        <Text className="text-lg font-bold">
+          {run.averageSpeed.toFixed(1)}{" "}
+        </Text>
+        <Text>km/dk</Text>
+      </View>
+
+      <Divider type="vertical" />
+
+      <View className="flex flex-row mx-3 items-center">
+        <Text className="text-lg font-bold">{run.distance.toFixed(1)} </Text>
+        <Text>m</Text>
+      </View>
+    </View>
+  );
+}
 
 export const Runs = memo(() => {
   const runs = useSelector(selectRuns);
@@ -27,43 +56,7 @@ export const Runs = memo(() => {
               >
                 <Text className="text-lg font-semibold">{index + 1}. Tur</Text>
 
-                <View className="flex flex-row items-center ">
-                  <View className="flex flex-row">
-                    <CounterType
-                      readOnly={true}
-                      count={run.runTime.hours}
-                      type="s"
-                    />
-                    <CounterType
-                      readOnly={true}
-                      count={run.runTime.minutes}
-                      type="dk"
-                    />
-                    <CounterType
-                      readOnly={true}
-                      count={run.runTime.seconds}
-                      type="sn"
-                    />
-                  </View>
-
-                  <Divider type="vertical" />
-
-                  <View className="flex flex-row mx-3">
-                    <Text className="text-xl font-bold">
-                      {run.averageSpeed.toFixed(1)}{" "}
-                    </Text>
-                    <Text className="text-lg">km/dk</Text>
-                  </View>
-
-                  <Divider type="vertical" />
-
-                  <View className="flex flex-row mx-3">
-                    <Text className="text-xl font-bold">
-                      {run.distance.toFixed(1)}{" "}
-                    </Text>
-                    <Text className="text-lg">m</Text>
-                  </View>
-                </View>
+                <RunRow run={run} />
               </Animated.View>
             );
           })}

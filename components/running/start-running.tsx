@@ -40,7 +40,7 @@ export function StartRunning({
     <Pressable
       onPress={handlePress}
       className="w-full h-34 bg-primary 
-  border-2 rounded-3xl flex mt-8 p-3 active:opacity-50 transition-all"
+  border-2 rounded-3xl flex mt-8 p-3  active:opacity-50 transition-all"
     >
       <View>
         <Text className="text-lg font-semibold">Hazır mısın?</Text>
