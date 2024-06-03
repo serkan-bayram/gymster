@@ -19,6 +19,8 @@ interface RunningState {
   run: Run;
   isLocationTracking: boolean;
   runs: Run[];
+  // Represents the first time user clicks start running button
+  isFirstClicked: boolean;
 }
 
 export const initialState: RunningState = {
@@ -30,6 +32,7 @@ export const initialState: RunningState = {
   },
   isLocationTracking: false,
   runs: [],
+  isFirstClicked: true,
 };
 
 export const startRunning = createAsyncThunk(
@@ -71,6 +74,9 @@ const runningSlice = createSlice({
     setRunTime: (state, action) => {
       state.run.runTime = action.payload;
     },
+    firstClickIsDone: (state) => {
+      state.isFirstClicked = false;
+    },
     saveRun: (state) => {
       const newRun: Run = {
         averageSpeed: state.run.averageSpeed,
@@ -78,7 +84,7 @@ const runningSlice = createSlice({
         runTime: state.run.runTime,
       };
 
-      state.runs = [...state.runs, newRun];
+      return { ...initialState, runs: [...state.runs, newRun] };
     },
     discardRun: () => initialState,
   },
@@ -97,6 +103,7 @@ const runningSlice = createSlice({
   },
 });
 
-export const { setRunTime, saveRun, discardRun } = runningSlice.actions;
+export const { setRunTime, saveRun, discardRun, firstClickIsDone } =
+  runningSlice.actions;
 
 export default runningSlice.reducer;

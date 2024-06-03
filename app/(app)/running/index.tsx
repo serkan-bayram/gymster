@@ -8,7 +8,7 @@ import { CounterControllers } from "@/components/running/counter-controllers";
 import { RunningStats } from "@/components/running/running-stats";
 import * as TaskManager from "expo-task-manager";
 import { LocationObject } from "expo-location";
-import { AppDispatch, RootState, store } from "@/utils/state/store";
+import { AppDispatch, store } from "@/utils/state/store";
 import { setLocation } from "@/utils/state/location/locationSlice";
 import { Runs } from "@/components/running/runs";
 import {
@@ -16,9 +16,8 @@ import {
   saveRun,
   stopRunning,
 } from "@/utils/state/running/runningSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Divider } from "@/components/ui/divider";
-import { PrimaryButton } from "@/components/primary-button";
 import { RunningButtons } from "@/components/running/running-buttons";
 
 TaskManager.defineTask(

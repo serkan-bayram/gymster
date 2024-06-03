@@ -4,22 +4,42 @@ import { AntDesign } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/utils/state/store";
-import { startRunning, stopRunning } from "@/utils/state/running/runningSlice";
+import {
+  firstClickIsDone,
+  startRunning,
+  stopRunning,
+} from "@/utils/state/running/runningSlice";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export function CounterControllers({
   handlePress,
 }: {
   handlePress?: () => void;
 }) {
-  const { isRunning } = useSelector((state: RootState) => state.running);
+  const { isRunning, isFirstClicked } = useSelector(
+    (state: RootState) => state.running
+  );
 
   const dispatch = useDispatch<AppDispatch>();
 
   return (
     <View className="flex flex-row items-center gap-x-3">
       <Pressable
-        onPress={() => {
+        onPress={async () => {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+
+          console.log("counter-controller: ", isFirstClicked);
+
+          if (isFirstClicked) {
+            // Save the running start time
+            const now = new Date();
+            try {
+              await AsyncStorage.setItem("runningStartTime", now.toISOString());
+              dispatch(firstClickIsDone());
+            } catch (error) {
+              console.log("Error:", error);
+            }
+          }
 
           isRunning ? dispatch(stopRunning()) : dispatch(startRunning());
         }}
