@@ -3,12 +3,8 @@ import { Feather } from "@expo/vector-icons";
 import { RunRow } from "./runs";
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "@/utils/session-context";
-
-import * as Crypto from "expo-crypto";
 import { queryGetRuns } from "@/utils/query-functions";
-import { FlatList } from "react-native-gesture-handler";
-import { Divider } from "../ui/divider";
-import Animated, { FadeInUp } from "react-native-reanimated";
+import { FlashList } from "@shopify/flash-list";
 
 export function PastRuns() {
   const { session } = useSession();
@@ -20,25 +16,24 @@ export function PastRuns() {
   });
 
   if (query.isPending) {
-    return <Text>Yükleniyor...</Text>;
+    return (
+      <View className="w-full h-full items-center mt-4">
+        <Text>Yükleniyor...</Text>
+      </View>
+    );
   }
 
   return (
     <View className="mt-4">
       <Text className="font-bold text-xl">Geçmiş Koşular</Text>
       {query.data ? (
-        <View className="mt-3 pb-72">
-          <FlatList
+        <View className="mt-3 min-h-full pb-72">
+          <FlashList
+            estimatedItemSize={190}
             data={query.data}
-            renderItem={({ item, index }) => {
-              setTimeout(() => {}, index * 600);
-
+            renderItem={({ item }) => {
               return (
-                <Animated.View
-                  entering={FadeInUp}
-                  className="mb-4"
-                  key={Crypto.randomUUID()}
-                >
+                <View className="mb-4">
                   <View className="flex flex-row items-center">
                     <Feather name="calendar" size={20} color="black" />
                     <Text className="ml-1 font-semibold text-lg">
@@ -54,7 +49,7 @@ export function PastRuns() {
                       );
                     })}
                   </View>
-                </Animated.View>
+                </View>
               );
             }}
           />

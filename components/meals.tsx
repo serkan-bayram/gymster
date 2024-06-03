@@ -135,7 +135,6 @@ export function Meals({ fetchedMeals }: { fetchedMeals: FetchedMeals }) {
         />
       </View>
       <MealsBottomSheet
-        fetchedMeals={fetchedMeals}
         setMeals={setMeals}
         mealsBottomSheetRef={mealsBottomSheetRef}
       />

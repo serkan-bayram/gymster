@@ -3,6 +3,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
 import { RootState } from "@/utils/state/store";
 
+// TODO: It problably does not track averageSpeed and distance in the background
 export function RunningStats() {
   const { run } = useSelector((state: RootState) => state.running);
 

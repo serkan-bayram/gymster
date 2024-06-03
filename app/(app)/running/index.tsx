@@ -8,15 +8,12 @@ import { CounterControllers } from "@/components/running/counter-controllers";
 import { RunningStats } from "@/components/running/running-stats";
 import * as TaskManager from "expo-task-manager";
 import { LocationObject } from "expo-location";
-import { AppDispatch, store } from "@/utils/state/store";
+import { store } from "@/utils/state/store";
 import { Runs } from "@/components/running/runs";
 import {
   LOCATION_TASK_NAME,
-  saveRun,
   setStats,
-  stopRunning,
 } from "@/utils/state/running/runningSlice";
-import { useDispatch } from "react-redux";
 import { Divider } from "@/components/ui/divider";
 import { RunningButtons } from "@/components/running/running-buttons";
 import { PastRuns } from "@/components/running/past-runs";
