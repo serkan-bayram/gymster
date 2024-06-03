@@ -9,7 +9,6 @@ import { RunningStats } from "@/components/running/running-stats";
 import * as TaskManager from "expo-task-manager";
 import { LocationObject } from "expo-location";
 import { AppDispatch, store } from "@/utils/state/store";
-import { setLocation } from "@/utils/state/location/locationSlice";
 import { Runs } from "@/components/running/runs";
 import {
   LOCATION_TASK_NAME,
@@ -95,7 +94,7 @@ export default function Running() {
 
           <Divider type="horizontal" dividerClassName="my-5 mt-2 mx-6 " />
 
-          <View className="p-4 px-6 pt-0">
+          <View className="p-4 px-4 pt-0">
             <RunningStats />
 
             <Runs />

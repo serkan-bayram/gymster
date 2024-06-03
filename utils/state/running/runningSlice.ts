@@ -82,39 +82,37 @@ const runningSlice = createSlice({
   reducers: {
     // Sets the distance & average speed
     setStats: (state, action) => {
-      const neededDataCount = 5;
-
-      // We get neededDataCount times location
-      if (state.locations.length < neededDataCount) {
-        state.locations.push(action.payload);
-      }
+      state.locations.push(action.payload);
 
       // We calculate the distance and speed over these location datas
-      if (state.locations.length === neededDataCount) {
-        let totalDistance = 0;
-        let totalTime = 0;
+      let totalDistance = 0;
+      let totalTime = 0;
 
-        for (let i = 1; i < state.locations.length; i++) {
-          const coord1 = state.locations[i - 1];
-          const coord2 = state.locations[i];
+      for (let i = 1; i < state.locations.length; i++) {
+        const coord1 = state.locations[i - 1];
+        const coord2 = state.locations[i];
 
-          const distance = calculateDistance(coord1, coord2);
+        const distance = calculateDistance(coord1, coord2);
 
-          const timeDiff =
-            (state.locations[i].timestamp - state.locations[i - 1].timestamp) /
-            1000; // convert milliseconds to seconds
+        const timeDiff =
+          (state.locations[i].timestamp - state.locations[i - 1].timestamp) /
+          1000; // convert milliseconds to seconds
 
-          totalDistance += distance;
-          totalTime += timeDiff;
-        }
-
-        const averageSpeed = totalDistance / (totalTime / 3600);
-
-        state.run.averageSpeed = averageSpeed;
-        state.run.distance += totalDistance * 100;
-
-        state.locations.length = 0;
+        totalDistance += distance;
+        totalTime += timeDiff;
       }
+
+      console.log("Total Distance: ", totalDistance);
+      console.log("Total Time: ", totalTime);
+
+      const averageSpeed = totalDistance / (totalTime / 3600);
+
+      // AverageSpeed is in km/dk
+      state.run.averageSpeed = averageSpeed;
+      // Distance is in meters
+      state.run.distance = totalDistance * 1000;
+
+      console.log(state.locations);
     },
     // Sets the counter
     setRunTime: (state, action) => {

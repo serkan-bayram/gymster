@@ -6,6 +6,7 @@ import * as Crypto from "expo-crypto";
 import { Divider } from "../ui/divider";
 import { memo } from "react";
 import { selectRuns } from "@/utils/state/running/runningSlice";
+import Animated, { FadeInUp } from "react-native-reanimated";
 
 export const Runs = memo(() => {
   const runs = useSelector(selectRuns);
@@ -17,8 +18,13 @@ export const Runs = memo(() => {
 
         <View className="flex gap-y-5">
           {runs.map((run, index) => {
+            const isLast = index + 1 === runs.length;
+
             return (
-              <View key={Crypto.randomUUID()}>
+              <Animated.View
+                entering={isLast ? FadeInUp : undefined}
+                key={Crypto.randomUUID()}
+              >
                 <Text className="text-lg font-semibold">{index + 1}. Tur</Text>
 
                 <View className="flex flex-row items-center ">
@@ -44,7 +50,7 @@ export const Runs = memo(() => {
 
                   <View className="flex flex-row mx-3">
                     <Text className="text-xl font-bold">
-                      {run.averageSpeed}{" "}
+                      {run.averageSpeed.toFixed(1)}{" "}
                     </Text>
                     <Text className="text-lg">km/dk</Text>
                   </View>
@@ -52,11 +58,13 @@ export const Runs = memo(() => {
                   <Divider type="vertical" />
 
                   <View className="flex flex-row mx-3">
-                    <Text className="text-xl font-bold">{run.distance} </Text>
-                    <Text className="text-lg">km</Text>
+                    <Text className="text-xl font-bold">
+                      {run.distance.toFixed(1)}{" "}
+                    </Text>
+                    <Text className="text-lg">m</Text>
                   </View>
                 </View>
-              </View>
+              </Animated.View>
             );
           })}
         </View>

@@ -15,7 +15,9 @@ export function RunningStats() {
         </View>
 
         <Text className="text-xl  font-bold">
-          {run.averageSpeed.toFixed(1)} km/dk
+          {run.averageSpeed > 0
+            ? `${run.averageSpeed.toFixed(1)} km/dk`
+            : "Hesaplanıyor"}
         </Text>
       </View>
 
@@ -29,7 +31,9 @@ export function RunningStats() {
           <Text>Koşulan mesafe</Text>
         </View>
 
-        <Text className="text-xl  font-bold">{run.distance.toFixed(1)} m</Text>
+        <Text className="text-xl font-bold">
+          {run.distance > 0 ? `${run.distance.toFixed(1)} m` : "Hesaplanıyor"}
+        </Text>
       </View>
     </View>
   );
