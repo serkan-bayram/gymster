@@ -7,17 +7,17 @@ import { MealsBottomSheet } from "./meals-bottom-sheet";
 import { Octicons } from "@expo/vector-icons";
 import { Link } from "expo-router";
 
-export type Nutritions = {
+export interface Nutritions {
   carbs: string;
   fat: string;
   kcal: string;
   protein: string;
-};
+}
 
-export type Meal = {
+export interface Meal {
   nutritions: Nutritions;
   userInput: string;
-};
+}
 
 type FetchedMeals = Meal[];
 

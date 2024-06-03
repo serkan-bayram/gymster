@@ -1,35 +1,14 @@
 import { cn } from "@/utils/cn";
-import { daysInMonth } from "@/utils/days-in-month";
-import { useTime } from "@/utils/time-context";
+import { queryGetGYMCalendar } from "@/utils/query-functions";
 import { useQuery } from "@tanstack/react-query";
 import { Text, View } from "react-native";
 
 // TODO: Calculations on this component are very expensive find a way to fix it
 export function DaysContainer({ wentToGYMDays }) {
-  const { serverTime } = useTime();
-
   // This query returns the calendar of current month
   const query = useQuery({
     queryKey: ["GYMCalendar"],
-    queryFn: async () => {
-      if (serverTime) {
-        const serverDate = new Date(serverTime.date.toDate());
-
-        const daysCount = daysInMonth(
-          serverDate.getMonth(),
-          serverDate.getFullYear()
-        );
-
-        const todaysDate = serverDate.getDate();
-        const monthName = serverDate.toLocaleString("default", {
-          month: "long",
-        });
-
-        return { daysCount, todaysDate, monthName };
-      }
-
-      return null;
-    },
+    queryFn: async () => await queryGetGYMCalendar(),
   });
 
   return (

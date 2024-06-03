@@ -50,6 +50,9 @@ TaskManager.defineTask(
   }
 );
 
+// TODO: Add records
+// TODO: Does it calculate distance and averageSpeed in the background
+// TODO: Add ability to delete runs
 export default function Running() {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
 

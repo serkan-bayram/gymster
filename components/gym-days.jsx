@@ -6,10 +6,10 @@ import { useQuery } from "@tanstack/react-query";
 import { getGYMDays } from "@/utils/db";
 import { useSession } from "@/utils/session-context";
 import { useTime } from "@/utils/time-context";
+import { queryGetGYMDays } from "@/utils/query-functions";
 
 export function GYMDays({ fetchedWentToGYM }) {
   const { session } = useSession();
-  const { serverTime } = useTime();
 
   const [wentToGYM, setWentToGYM] = useState(fetchedWentToGYM);
   const [wentToGYMDays, setWentToGYMDays] = useState([]);
@@ -17,18 +17,7 @@ export function GYMDays({ fetchedWentToGYM }) {
   // This query gets the days that user went to gym
   const query = useQuery({
     queryKey: ["wentToGYMDays"],
-    queryFn: async () => {
-      if (serverTime) {
-        // Is an array that contains day numbers that user went to gym
-        const wentToGYMDays = await getGYMDays(session.uid, serverTime.date);
-
-        setWentToGYMDays(wentToGYMDays);
-
-        return { wentToGYMDays };
-      }
-
-      return null;
-    },
+    queryFn: async () => await queryGetGYMDays(session?.uid, setWentToGYMDays),
   });
 
   return (

@@ -6,7 +6,7 @@ import {
   getServerTime,
   updateHydrationProgress,
 } from "@/utils/db";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "@/utils/session-context";
 
 const useCalculateProgress = (type, currentProgress, goal, updateValue) => {
@@ -49,9 +49,14 @@ export function UpdateWaterValue({ currentProgress, setCurrentProgress }) {
 
   const { session } = useSession();
 
+  const queryClient = useQueryClient();
+
   // TODO: This needs a debounce
   // TODO: for some reason mutation key is not working properly try again
   const mutation = useMutation({
+    onSuccess: async () => {
+      await queryClient.invalidateQueries("trackings");
+    },
     mutationFn: async ({ newProgress }) => {
       // Upddate & get server time
       const serverTime = await getServerTime();

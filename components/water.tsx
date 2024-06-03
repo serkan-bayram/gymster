@@ -5,9 +5,9 @@ import { WaterBottomSheet } from "./ui/water/water-bottom-sheet";
 import { useRef } from "react";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 
-type WaterProps = {
+interface WaterProps {
   fetchedProgress: number | null;
-};
+}
 
 export function Water({ fetchedProgress }: WaterProps) {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
