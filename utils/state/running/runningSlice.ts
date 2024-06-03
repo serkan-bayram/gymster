@@ -3,6 +3,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 import * as Location from "expo-location";
 import { RootState } from "../store";
+import { calculateDistance } from "@/utils/calculate-distance";
 
 export const LOCATION_TASK_NAME = "running-location-task";
 
@@ -14,7 +15,14 @@ export interface Run {
   runTime: RunTime;
 }
 
+export interface LocationState {
+  latitude: number;
+  longitude: number;
+  timestamp: number;
+}
+
 interface RunningState {
+  locations: LocationState[];
   isRunning: boolean;
   run: Run;
   isLocationTracking: boolean;
@@ -24,6 +32,7 @@ interface RunningState {
 }
 
 export const initialState: RunningState = {
+  locations: [],
   isRunning: false,
   run: {
     averageSpeed: 0,
@@ -71,12 +80,50 @@ const runningSlice = createSlice({
   name: "running",
   initialState,
   reducers: {
+    // Sets the distance & average speed
+    setStats: (state, action) => {
+      const neededDataCount = 5;
+
+      // We get neededDataCount times location
+      if (state.locations.length < neededDataCount) {
+        state.locations.push(action.payload);
+      }
+
+      // We calculate the distance and speed over these location datas
+      if (state.locations.length === neededDataCount) {
+        let totalDistance = 0;
+        let totalTime = 0;
+
+        for (let i = 1; i < state.locations.length; i++) {
+          const coord1 = state.locations[i - 1];
+          const coord2 = state.locations[i];
+
+          const distance = calculateDistance(coord1, coord2);
+
+          const timeDiff =
+            (state.locations[i].timestamp - state.locations[i - 1].timestamp) /
+            1000; // convert milliseconds to seconds
+
+          totalDistance += distance;
+          totalTime += timeDiff;
+        }
+
+        const averageSpeed = totalDistance / (totalTime / 3600);
+
+        state.run.averageSpeed = averageSpeed;
+        state.run.distance += totalDistance * 100;
+
+        state.locations.length = 0;
+      }
+    },
+    // Sets the counter
     setRunTime: (state, action) => {
       state.run.runTime = action.payload;
     },
     firstClickIsDone: (state) => {
       state.isFirstClicked = false;
     },
+    // Saves the run, not to database.
     saveRun: (state) => {
       const newRun: Run = {
         averageSpeed: state.run.averageSpeed,
@@ -103,7 +150,7 @@ const runningSlice = createSlice({
   },
 });
 
-export const { setRunTime, saveRun, discardRun, firstClickIsDone } =
+export const { setRunTime, saveRun, discardRun, firstClickIsDone, setStats } =
   runningSlice.actions;
 
 export default runningSlice.reducer;

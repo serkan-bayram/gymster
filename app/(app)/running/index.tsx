@@ -14,6 +14,7 @@ import { Runs } from "@/components/running/runs";
 import {
   LOCATION_TASK_NAME,
   saveRun,
+  setStats,
   stopRunning,
 } from "@/utils/state/running/runningSlice";
 import { useDispatch } from "react-redux";
@@ -38,8 +39,15 @@ TaskManager.defineTask(
 
     if (data) {
       const { latitude, longitude } = data.locations[0].coords;
+      const { timestamp } = data.locations[0];
 
-      store.dispatch(setLocation({ latitude: latitude, longitude: longitude }));
+      store.dispatch(
+        setStats({
+          latitude: latitude,
+          longitude: longitude,
+          timestamp: timestamp,
+        })
+      );
     }
   }
 );

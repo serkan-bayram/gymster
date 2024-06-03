@@ -28,8 +28,6 @@ export function CounterControllers({
         onPress={async () => {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
 
-          console.log("counter-controller: ", isFirstClicked);
-
           if (isFirstClicked) {
             // Save the running start time
             const now = new Date();

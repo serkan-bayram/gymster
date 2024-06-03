@@ -1,7 +1,11 @@
 import { Text, View } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useSelector } from "react-redux";
+import { RootState } from "@/utils/state/store";
 
 export function RunningStats() {
+  const { run } = useSelector((state: RootState) => state.running);
+
   return (
     <View className="flex flex-row justify-between">
       <View>
@@ -10,7 +14,9 @@ export function RunningStats() {
           <Text>Ortalama hızın</Text>
         </View>
 
-        <Text className="text-xl  font-bold">7.83 km/dk</Text>
+        <Text className="text-xl  font-bold">
+          {run.averageSpeed.toFixed(1)} km/dk
+        </Text>
       </View>
 
       <View>
@@ -23,7 +29,7 @@ export function RunningStats() {
           <Text>Koşulan mesafe</Text>
         </View>
 
-        <Text className="text-xl  font-bold">3.4 km</Text>
+        <Text className="text-xl  font-bold">{run.distance.toFixed(1)} m</Text>
       </View>
     </View>
   );
