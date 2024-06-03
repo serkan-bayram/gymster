@@ -4,7 +4,7 @@ export const queryGetRuns = async (uid: string | undefined) => {
   if (uid) {
     const runs = await getRuns(uid);
 
-    if (runs) {
+    if (runs && runs.length > 0) {
       return runs;
     }
   }

@@ -75,6 +75,7 @@ const runningSlice = createSlice({
       // We calculate the distance and speed over these location datas
       let totalDistance = 0;
       let totalTime = 0;
+      let averageSpeed = 0;
 
       for (let i = 1; i < state.locations.length; i++) {
         const coord1 = state.locations[i - 1];
@@ -90,17 +91,13 @@ const runningSlice = createSlice({
         totalTime += timeDiff;
       }
 
-      console.log("Total Distance: ", totalDistance);
-      console.log("Total Time: ", totalTime);
-
-      const averageSpeed = totalDistance / (totalTime / 3600);
+      // 0 / 0 happens
+      averageSpeed = totalDistance / (totalTime / 3600);
 
       // AverageSpeed is in km/dk
-      state.run.averageSpeed = averageSpeed;
+      state.run.averageSpeed = averageSpeed || 0;
       // Distance is in meters
       state.run.distance = totalDistance * 1000;
-
-      console.log(state.locations);
     },
     // Sets the counter
     setRunTime: (state, action) => {

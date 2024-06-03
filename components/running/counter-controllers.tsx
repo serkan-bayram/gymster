@@ -6,21 +6,25 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/utils/state/store";
 import {
   firstClickIsDone,
+  saveRun,
   startRunning,
   stopRunning,
 } from "@/utils/state/running/runningSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export function CounterControllers({
-  handlePress,
-}: {
-  handlePress?: () => void;
-}) {
+export function CounterControllers() {
   const { isRunning, isFirstClicked } = useSelector(
     (state: RootState) => state.running
   );
 
   const dispatch = useDispatch<AppDispatch>();
+
+  // Runs when stop button is clicked, not "discard" button
+  const handleStop = () => {
+    dispatch(stopRunning());
+
+    dispatch(saveRun());
+  };
 
   return (
     <View className="flex flex-row items-center gap-x-3">
@@ -48,7 +52,7 @@ export function CounterControllers({
           <AntDesign name="pausecircleo" size={32} color="black" />
         )}
       </Pressable>
-      <Pressable onPress={handlePress}>
+      <Pressable onPress={handleStop}>
         <FontAwesome6 name="circle-stop" size={32} color="red" />
       </Pressable>
     </View>

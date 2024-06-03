@@ -38,6 +38,7 @@ TaskManager.defineTask(
     }
 
     if (data) {
+      // Get location data in the background
       const { latitude, longitude } = data.locations[0].coords;
       const { timestamp } = data.locations[0];
 
@@ -54,15 +55,6 @@ TaskManager.defineTask(
 
 export default function Running() {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
-
-  const dispatch = useDispatch<AppDispatch>();
-
-  // Runs when stop button is clicked, not "discard" button
-  const handleStop = () => {
-    dispatch(stopRunning());
-
-    dispatch(saveRun());
-  };
 
   return (
     <View className="pt-16 pb-20 px-4 bg-background flex-1 ">
@@ -86,7 +78,7 @@ export default function Running() {
             <View className="mt-6 flex  flex-row justify-between items-center">
               <RunningCounter />
 
-              <CounterControllers handlePress={handleStop} />
+              <CounterControllers />
             </View>
           </View>
 

@@ -185,9 +185,11 @@ export async function getRuns(uid: string): Promise<RunsDB[]> {
   querySnapshot.forEach((documentSnapshot) => {
     let data = documentSnapshot.data() as RunsDB;
 
+    // Get dateAsText which is something like 1 June
     const date = new Date(data.createdAt.toDate());
+
     const month = date.toLocaleDateString("tr-TR", { month: "long" });
-    const day = date.getDay();
+    const day = date.getUTCDate();
 
     const dateAsText = `${day} ${month}`;
 
@@ -197,6 +199,14 @@ export async function getRuns(uid: string): Promise<RunsDB[]> {
   });
 
   return runs;
+}
+
+export async function saveRun(runData: RunsDB) {
+  const runsRef = firestore().collection("Runs");
+
+  await runsRef.add(runData);
+
+  return true;
 }
 
 /* ---- SERVER TIME ---- */

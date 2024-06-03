@@ -2,20 +2,18 @@ import { BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
 import { Text, TextInput, View } from "react-native";
 import { PrimaryButton } from "./primary-button";
 import { useRef, useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { findTrackingsDoc, getServerTime, updateMeals } from "@/utils/db";
 import { useSession } from "@/utils/session-context";
 
-export function MealsBottomSheet({
-  setMeals,
-  mealsBottomSheetRef,
-  fetchedMeals,
-}) {
+export function MealsBottomSheet({ setMeals, mealsBottomSheetRef }) {
   const inputRef = useRef(null);
 
   const [input, setInput] = useState("");
 
   const { session } = useSession();
+
+  const queryClient = useQueryClient();
 
   const mutation = useMutation({
     onSuccess: async () => {

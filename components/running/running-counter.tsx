@@ -1,11 +1,11 @@
-import { RunTime } from "@/app/(app)/running";
 import { AppState, Text, View } from "react-native";
 import { CounterType } from "./counter-type";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/utils/state/store";
-import { Run, setRunTime } from "@/utils/state/running/runningSlice";
+import { setRunTime } from "@/utils/state/running/runningSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Run, RunTime } from "@/utils/types";
 
 function getTimeDifference(timestamp1: string, timestamp2: string) {
   // Convert timestamps to Date objects
