@@ -17,6 +17,8 @@ import {
 import { Divider } from "@/components/ui/divider";
 import { RunningButtons } from "@/components/running/running-buttons";
 import { PastRuns } from "@/components/running/past-runs";
+import { TopStats } from "@/components/running/top-stats";
+import { ScrollView } from "react-native-gesture-handler";
 
 TaskManager.defineTask(
   LOCATION_TASK_NAME,
@@ -57,7 +59,7 @@ export default function Running() {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
 
   return (
-    <View className="pt-16 pb-20 px-4 bg-background flex-1 ">
+    <ScrollView className="pt-16 pb-20 px-4 bg-background flex-1 ">
       <Heading heading={"Koşu"} />
 
       <StartRunning bottomSheetRef={bottomSheetRef} />
@@ -93,6 +95,6 @@ export default function Running() {
           <RunningButtons bottomSheetRef={bottomSheetRef} />
         </BottomSheetScrollView>
       </BottomSheetModal>
-    </View>
+    </ScrollView>
   );
 }
