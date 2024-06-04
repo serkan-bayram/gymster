@@ -1,24 +1,22 @@
-import { Text, View } from "react-native";
+import { Alert, Pressable, Text, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { RunRow } from "./runs";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "@/utils/session-context";
 import { queryGetRuns } from "@/utils/query-functions";
 import { FlashList } from "@shopify/flash-list";
-
 import * as Crypto from "expo-crypto";
 import { TopStats } from "./top-stats";
+import { Run, RunsDB } from "@/utils/types";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import * as Haptics from "expo-haptics";
+import { useUpdateRuns, useGetRuns } from "@/utils/apis/runs";
 
 export function PastRuns() {
-  const { session } = useSession();
+  const updateRuns = useUpdateRuns();
+  const getRuns = useGetRuns();
 
-  // Get runs from DB
-  const query = useQuery({
-    queryKey: ["getRuns"],
-    queryFn: async () => await queryGetRuns(session?.uid),
-  });
-
-  if (query.isPending) {
+  if (getRuns.isPending) {
     return (
       <View className="w-full h-full items-center mt-4">
         <Text>Yükleniyor...</Text>
@@ -26,17 +24,50 @@ export function PastRuns() {
     );
   }
 
+  // When user long press a RunRow
+  const handleLongPress = (item: RunsDB, runObject: Run) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+
+    const { averageSpeed, distance, runTime } = runObject;
+
+    const runTimeAsText = `${runTime.hours} s ${runTime.minutes} dk ${runTime.seconds} sn`;
+
+    Alert.alert(
+      `Koşuyu Sil | ${item.dateAsText}`,
+      `Bu koşuyu silmek istediğine emin misin?\n\nOrtalama Hız: ${averageSpeed} \nMesafe: ${distance} \nSüre: ${runTimeAsText}`,
+      [
+        {
+          text: "Vazgeç",
+        },
+        {
+          text: "Koşuyu Sil",
+          onPress: () => {
+            // We filter out the run that user wants to delete
+            const newRuns = item.runs.filter(
+              (run) => run.identifier !== runObject.identifier
+            );
+
+            updateRuns.mutate({
+              documentPath: item.documentPath,
+              newRuns: newRuns,
+            });
+          },
+        },
+      ]
+    );
+  };
+
   return (
     <>
-      {query.data && <TopStats data={query.data} />}
+      {getRuns.data && <TopStats data={getRuns.data} />}
 
       <View className="mt-4">
         <Text className="font-bold text-xl">Geçmiş Koşular</Text>
-        {query.data ? (
+        {getRuns.data ? (
           <View className="mt-3 min-h-full  pb-48">
             <FlashList
               estimatedItemSize={190}
-              data={query.data}
+              data={getRuns.data}
               renderItem={({ item }) => {
                 return (
                   <View className="mb-4">
@@ -49,9 +80,14 @@ export function PastRuns() {
                     <View className="mt-1">
                       {item.runs.map((runObject) => {
                         return (
-                          <View key={Crypto.randomUUID()} className="my-2">
+                          <TouchableOpacity
+                            activeOpacity={0.5}
+                            onLongPress={() => handleLongPress(item, runObject)}
+                            key={Crypto.randomUUID()}
+                            className="my-2"
+                          >
                             <RunRow run={runObject} />
-                          </View>
+                          </TouchableOpacity>
                         );
                       })}
                     </View>

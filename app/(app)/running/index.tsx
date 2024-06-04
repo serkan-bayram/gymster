@@ -17,7 +17,6 @@ import {
 import { Divider } from "@/components/ui/divider";
 import { RunningButtons } from "@/components/running/running-buttons";
 import { PastRuns } from "@/components/running/past-runs";
-import { TopStats } from "@/components/running/top-stats";
 import { ScrollView } from "react-native-gesture-handler";
 
 TaskManager.defineTask(
@@ -52,7 +51,6 @@ TaskManager.defineTask(
   }
 );
 
-// TODO: Add records
 // TODO: Does it calculate distance and averageSpeed in the background
 // TODO: Add ability to delete runs
 export default function Running() {

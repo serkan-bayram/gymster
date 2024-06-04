@@ -55,7 +55,7 @@ export function UpdateWaterValue({ currentProgress, setCurrentProgress }) {
   // TODO: for some reason mutation key is not working properly try again
   const mutation = useMutation({
     onSuccess: async () => {
-      await queryClient.invalidateQueries("trackings");
+      await queryClient.invalidateQueries({ queryKey: ["trackings"] });
     },
     mutationFn: async ({ newProgress }) => {
       // Upddate & get server time

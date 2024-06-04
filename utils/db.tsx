@@ -2,7 +2,7 @@ import firestore, {
   FirebaseFirestoreTypes,
 } from "@react-native-firebase/firestore";
 import { daysInMonth } from "./days-in-month";
-import { RunsDB } from "./types";
+import { Run, RunsDB } from "./types";
 
 /* ---- TRACKINGS ---- */
 
@@ -193,7 +193,11 @@ export async function getRuns(uid: string): Promise<RunsDB[]> {
 
     const dateAsText = `${day} ${month}`;
 
-    data = { ...data, dateAsText: dateAsText };
+    data = {
+      ...data,
+      dateAsText: dateAsText,
+      documentPath: documentSnapshot.ref.path,
+    };
 
     runs.push(data);
   });
@@ -207,6 +211,12 @@ export async function saveRun(runData: RunsDB) {
   await runsRef.add(runData);
 
   return true;
+}
+
+export async function updateRuns(documentPath: string, newRuns: Run[]) {
+  const runsRef = firestore().collection("Runs");
+
+  await runsRef.doc(documentPath.split("/")[1]).update({ runs: newRuns });
 }
 
 /* ---- SERVER TIME ---- */

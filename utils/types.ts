@@ -12,6 +12,7 @@ export interface Run {
   averageSpeed: number;
   distance: number;
   runTime: RunTime;
+  identifier: string;
 }
 
 // Runs that comes from DB
@@ -20,6 +21,7 @@ export interface RunsDB {
   uid: string;
   dateAsText?: string;
   runs: Run[];
+  documentPath: string;
 }
 
 export interface LocationState {

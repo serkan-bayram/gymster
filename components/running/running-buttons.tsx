@@ -8,6 +8,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { RunsDB } from "@/utils/types";
 import { getServerTime, saveRun } from "@/utils/db";
 import { useSession } from "@/utils/session-context";
+import * as Crypto from "expo-crypto";
 
 export function RunningButtons({
   bottomSheetRef,
@@ -81,7 +82,16 @@ export function RunningButtons({
       const uid = session.uid;
       const runs = running.runs;
 
-      const saveObject: RunsDB = { createdAt: createdAt, uid: uid, runs: runs };
+      const runsWithIdentifier = runs.map((run) => ({
+        ...run,
+        identifier: Crypto.randomUUID(),
+      }));
+
+      const saveObject: RunsDB = {
+        createdAt: createdAt,
+        uid: uid,
+        runs: runsWithIdentifier,
+      };
 
       mutation.mutate({ runData: saveObject });
 
