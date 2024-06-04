@@ -3,9 +3,9 @@ import { Image } from "expo-image";
 import { Link } from "expo-router";
 import { Text, View } from "react-native";
 
-type Heading = {
+interface Heading {
   heading: string;
-};
+}
 
 export function Heading({ heading }: Heading) {
   const { session } = useSession();

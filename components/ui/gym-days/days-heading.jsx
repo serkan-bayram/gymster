@@ -1,17 +1,15 @@
 import { Pressable, Text, View } from "react-native";
 import { PlusSvg, TickSvg } from "../svg";
 import { cn } from "@/utils/cn";
-import { useMutation } from "@tanstack/react-query";
-import { findTrackingsDoc, getServerTime, updateWentToGYM } from "@/utils/db";
-import { useSession } from "@/utils/session-context";
-import { useTime } from "@/utils/time-context";
+import { getServerTime } from "@/utils/db";
+import { useUpdateWentToGYM } from "@/utils/apis/gymDays";
 
 export function DaysHeading({ wentToGYM, setWentToGYM, setWentToGYMDays }) {
-  // We can use the serverTime that already loaded for optimistic updates
-  // But we don't use it for the real mutation for security purposes
-  const { serverTime } = useTime();
+  const updateWentToGYM = useUpdateWentToGYM();
 
-  const handleWentToGYM = () => {
+  const handleWentToGYM = async () => {
+    const serverTime = await getServerTime();
+
     const serverDate = new Date(serverTime.date.toDate());
     const todaysDate = serverDate.getDate();
 
@@ -28,33 +26,10 @@ export function DaysHeading({ wentToGYM, setWentToGYM, setWentToGYMDays }) {
       return updatedDays;
     });
 
-    mutation.mutate({ wentToGYM: !wentToGYM });
+    updateWentToGYM.mutate({ wentToGYM: !wentToGYM });
 
     setWentToGYM(!wentToGYM);
   };
-
-  const { session } = useSession();
-
-  // This mutation updates the wentToGYM field of related document
-  // TODO: Add optimistic updates
-  const mutation = useMutation({
-    mutationKey: ["updateWentToGYM"],
-    mutationFn: async ({ wentToGYM }) => {
-      // Upddate & get server time
-      const serverTime = await getServerTime();
-
-      if (serverTime) {
-        const foundTrackingsDoc = await findTrackingsDoc(
-          session.uid,
-          serverTime.date
-        );
-
-        const { trackingsPath } = foundTrackingsDoc;
-
-        await updateWentToGYM(trackingsPath, wentToGYM);
-      }
-    },
-  });
 
   return (
     <View className="flex flex-row mb-2 justify-between items-center">

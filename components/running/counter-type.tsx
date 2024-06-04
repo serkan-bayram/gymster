@@ -1,4 +1,3 @@
-import { RunTime } from "@/app/(app)/running";
 import { cn } from "@/utils/cn";
 import { Text, View } from "react-native";
 

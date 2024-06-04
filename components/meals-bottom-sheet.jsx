@@ -2,45 +2,14 @@ import { BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
 import { Text, TextInput, View } from "react-native";
 import { PrimaryButton } from "./primary-button";
 import { useRef, useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { findTrackingsDoc, getServerTime, updateMeals } from "@/utils/db";
-import { useSession } from "@/utils/session-context";
+import { useUpdateMeals } from "@/utils/apis/meals";
 
 export function MealsBottomSheet({ setMeals, mealsBottomSheetRef }) {
   const inputRef = useRef(null);
 
   const [input, setInput] = useState("");
 
-  const { session } = useSession();
-
-  const queryClient = useQueryClient();
-
-  const mutation = useMutation({
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: ["tracking", "mealsDetails"],
-      });
-    },
-    mutationFn: async (newMeal) => {
-      // Upddate & get server time
-      const serverTime = await getServerTime();
-
-      if (serverTime) {
-        const foundTrackingsDoc = await findTrackingsDoc(
-          session.uid,
-          serverTime.date
-        );
-
-        // Remove empty {} at first index
-        const shifted = [...newMeal];
-        shifted.shift();
-
-        const { trackingsPath } = foundTrackingsDoc;
-
-        const isUpdated = await updateMeals(trackingsPath, shifted);
-      }
-    },
-  });
+  const updateMeals = useUpdateMeals();
 
   // MAYBE separate textinput so it does not render the whole component
   const handleSave = () => {
@@ -67,7 +36,7 @@ export function MealsBottomSheet({ setMeals, mealsBottomSheetRef }) {
     });
 
     if (newMeal) {
-      mutation.mutate(newMeal);
+      updateMeals.mutate(newMeal);
     }
 
     closeBottomSheet();

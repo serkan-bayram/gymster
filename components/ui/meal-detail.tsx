@@ -1,8 +1,8 @@
 import { Text, View } from "react-native";
-import { Meal, Nutritions } from "../meals";
 import * as Crypto from "expo-crypto";
 import { cn } from "@/utils/cn";
 import { Image, ImageSource } from "expo-image";
+import { Meal, Nutritions } from "@/utils/types/meals";
 
 function Nutrition({
   value,

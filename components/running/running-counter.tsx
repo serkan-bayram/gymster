@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/utils/state/store";
 import { setRunTime } from "@/utils/state/running/runningSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Run, RunTime } from "@/utils/types";
+import { Run, RunTime } from "@/utils/types/runs";
 
 function getTimeDifference(timestamp1: string, timestamp2: string) {
   // Convert timestamps to Date objects

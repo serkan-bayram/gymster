@@ -21,7 +21,7 @@ export interface RunsDB {
   uid: string;
   dateAsText?: string;
   runs: Run[];
-  documentPath: string;
+  documentPath?: string;
 }
 
 export interface LocationState {

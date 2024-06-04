@@ -1,11 +1,11 @@
 import { FirebaseFirestoreTypes } from "@react-native-firebase/firestore";
 import { memo } from "react";
 import { Text, View } from "react-native";
-import { Meal } from "../meals";
 import { MealDetail } from "../ui/meal-detail";
 import * as Crypto from "expo-crypto";
 import { cn } from "@/utils/cn";
 import { Feather } from "@expo/vector-icons";
+import { Meal } from "@/utils/types/meals";
 
 // We memoized this component because we don't want it rerender when we scroll
 export const MemoizedMeals = memo(

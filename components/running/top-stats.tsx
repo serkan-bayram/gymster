@@ -3,7 +3,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { FontAwesome6 } from "@expo/vector-icons";
-import { RunsDB } from "@/utils/types";
+import { RunsDB } from "@/utils/types/runs";
 
 function Stat({
   heading,

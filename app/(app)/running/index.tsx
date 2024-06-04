@@ -18,6 +18,7 @@ import { Divider } from "@/components/ui/divider";
 import { RunningButtons } from "@/components/running/running-buttons";
 import { PastRuns } from "@/components/running/past-runs";
 import { ScrollView } from "react-native-gesture-handler";
+import { StatusBar } from "expo-status-bar";
 
 TaskManager.defineTask(
   LOCATION_TASK_NAME,
@@ -52,47 +53,48 @@ TaskManager.defineTask(
 );
 
 // TODO: Does it calculate distance and averageSpeed in the background
-// TODO: Add ability to delete runs
 export default function Running() {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
 
   return (
-    <ScrollView className="pt-16 pb-20 px-4 bg-background flex-1 ">
-      <Heading heading={"Koşu"} />
+    <>
+      <ScrollView className="pt-16 pb-20 px-4 bg-background flex-1 ">
+        <Heading heading={"Koşu"} />
 
-      <StartRunning bottomSheetRef={bottomSheetRef} />
+        <StartRunning bottomSheetRef={bottomSheetRef} />
 
-      <PastRuns />
+        <PastRuns />
 
-      <BottomSheetModal
-        handleStyle={{ display: "none" }}
-        enablePanDownToClose={false}
-        snapPoints={[700]}
-        ref={bottomSheetRef}
-      >
-        <BottomSheetScrollView
-          contentContainerStyle={{ flexGrow: 1 }}
-          stickyHeaderIndices={[0]}
+        <BottomSheetModal
+          handleStyle={{ display: "none" }}
+          enablePanDownToClose={false}
+          snapPoints={[700]}
+          ref={bottomSheetRef}
         >
-          <View className="px-6 bg-white pb-3 ">
-            <View className="mt-6 flex  flex-row justify-between items-center">
-              <RunningCounter />
+          <BottomSheetScrollView
+            contentContainerStyle={{ flexGrow: 1 }}
+            stickyHeaderIndices={[0]}
+          >
+            <View className="px-6 bg-white pb-3 ">
+              <View className="mt-6 flex  flex-row justify-between items-center">
+                <RunningCounter />
 
-              <CounterControllers />
+                <CounterControllers />
+              </View>
             </View>
-          </View>
 
-          <Divider type="horizontal" dividerClassName="my-5 mt-2 mx-6 " />
+            <Divider type="horizontal" dividerClassName="my-5 mt-2 mx-6 " />
 
-          <View className="p-4 px-4 pt-0">
-            <RunningStats />
+            <View className="p-4 px-4 pt-0">
+              <RunningStats />
 
-            <Runs />
-          </View>
+              <Runs />
+            </View>
 
-          <RunningButtons bottomSheetRef={bottomSheetRef} />
-        </BottomSheetScrollView>
-      </BottomSheetModal>
-    </ScrollView>
+            <RunningButtons bottomSheetRef={bottomSheetRef} />
+          </BottomSheetScrollView>
+        </BottomSheetModal>
+      </ScrollView>
+    </>
   );
 }

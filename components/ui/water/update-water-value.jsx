@@ -1,13 +1,7 @@
 import { Pressable, Text, View } from "react-native";
 import { ExtractSvg, PlusSvg } from "../svg";
 import { useWater } from "@/utils/water-context";
-import {
-  findTrackingsDoc,
-  getServerTime,
-  updateHydrationProgress,
-} from "@/utils/db";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useSession } from "@/utils/session-context";
+import { useUpdateWater } from "@/utils/apis/water";
 
 const useCalculateProgress = (type, currentProgress, goal, updateValue) => {
   // If this happens somehow
@@ -34,6 +28,8 @@ const useCalculateProgress = (type, currentProgress, goal, updateValue) => {
 export function UpdateWaterValue({ currentProgress, setCurrentProgress }) {
   const { updateValue, goalValue: goal } = useWater();
 
+  const updateWater = useUpdateWater();
+
   const handleClick = (type) => {
     const newProgress = useCalculateProgress(
       type,
@@ -44,38 +40,8 @@ export function UpdateWaterValue({ currentProgress, setCurrentProgress }) {
 
     setCurrentProgress(newProgress);
 
-    mutation.mutate({ newProgress: newProgress });
+    updateWater.mutate({ newProgress: newProgress });
   };
-
-  const { session } = useSession();
-
-  const queryClient = useQueryClient();
-
-  // TODO: This needs a debounce
-  // TODO: for some reason mutation key is not working properly try again
-  const mutation = useMutation({
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["trackings"] });
-    },
-    mutationFn: async ({ newProgress }) => {
-      // Upddate & get server time
-      const serverTime = await getServerTime();
-
-      if (serverTime) {
-        const foundTrackingsDoc = await findTrackingsDoc(
-          session.uid,
-          serverTime.date
-        );
-
-        const { trackingsPath } = foundTrackingsDoc;
-
-        const isUpdated = await updateHydrationProgress(
-          trackingsPath,
-          newProgress
-        );
-      }
-    },
-  });
 
   return (
     <View

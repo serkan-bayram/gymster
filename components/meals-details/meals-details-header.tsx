@@ -1,7 +1,7 @@
-import { MealsDetailsObject } from "@/app/(app)/meals-details";
 import { Text, View } from "react-native";
 import { MealsDetailsHeaderItem } from "./meals-details-header-item";
 import { Feather } from "@expo/vector-icons";
+import { MealsDetailsObject } from "@/utils/types/meals";
 
 // Details Header Container
 export function MealsDetailsHeader({

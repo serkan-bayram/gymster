@@ -2,7 +2,7 @@ import firestore, {
   FirebaseFirestoreTypes,
 } from "@react-native-firebase/firestore";
 import { daysInMonth } from "./days-in-month";
-import { Run, RunsDB } from "./types";
+import { Run, RunsDB } from "./types/runs";
 
 /* ---- TRACKINGS ---- */
 

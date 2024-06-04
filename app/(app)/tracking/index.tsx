@@ -3,22 +3,14 @@ import { GYMDays } from "@/components/gym-days";
 import { Meals } from "@/components/meals";
 import { Water } from "@/components/water";
 import { WaterProvider } from "@/utils/water-context";
-import { useSession } from "@/utils/session-context";
-import { useQuery } from "@tanstack/react-query";
 import { Text, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { queryGetTrackings } from "@/utils/query-functions";
+import { useGetTracking } from "@/utils/apis/tracking";
 
 export default function Tracking() {
-  const { session } = useSession();
+  const tracking = useGetTracking();
 
-  // TODO: Some values does not rerender currently when user changed
-  const query = useQuery({
-    queryKey: ["tracking"],
-    queryFn: async () => await queryGetTrackings(session?.uid),
-  });
-
-  if (query.isPending)
+  if (tracking.isPending)
     return (
       <View className="flex-1 flex items-center justify-center">
         <Text>Yükleniyor...</Text>
@@ -29,10 +21,10 @@ export default function Tracking() {
     <View className="pt-16 pb-20 px-4 bg-background">
       <ScrollView showsVerticalScrollIndicator={false}>
         <Heading heading={"Takip"} />
-        <GYMDays fetchedWentToGYM={query.data?.wentToGYM || false} />
-        <Meals fetchedMeals={query.data?.meals || []} />
+        <GYMDays fetchedWentToGYM={tracking.data?.wentToGYM || false} />
+        <Meals fetchedMeals={tracking.data?.meals || []} />
         <WaterProvider>
-          <Water fetchedProgress={query.data?.hydration?.progress || null} />
+          <Water fetchedProgress={tracking.data?.hydration?.progress || null} />
         </WaterProvider>
       </ScrollView>
     </View>

@@ -7,7 +7,7 @@ import { Divider } from "../ui/divider";
 import { memo } from "react";
 import { selectRuns } from "@/utils/state/running/runningSlice";
 import Animated, { FadeInUp } from "react-native-reanimated";
-import { Run } from "@/utils/types";
+import { Run } from "@/utils/types/runs";
 
 export function RunRow({ run }: { run: Run }) {
   return (

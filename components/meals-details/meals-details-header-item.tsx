@@ -1,5 +1,5 @@
-import { MealsDetailsObject } from "@/app/(app)/meals-details";
 import { cn } from "@/utils/cn";
+import { MealsDetailsObject } from "@/utils/types/meals";
 import { Image, ImageSource } from "expo-image";
 import { useEffect } from "react";
 import { Text, View } from "react-native";

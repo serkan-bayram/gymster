@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getRuns, updateRuns } from "../db";
-import { Run } from "../types";
+import { getRuns, saveRun, updateRuns } from "../db";
 import { useSession } from "../session-context";
+import { Run, RunsDB } from "../types/runs";
 
 // Get runs from DB
 export function useGetRuns() {
@@ -43,5 +43,21 @@ export function useUpdateRuns() {
 
       return true;
     },
+  });
+}
+
+// Save runs to DB
+export function useAddRuns() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["addRuns"],
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["getRuns"],
+      });
+    },
+    mutationFn: async ({ runData }: { runData: RunsDB }) =>
+      await saveRun(runData),
   });
 }

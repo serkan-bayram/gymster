@@ -1,17 +1,15 @@
 import { Alert, Pressable, Text, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { RunRow } from "./runs";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useSession } from "@/utils/session-context";
-import { queryGetRuns } from "@/utils/query-functions";
 import { FlashList } from "@shopify/flash-list";
 import * as Crypto from "expo-crypto";
 import { TopStats } from "./top-stats";
-import { Run, RunsDB } from "@/utils/types";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import * as Haptics from "expo-haptics";
 import { useUpdateRuns, useGetRuns } from "@/utils/apis/runs";
+import { Run, RunsDB } from "@/utils/types/runs";
 
+// TODO: IT does not say anything if no runs exists
 export function PastRuns() {
   const updateRuns = useUpdateRuns();
   const getRuns = useGetRuns();
@@ -47,10 +45,12 @@ export function PastRuns() {
               (run) => run.identifier !== runObject.identifier
             );
 
-            updateRuns.mutate({
-              documentPath: item.documentPath,
-              newRuns: newRuns,
-            });
+            if (item.documentPath) {
+              updateRuns.mutate({
+                documentPath: item.documentPath,
+                newRuns: newRuns,
+              });
+            }
           },
         },
       ]
@@ -64,38 +64,51 @@ export function PastRuns() {
       <View className="mt-4">
         <Text className="font-bold text-xl">Geçmiş Koşular</Text>
         {getRuns.data ? (
-          <View className="mt-3 min-h-full  pb-48">
-            <FlashList
-              estimatedItemSize={190}
-              data={getRuns.data}
-              renderItem={({ item }) => {
-                return (
-                  <View className="mb-4">
-                    <View className="flex flex-row items-center">
-                      <Feather name="calendar" size={20} color="black" />
-                      <Text className="ml-1 font-semibold text-lg">
-                        {item.dateAsText}
-                      </Text>
+          <>
+            <View className="mt-3 min-h-full pb-48 ">
+              <FlashList
+                estimatedItemSize={190}
+                data={getRuns.data}
+                renderItem={({ item, index }) => {
+                  if (item.runs.length === 0) return <View></View>;
+
+                  return (
+                    <View className="mb-4">
+                      <View className="flex flex-row items-center">
+                        <Feather name="calendar" size={20} color="black" />
+                        <Text className="ml-1 font-semibold text-lg">
+                          {item.dateAsText}
+                        </Text>
+                      </View>
+                      <View className="mt-1">
+                        {item.runs.map((runObject: Run) => {
+                          return (
+                            <TouchableOpacity
+                              activeOpacity={0.5}
+                              onLongPress={() =>
+                                handleLongPress(item, runObject)
+                              }
+                              key={Crypto.randomUUID()}
+                              className="my-2"
+                            >
+                              <RunRow run={runObject} />
+                            </TouchableOpacity>
+                          );
+                        })}
+                      </View>
+                      {index + 1 === getRuns?.data?.length && (
+                        <View className="w-full items-center mt-6 ">
+                          <Text className="text-black/50">
+                            *Bir koşuyu silmek için uzun süre basın.
+                          </Text>
+                        </View>
+                      )}
                     </View>
-                    <View className="mt-1">
-                      {item.runs.map((runObject) => {
-                        return (
-                          <TouchableOpacity
-                            activeOpacity={0.5}
-                            onLongPress={() => handleLongPress(item, runObject)}
-                            key={Crypto.randomUUID()}
-                            className="my-2"
-                          >
-                            <RunRow run={runObject} />
-                          </TouchableOpacity>
-                        );
-                      })}
-                    </View>
-                  </View>
-                );
-              }}
-            />
-          </View>
+                  );
+                }}
+              />
+            </View>
+          </>
         ) : (
           <View className="w-full items-center mt-4">
             <Text>Henüz bir koşu kaydetmediniz.</Text>

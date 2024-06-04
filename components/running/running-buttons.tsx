@@ -4,11 +4,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { discardRun, stopRunning } from "@/utils/state/running/runningSlice";
 import { AppDispatch, RootState } from "@/utils/state/store";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { RunsDB } from "@/utils/types";
-import { getServerTime, saveRun } from "@/utils/db";
+import { getServerTime } from "@/utils/db";
 import { useSession } from "@/utils/session-context";
 import * as Crypto from "expo-crypto";
+import { useAddRuns } from "@/utils/apis/runs";
+import { RunsDB } from "@/utils/types/runs";
 
 export function RunningButtons({
   bottomSheetRef,
@@ -45,19 +45,7 @@ export function RunningButtons({
     );
   };
 
-  const queryClient = useQueryClient();
-
-  // Save run to DB
-  const mutation = useMutation({
-    mutationKey: ["saveRun"],
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: ["getRuns"],
-      });
-    },
-    mutationFn: async ({ runData }: { runData: RunsDB }) =>
-      await saveRun(runData),
-  });
+  const addRuns = useAddRuns();
 
   // Save to DB
   const handleSave = async () => {
@@ -93,7 +81,7 @@ export function RunningButtons({
         runs: runsWithIdentifier,
       };
 
-      mutation.mutate({ runData: saveObject });
+      addRuns.mutate({ runData: saveObject });
 
       stopEverything();
     }

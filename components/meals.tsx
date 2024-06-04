@@ -6,18 +6,7 @@ import { useRef, useState } from "react";
 import { MealsBottomSheet } from "./meals-bottom-sheet";
 import { Octicons } from "@expo/vector-icons";
 import { Link } from "expo-router";
-
-export interface Nutritions {
-  carbs: string;
-  fat: string;
-  kcal: string;
-  protein: string;
-}
-
-export interface Meal {
-  nutritions: Nutritions;
-  userInput: string;
-}
+import { Meal } from "@/utils/types/meals";
 
 type FetchedMeals = Meal[];
 
