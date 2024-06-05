@@ -70,6 +70,18 @@ export function PastRuns() {
                 estimatedItemSize={190}
                 data={getRuns.data}
                 renderItem={({ item, index }) => {
+                  const isLast = index + 1 === getRuns?.data?.length;
+
+                  if (isLast) {
+                    return (
+                      <View className="w-full flex items-center mt-6 ">
+                        <Text className="text-black/50">
+                          *Bir koşuyu silmek için uzun süre basın.
+                        </Text>
+                      </View>
+                    );
+                  }
+
                   if (item.runs.length === 0) return <View></View>;
 
                   return (
@@ -96,8 +108,8 @@ export function PastRuns() {
                           );
                         })}
                       </View>
-                      {index + 1 === getRuns?.data?.length && (
-                        <View className="w-full items-center mt-6 ">
+                      {isLast && (
+                        <View className="w-full flex items-center mt-6 ">
                           <Text className="text-black/50">
                             *Bir koşuyu silmek için uzun süre basın.
                           </Text>
