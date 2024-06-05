@@ -5,15 +5,16 @@ import {
   getServerTime,
   updateWentToGYM,
 } from "../db";
-import { useSession } from "../session-context";
 import { daysInMonth } from "../days-in-month";
+import { useSelector } from "react-redux";
+import { RootState } from "../state/store";
 
 export function useGetWentToGYMDays({
   setWentToGYMDays,
 }: {
   setWentToGYMDays: (wentToGYMDays: number[]) => void;
 }) {
-  const { session } = useSession();
+  const user = useSelector((state: RootState) => state.session.user);
 
   // This query gets the days that user went to gym
   return useQuery({
@@ -21,9 +22,9 @@ export function useGetWentToGYMDays({
     queryFn: async () => {
       const serverTime = await getServerTime();
 
-      if (serverTime && session) {
+      if (serverTime && user) {
         // Is an array that contains day numbers that user went to gym
-        const wentToGYMDays = await getGYMDays(session.uid, serverTime.date);
+        const wentToGYMDays = await getGYMDays(user.uid, serverTime.date);
 
         setWentToGYMDays(wentToGYMDays);
 
@@ -36,7 +37,7 @@ export function useGetWentToGYMDays({
 }
 
 export function useUpdateWentToGYM() {
-  const { session } = useSession();
+  const user = useSelector((state: RootState) => state.session.user);
 
   // This mutation updates the wentToGYM field of related document
   return useMutation({
@@ -45,9 +46,9 @@ export function useUpdateWentToGYM() {
       // Upddate & get server time
       const serverTime = await getServerTime();
 
-      if (serverTime && session) {
+      if (serverTime && user) {
         const foundTrackingsDoc = await findTrackingsDoc(
-          session.uid,
+          user.uid,
           serverTime.date
         );
 

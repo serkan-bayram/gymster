@@ -1,9 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-
 import * as Location from "expo-location";
 import { RootState } from "../store";
 import { calculateDistance } from "@/utils/calculate-distance";
-import { LocationState, Run } from "@/utils/types";
+import { LocationState, Run } from "@/utils/types/runs";
 
 export const LOCATION_TASK_NAME = "running-location-task";
 

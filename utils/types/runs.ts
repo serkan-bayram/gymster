@@ -12,7 +12,7 @@ export interface Run {
   averageSpeed: number;
   distance: number;
   runTime: RunTime;
-  identifier: string;
+  identifier?: string;
 }
 
 // Runs that comes from DB

@@ -16,8 +16,9 @@ import {
   View,
 } from "react-native";
 import { updateUserInfo } from "@/utils/db";
-import { useSession } from "@/utils/session-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useSelector } from "react-redux";
+import { RootState } from "@/utils/state/store";
 
 export default function UserInfo() {
   const [age, setAge] = useState<string>("");
@@ -26,8 +27,8 @@ export default function UserInfo() {
 
   const pickerRef = useRef<any>(null);
 
-  const { session } = useSession();
   const router = useRouter();
+  const user = useSelector((state: RootState) => state.session.user);
 
   const handlePress = async () => {
     // This object will be saved to DB
@@ -47,8 +48,8 @@ export default function UserInfo() {
         gender: gender,
       };
 
-      if (session && Object.keys(saveObject).length > 0) {
-        await updateUserInfo(saveObject, session.uid);
+      if (user && Object.keys(saveObject).length > 0) {
+        await updateUserInfo(saveObject, user.uid);
 
         saveSkip();
 

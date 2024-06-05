@@ -2,11 +2,17 @@ import { StatusBar } from "expo-status-bar";
 import { View, Text } from "react-native";
 import { LandingMascot } from "@/components/ui/landing-mascot";
 import { LandingText } from "@/components/ui/landing-text";
-import { GoogleSigninButton } from "@react-native-google-signin/google-signin";
-import { useSession } from "@/utils/session-context";
+import {
+  GoogleSignin,
+  GoogleSigninButton,
+} from "@react-native-google-signin/google-signin";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/utils/state/store";
+import { signIn } from "@/utils/state/session/sessionSlice";
 
 export default function App() {
-  const { loading, signIn } = useSession();
+  const dispatch = useDispatch<AppDispatch>();
+  const { isLoading } = useSelector((state: RootState) => state.session);
 
   return (
     <View className="bg-background flex  h-full pt-8">
@@ -28,8 +34,8 @@ export default function App() {
           <GoogleSigninButton
             size={GoogleSigninButton.Size.Wide}
             color={GoogleSigninButton.Color.Light}
-            onPress={signIn}
-            disabled={loading}
+            onPress={() => dispatch(signIn())}
+            disabled={isLoading}
           />
         </View>
       </View>

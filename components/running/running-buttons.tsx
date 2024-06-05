@@ -5,7 +5,6 @@ import { discardRun, stopRunning } from "@/utils/state/running/runningSlice";
 import { AppDispatch, RootState } from "@/utils/state/store";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { getServerTime } from "@/utils/db";
-import { useSession } from "@/utils/session-context";
 import * as Crypto from "expo-crypto";
 import { useAddRuns } from "@/utils/apis/runs";
 import { RunsDB } from "@/utils/types/runs";
@@ -17,7 +16,7 @@ export function RunningButtons({
 }) {
   const dispatch = useDispatch<AppDispatch>();
   const running = useSelector((state: RootState) => state.running);
-  const { session } = useSession();
+  const user = useSelector((state: RootState) => state.session.user);
 
   const stopEverything = () => {
     // Stop tracking location
@@ -65,9 +64,9 @@ export function RunningButtons({
 
     const serverTime = await getServerTime();
 
-    if (serverTime && session) {
+    if (serverTime && user) {
       const createdAt = serverTime.date;
-      const uid = session.uid;
+      const uid = user.uid;
       const runs = running.runs;
 
       const runsWithIdentifier = runs.map((run) => ({

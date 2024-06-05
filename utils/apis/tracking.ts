@@ -1,9 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { findTrackingsDoc, getServerTime } from "../db";
-import { useSession } from "../session-context";
+import { useSelector } from "react-redux";
+import { RootState } from "../state/store";
 
 export function useGetTracking() {
-  const { session } = useSession();
+  const user = useSelector((state: RootState) => state.session.user);
 
   // TODO: Some values does not rerender currently when user changed
   return useQuery({
@@ -11,9 +12,9 @@ export function useGetTracking() {
     queryFn: async () => {
       const serverTime = await getServerTime();
 
-      if (serverTime && session) {
+      if (serverTime && user) {
         const foundTrackingsDoc = await findTrackingsDoc(
-          session.uid,
+          user.uid,
           serverTime.date
         );
 

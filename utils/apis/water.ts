@@ -1,13 +1,14 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useSession } from "../session-context";
 import {
   findTrackingsDoc,
   getServerTime,
   updateHydrationProgress,
 } from "../db";
+import { useSelector } from "react-redux";
+import { RootState } from "../state/store";
 
 export function useUpdateWater() {
-  const { session } = useSession();
+  const user = useSelector((state: RootState) => state.session.user);
 
   const queryClient = useQueryClient();
 
@@ -21,9 +22,9 @@ export function useUpdateWater() {
       // Upddate & get server time
       const serverTime = await getServerTime();
 
-      if (serverTime && session) {
+      if (serverTime && user) {
         const foundTrackingsDoc = await findTrackingsDoc(
-          session.uid,
+          user.uid,
           serverTime.date
         );
 

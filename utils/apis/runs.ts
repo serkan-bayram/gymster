@@ -1,17 +1,18 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getRuns, saveRun, updateRuns } from "../db";
-import { useSession } from "../session-context";
 import { Run, RunsDB } from "../types/runs";
+import { useSelector } from "react-redux";
+import { RootState } from "../state/store";
 
 // Get runs from DB
 export function useGetRuns() {
-  const { session } = useSession();
+  const user = useSelector((state: RootState) => state.session.user);
 
   return useQuery({
     queryKey: ["getRuns"],
     queryFn: async () => {
-      if (session) {
-        const runs = await getRuns(session.uid);
+      if (user) {
+        const runs = await getRuns(user.uid);
 
         if (runs && runs.length > 0) {
           return runs;

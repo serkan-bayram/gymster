@@ -1,5 +1,4 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useSession } from "../session-context";
 import {
   findTrackingsDoc,
   getAllMeals,
@@ -7,6 +6,8 @@ import {
   updateMeals,
 } from "../db";
 import { DateObject, Meal, MealsDetailsObject, Sums } from "../types/meals";
+import { useSelector } from "react-redux";
+import { RootState } from "../state/store";
 
 // Gets all meals
 export function useGetMeals({
@@ -16,16 +17,16 @@ export function useGetMeals({
   setCurrentMeal: (currentMeal: MealsDetailsObject) => void;
   setMeals: (mealsArray: DateObject[]) => void;
 }) {
-  const { session } = useSession();
+  const user = useSelector((state: RootState) => state.session.user);
 
   return useQuery({
     queryKey: ["mealsDetails"],
     queryFn: async () => {
-      if (!session) {
+      if (!user) {
         return null;
       }
 
-      const meals = await getAllMeals(session.uid);
+      const meals = await getAllMeals(user.uid);
 
       if (meals) {
         const mealsArray: DateObject[] = [];
@@ -88,7 +89,7 @@ export function useGetMeals({
 }
 
 export function useUpdateMeals() {
-  const { session } = useSession();
+  const user = useSelector((state: RootState) => state.session.user);
 
   const queryClient = useQueryClient();
 
@@ -102,9 +103,9 @@ export function useUpdateMeals() {
       // Upddate & get server time
       const serverTime = await getServerTime();
 
-      if (serverTime && session) {
+      if (serverTime && user) {
         const foundTrackingsDoc = await findTrackingsDoc(
-          session.uid,
+          user.uid,
           serverTime.date
         );
 
