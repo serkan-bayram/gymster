@@ -9,7 +9,6 @@ import * as Haptics from "expo-haptics";
 import { useUpdateRuns, useGetRuns } from "@/utils/apis/runs";
 import { Run, RunsDB } from "@/utils/types/runs";
 
-// TODO: IT does not say anything if no runs exists
 export function PastRuns() {
   const updateRuns = useUpdateRuns();
   const getRuns = useGetRuns();
@@ -57,13 +56,21 @@ export function PastRuns() {
     );
   };
 
+  // We don't delete empy runs from database,
+  // we check is there really a run exists with this block
+  let isAnyRunsExists = false;
+  if (getRuns.data) {
+    isAnyRunsExists =
+      getRuns.data.filter((run) => run.runs.length > 0).length > 0;
+  }
+
   return (
     <>
-      {getRuns.data && <TopStats data={getRuns.data} />}
+      {getRuns.data && isAnyRunsExists && <TopStats data={getRuns.data} />}
 
       <View className="mt-4">
         <Text className="font-bold text-xl">Geçmiş Koşular</Text>
-        {getRuns.data ? (
+        {getRuns.data && isAnyRunsExists ? (
           <>
             <View className="mt-3 min-h-full pb-48 ">
               <FlashList
@@ -123,7 +130,7 @@ export function PastRuns() {
           </>
         ) : (
           <View className="w-full items-center mt-4">
-            <Text>Henüz bir koşu kaydetmediniz.</Text>
+            <Text className="text-black/50">Henüz bir koşu kaydetmediniz.</Text>
           </View>
         )}
       </View>
