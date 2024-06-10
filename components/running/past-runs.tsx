@@ -64,6 +64,7 @@ export function PastRuns() {
       getRuns.data.filter((run) => run.runs.length > 0).length > 0;
   }
 
+  //TODO: Should specify the year
   return (
     <>
       {getRuns.data && isAnyRunsExists && <TopStats data={getRuns.data} />}

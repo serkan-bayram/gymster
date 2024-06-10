@@ -17,6 +17,10 @@ export default function ProtectedLayout() {
               options={{ headerShown: false }}
             />
             <Stack.Screen
+              name="workout/index"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
               name="profile/index"
               options={{ headerShown: false }}
             />

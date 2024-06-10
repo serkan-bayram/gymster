@@ -5,6 +5,7 @@ import { Link, usePathname } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export function TabBar() {
   const pathname = usePathname();
@@ -47,6 +48,15 @@ export function TabBar() {
               name="person-running"
               size={30}
               color={pathname === "/running" ? activeColor : inactiveColor}
+            />
+          </TouchableOpacity>
+        </Link>
+        <Link asChild href={"/workout"}>
+          <TouchableOpacity activeOpacity={activeOpacity} hitSlop={hitSlop}>
+            <MaterialCommunityIcons
+              name="weight-lifter"
+              color={pathname === "/workout" ? activeColor : inactiveColor}
+              size={30}
             />
           </TouchableOpacity>
         </Link>
