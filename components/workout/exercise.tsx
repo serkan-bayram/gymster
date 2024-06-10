@@ -12,7 +12,7 @@ export function Exercise({ exercise, set }: ExerciseType) {
     <Pressable
       onPress={() => setIsOpen((prevValue) => !prevValue)}
       className="  rounded-xl border
-                border-white active:bg-black/75 transition-all"
+                border-white active:bg-black/75 transition-all mb-4"
     >
       <View
         className="h-10 px-3 flex flex-row items-center

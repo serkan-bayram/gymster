@@ -5,6 +5,13 @@ export function WorkoutTodayExercises() {
   return (
     <ScrollView className="mt-4">
       <Exercise exercise="Chest Presssss" set={{ setCount: 3, repeat: 32 }} />
+      <Exercise exercise="Chest Presssss" set={{ setCount: 3, repeat: 32 }} />
+      <Exercise exercise="Chest Presssss" set={{ setCount: 3, repeat: 32 }} />
+      <Exercise exercise="Chest Presssss" set={{ setCount: 3, repeat: 32 }} />
+      <Exercise exercise="Chest Presssss" set={{ setCount: 3, repeat: 32 }} />
+      <Exercise exercise="Chest Presssss" set={{ setCount: 3, repeat: 32 }} />
+      <Exercise exercise="Chest Presssss" set={{ setCount: 3, repeat: 32 }} />
+      <Exercise exercise="Chest Presssss" set={{ setCount: 3, repeat: 32 }} />
     </ScrollView>
   );
 }

@@ -19,7 +19,7 @@ export function AddWorkout({
   return (
     <Pressable
       onPress={handlePress}
-      className="bg-black/75 items-center
+      className="bg-black/75 active:bg-black/25 transition-all items-center
    px-3 w-full 
     flex flex-row justify-between h-12 rounded-xl mt-4"
     >
