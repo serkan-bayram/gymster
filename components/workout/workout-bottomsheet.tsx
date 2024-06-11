@@ -2,16 +2,15 @@ import {
   BottomSheetBackdrop,
   BottomSheetBackdropProps,
   BottomSheetModal,
-  BottomSheetScrollView,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
-import { ExercisePicker } from "@/components/workout/exercise-picker";
 import { PrimaryButton } from "@/components/primary-button";
-import { ExerciseWeight } from "@/components/workout/exercise-weight";
-import { ExerciseRepeat } from "@/components/workout/exercise-repeat";
-import { RefObject, useCallback, useMemo } from "react";
+import { RefObject, useCallback, useEffect, useMemo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { WorkoutBottomSheetInputs } from "./workout-bottomsheet-inputs";
+import { AppDispatch } from "@/utils/state/store";
+import { useDispatch } from "react-redux";
+import { saveWorkout } from "@/utils/state/workout/workoutSlice";
 
 export function WorkoutBottomSheet({
   bottomSheetRef,
@@ -38,6 +37,12 @@ export function WorkoutBottomSheet({
     []
   );
 
+  const dispatch = useDispatch<AppDispatch>();
+
+  const handleSave = () => {
+    dispatch(saveWorkout());
+  };
+
   return (
     <BottomSheetModal
       backdropComponent={renderBackdrop}
@@ -56,7 +61,11 @@ export function WorkoutBottomSheet({
               type="outlined"
               text="Vazgeç"
             />
-            <PrimaryButton text="Kaydet" className="flex-1" />
+            <PrimaryButton
+              onPress={handleSave}
+              text="Kaydet"
+              className="flex-1"
+            />
           </View>
         </View>
       </BottomSheetView>

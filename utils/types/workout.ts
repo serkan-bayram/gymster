@@ -13,3 +13,9 @@ export interface SetType {
   weight: number;
   repeat: number;
 }
+
+export interface AddingWorkout {
+  exercise: string | null;
+  weight: string | null;
+  repeat: string | null;
+}

@@ -2,8 +2,19 @@ import { Text, View } from "react-native";
 import { ExercisePicker } from "./exercise-picker";
 import { ExerciseWeight } from "./exercise-weight";
 import { ExerciseRepeat } from "./exercise-repeat";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/utils/state/store";
+import { useEffect } from "react";
+import { resetAddingWorkout } from "@/utils/state/workout/workoutSlice";
 
 export function WorkoutBottomSheetInputs() {
+  const dispatch = useDispatch<AppDispatch>();
+
+  // Reset state when bottomsheet reopens
+  useEffect(() => {
+    dispatch(resetAddingWorkout());
+  }, []);
+
   return (
     <>
       <View className="mt-8">

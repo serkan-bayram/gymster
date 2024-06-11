@@ -3,6 +3,9 @@ import { ScrollView, TextInput } from "react-native-gesture-handler";
 import * as Crypto from "expo-crypto";
 import { memo, useEffect, useMemo, useState } from "react";
 import { cn } from "@/utils/cn";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/utils/state/store";
+import { setExercise } from "@/utils/state/workout/workoutSlice";
 
 const Exercise = ({
   exercise,
@@ -28,33 +31,25 @@ const Exercise = ({
   );
 };
 
-const Exercises = memo(
-  ({
-    exercises,
-    selectedExercise,
-    setSelectedExercise,
-  }: {
-    exercises: string[];
-    selectedExercise: string | null;
-    setSelectedExercise: (exercise: string | null) => void;
-  }) => {
-    return exercises.map((exercise) => (
-      <Exercise
-        key={Crypto.randomUUID()}
-        isSelected={selectedExercise === exercise}
-        onSelect={() => {
-          setSelectedExercise(exercise === selectedExercise ? null : exercise);
-        }}
-        exercise={exercise}
-      />
-    ));
-  }
-);
+const Exercises = memo(({ exercises }: { exercises: string[] }) => {
+  const { exercise: selectedExercise } = useSelector(
+    (state: RootState) => state.workout.addingWorkout
+  );
+  const dispatch = useDispatch<AppDispatch>();
+
+  return exercises.map((exercise) => (
+    <Exercise
+      key={Crypto.randomUUID()}
+      isSelected={selectedExercise === exercise}
+      onSelect={() => {
+        dispatch(setExercise(exercise === selectedExercise ? null : exercise));
+      }}
+      exercise={exercise}
+    />
+  ));
+});
 
 export function ExercisePicker() {
-  // User selected a exercise
-  const [selectedExercise, setSelectedExercise] = useState<string | null>(null);
-
   // User input
   const [searched, setSearched] = useState<string | null>(null);
 
@@ -121,11 +116,7 @@ export function ExercisePicker() {
       />
       <ScrollView className="h-48   p-2 bg-gray/50">
         <View className="flex flex-row pb-6 flex-wrap">
-          <Exercises
-            setSelectedExercise={setSelectedExercise}
-            selectedExercise={selectedExercise}
-            exercises={exercises}
-          />
+          <Exercises exercises={exercises} />
         </View>
       </ScrollView>
     </View>
