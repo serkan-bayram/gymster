@@ -17,7 +17,7 @@ const Exercise = ({
     <Pressable
       onPress={onSelect}
       className={cn(
-        "bg-white active:bg-[#d0f4de]/50 transition-all p-2 px-3 rounded-md m-1",
+        "bg-white border-2 border-gray/50 active:bg-[#d0f4de]/50 transition-all p-2 px-3 rounded-md m-1",
         {
           "bg-[#d0f4de] border-2 border-[#2a9d8f]": isSelected,
         }
