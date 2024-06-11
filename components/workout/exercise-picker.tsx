@@ -6,50 +6,46 @@ import { cn } from "@/utils/cn";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/utils/state/store";
 import { setExercise } from "@/utils/state/workout/workoutSlice";
+import { DefaultExercise } from "@/utils/types/workout";
 
-const Exercise = ({
-  exercise,
-  isSelected,
-  onSelect,
-}: {
-  exercise: string;
-  isSelected: boolean;
-  onSelect: () => void;
-}) => {
+const Exercise = ({ exercise }: { exercise: DefaultExercise }) => {
+  const dispatch = useDispatch<AppDispatch>();
+
+  const handlePress = () => {
+    dispatch(setExercise({ id: exercise.id, name: exercise.name }));
+  };
+
+  const addingWorkout = useSelector(
+    (state: RootState) => state.workout.addingWorkout
+  );
+
   return (
     <Pressable
-      onPress={onSelect}
+      onPress={handlePress}
       className={cn(
         "bg-white border-2 border-gray/50 active:bg-[#d0f4de]/50 transition-all p-2 px-3 rounded-md m-1",
         {
-          "bg-[#d0f4de] border-2 border-[#2a9d8f]": isSelected,
+          "bg-[#d0f4de] border-2 border-[#2a9d8f]":
+            addingWorkout.exerciseId === exercise.id,
         }
       )}
     >
-      <Text>{exercise}</Text>
+      <Text>{exercise.name}</Text>
     </Pressable>
   );
 };
 
-const Exercises = memo(({ exercises }: { exercises: string[] }) => {
-  const { exercise: selectedExercise } = useSelector(
-    (state: RootState) => state.workout.addingWorkout
-  );
-  const dispatch = useDispatch<AppDispatch>();
-
+const Exercises = memo(({ exercises }: { exercises: DefaultExercise[] }) => {
   return exercises.map((exercise) => (
-    <Exercise
-      key={Crypto.randomUUID()}
-      isSelected={selectedExercise === exercise}
-      onSelect={() => {
-        dispatch(setExercise(exercise === selectedExercise ? null : exercise));
-      }}
-      exercise={exercise}
-    />
+    <Exercise key={Crypto.randomUUID()} exercise={exercise} />
   ));
 });
 
-export function ExercisePicker() {
+export function ExercisePicker({
+  defaultExercises,
+}: {
+  defaultExercises: DefaultExercise[];
+}) {
   // User input
   const [searched, setSearched] = useState<string | null>(null);
 
@@ -57,46 +53,15 @@ export function ExercisePicker() {
   const [filteredExercise, setFilteredExercise] = useState<string | null>(null);
 
   const exercises = useMemo(() => {
-    const exercises = [
-      "Chest Press",
-      "Dumbell Row",
-      "Lat Pulldown",
-      "Squat",
-      "Bulgarian Squat",
-      "Lat Pulldown",
-      "Squat",
-      "Bulgarian Squat",
-      "Lat Pulldown",
-      "Squat",
-      "Bulgarian Squat",
-      "Lat Pulldown",
-      "Squat",
-      "Bulgarian Squat",
-      "Bulgarian Squat",
-      "Lat Pulldown",
-      "Squat",
-      "Bulgarian Squat",
-      "Lat Pulldown",
-      "Squat",
-      "Bulgarian Squat",
-      "Bulgarian Squat",
-      "Lat Pulldown",
-      "Squat",
-      "Bulgarian Squat",
-      "Lat Pulldown",
-      "Squat",
-      "Bulgarian Squat",
-    ];
-
     // Filter exercises if any filter exists
-    return exercises.filter((exercise) => {
+    return defaultExercises.filter((exercise) => {
       if (filteredExercise) {
-        return exercise.startsWith(filteredExercise);
+        return exercise.name.startsWith(filteredExercise);
       }
 
       return true;
     });
-  }, [filteredExercise]);
+  }, [filteredExercise, defaultExercises]);
 
   // Debounce user input
   useEffect(() => {

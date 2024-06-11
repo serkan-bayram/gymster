@@ -2,19 +2,18 @@ import { Pressable, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import React, { useCallback } from "react";
+import { getOpenBottomSheet } from "@/utils/bottomsheet";
 
 export function AddWorkout({
   bottomSheetRef,
 }: {
   bottomSheetRef: React.RefObject<BottomSheetModal | null>;
 }) {
+  const openBottomSheet = getOpenBottomSheet(bottomSheetRef);
+
   const handlePress = () => {
     openBottomSheet();
   };
-
-  const openBottomSheet = useCallback(() => {
-    bottomSheetRef?.current?.present();
-  }, []);
 
   return (
     <Pressable

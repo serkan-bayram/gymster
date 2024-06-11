@@ -15,7 +15,24 @@ export interface SetType {
 }
 
 export interface AddingWorkout {
+  exerciseId: number | null;
   exercise: string | null;
-  weight: string | null;
-  repeat: string | null;
+  weight: number | null;
+  repeat: number | null;
+}
+
+export interface WorkoutDB {
+  exerciseId: number;
+  exercise: string;
+  weight: number;
+  repeat: number;
+}
+
+export interface DefaultExercise {
+  id: number;
+  name: string;
+}
+
+export interface DefaultExercises {
+  exercises: DefaultExercise[];
 }

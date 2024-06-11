@@ -6,6 +6,7 @@ interface WorkoutState {
 }
 
 const initialAddingWorkout = {
+  exerciseId: null,
   exercise: null,
   weight: null,
   repeat: null,
@@ -21,7 +22,8 @@ const workoutSlice = createSlice({
   initialState,
   reducers: {
     setExercise: (state, action) => {
-      state.addingWorkout.exercise = action.payload;
+      state.addingWorkout.exerciseId = action.payload.id;
+      state.addingWorkout.exercise = action.payload.name;
     },
     setWeight: (state, action) => {
       state.addingWorkout.weight = action.payload;

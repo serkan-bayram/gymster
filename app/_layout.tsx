@@ -5,7 +5,7 @@ import { Provider } from "react-redux";
 import { store } from "@/utils/state/store";
 
 const queryClient = new QueryClient({
-  defaultOptions: { queries: { gcTime: 30000 } },
+  defaultOptions: { queries: { gcTime: 0 } },
 });
 
 export default function Root() {
