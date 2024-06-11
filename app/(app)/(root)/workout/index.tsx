@@ -1,47 +1,15 @@
 import { Heading } from "@/components/heading";
-import {
-  KeyboardAvoidingView,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { WorkoutTodayHeading } from "@/components/workout/workout-today-heading";
 import { WorkoutTodayExercises } from "@/components/workout/workout-today-exercises";
 import { AddWorkout } from "@/components/workout/add-workout";
-import {
-  BottomSheetBackdrop,
-  BottomSheetBackdropProps,
-  BottomSheetModal,
-  BottomSheetScrollView,
-  BottomSheetView,
-} from "@gorhom/bottom-sheet";
-import { useCallback, useMemo, useRef } from "react";
-import { ExercisePicker } from "@/components/workout/exercise-picker";
-import { PrimaryButton } from "@/components/primary-button";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { useRef } from "react";
+import { WorkoutBottomSheet } from "@/components/workout/workout-bottomsheet";
 
 export default function Workout() {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
-  // TODO: We can move these bottom sheet properties to one file
-  const snapPoints = useMemo(() => ["100%"], []);
-  const renderBackdrop = useCallback(
-    (backdropProps: BottomSheetBackdropProps) => (
-      <BottomSheetBackdrop
-        {...backdropProps}
-        opacity={0.5}
-        enableTouchThrough={false}
-        appearsOnIndex={0}
-        disappearsOnIndex={-1}
-        pressBehavior={"none"}
-        style={[
-          { backgroundColor: "rgba(0, 0, 0, 1)" },
-          StyleSheet.absoluteFillObject,
-        ]}
-      />
-    ),
-    []
-  );
 
   return (
     <View className="flex-1 pt-16 pb-20 px-4 bg-background">
@@ -56,34 +24,7 @@ export default function Workout() {
         </View>
       </ScrollView>
 
-      <BottomSheetModal
-        backdropComponent={renderBackdrop}
-        handleStyle={{ display: "none" }}
-        enablePanDownToClose={false}
-        snapPoints={snapPoints}
-        ref={bottomSheetRef}
-      >
-        <BottomSheetView style={{ flex: 1 }}>
-          <View className="flex-1 px-4">
-            <View className="mt-8">
-              <Text className="font-bold text-xl">Hareket Ekle</Text>
-            </View>
-
-            <View className="mt-4">
-              <Text className="text-lg">Hareketi Seç</Text>
-              <ExercisePicker />
-            </View>
-            <View className="flex flex-row gap-x-3 mt-auto pb-6">
-              <PrimaryButton
-                onPress={() => bottomSheetRef?.current?.dismiss()}
-                type="outlined"
-                text="Vazgeç"
-              />
-              <PrimaryButton text="Kaydet" className="flex-1" />
-            </View>
-          </View>
-        </BottomSheetView>
-      </BottomSheetModal>
+      <WorkoutBottomSheet bottomSheetRef={bottomSheetRef} />
     </View>
   );
 }
