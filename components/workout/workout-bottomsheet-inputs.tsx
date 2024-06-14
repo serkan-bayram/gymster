@@ -10,6 +10,7 @@ import { useSaveWorkout } from "@/utils/apis/workout";
 import { PrimaryButton } from "../primary-button";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 
+// TODO: We need to validate input
 export function WorkoutBottomSheetInputs({
   bottomSheetRef,
 }: {

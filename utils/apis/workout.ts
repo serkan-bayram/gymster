@@ -142,3 +142,29 @@ export function useSaveWorkout() {
     mutationFn: mutationFn,
   });
 }
+
+export function useDeleteWorkout() {
+  const { todaysWorkouts } = useSelector((state: RootState) => state.workout);
+
+  const queryClient = useQueryClient();
+
+  const mutationFn = async (deletedWorkout: number) => {
+    if (!todaysWorkouts) return null;
+
+    const newWorkouts = todaysWorkouts?.todaysWorkouts.filter(
+      (workout) => workout.exerciseId !== deletedWorkout
+    );
+
+    await updateWorkouts(todaysWorkouts.documentPath, newWorkouts);
+
+    return true;
+  };
+
+  return useMutation({
+    mutationKey: ["deleteWorkout"],
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["getTodaysWorkouts"] });
+    },
+    mutationFn: mutationFn,
+  });
+}

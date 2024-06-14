@@ -22,6 +22,11 @@ export function WorkoutTodayExercises() {
       {exercises?.map((exercise) => {
         return <Exercise key={Crypto.randomUUID()} exercise={exercise} />;
       })}
+      <View>
+        <Text className="text-white text-center text-xs">
+          *Bir egzersizi silmek için basılı tutun.
+        </Text>
+      </View>
     </ScrollView>
   );
 }

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Alert, Pressable, Text, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Set } from "./set";
 import { cn } from "@/utils/cn";
@@ -8,6 +8,8 @@ import * as Crypto from "expo-crypto";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { useSelector } from "react-redux";
 import { RootState } from "@/utils/state/store";
+import { useDeleteWorkout } from "@/utils/apis/workout";
+import * as Haptics from "expo-haptics";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -27,8 +29,28 @@ export function Exercise({ exercise }: { exercise: ExerciseType }) {
   const totalSet = exercises.length;
   const totalRepeat = exercises.reduce((total, ex) => total + ex.repeat, 0);
 
+  const deleteWorkout = useDeleteWorkout();
+
+  const handleLongPress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    Alert.alert(
+      "Bu egzersizi silmek istediğinize emin misiniz?",
+      exerciseName?.name,
+      [
+        {
+          text: "Sil",
+          onPress: () => {
+            deleteWorkout.mutate(exercise.exerciseId);
+          },
+        },
+        { text: "Vazgeç" },
+      ]
+    );
+  };
+
   return (
     <AnimatedPressable
+      onLongPress={handleLongPress}
       entering={FadeIn.duration(300)}
       onPress={() => setIsOpen((prevValue) => !prevValue)}
       className="  rounded-xl border
