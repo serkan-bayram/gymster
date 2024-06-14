@@ -5,14 +5,20 @@ import { memo, useEffect, useMemo, useState } from "react";
 import { cn } from "@/utils/cn";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/utils/state/store";
-import { setExercise } from "@/utils/state/workout/workoutSlice";
-import { DefaultExercise } from "@/utils/types/workout";
+import { DefaultExercise, DefaultExercises } from "@/utils/types/workout";
+import { setAddingWorkout } from "@/utils/state/workout/workoutSlice";
 
 const Exercise = ({ exercise }: { exercise: DefaultExercise }) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const handlePress = () => {
-    dispatch(setExercise({ id: exercise.id, name: exercise.name }));
+    dispatch(
+      setAddingWorkout({
+        type: "exercise",
+        exerciseId: exercise.id,
+        exercise: exercise.name,
+      })
+    );
   };
 
   const addingWorkout = useSelector(
@@ -44,7 +50,7 @@ const Exercises = memo(({ exercises }: { exercises: DefaultExercise[] }) => {
 export function ExercisePicker({
   defaultExercises,
 }: {
-  defaultExercises: DefaultExercise[];
+  defaultExercises: DefaultExercises;
 }) {
   // User input
   const [searched, setSearched] = useState<string | null>(null);
@@ -54,7 +60,7 @@ export function ExercisePicker({
 
   const exercises = useMemo(() => {
     // Filter exercises if any filter exists
-    return defaultExercises.filter((exercise) => {
+    return defaultExercises.exercises.filter((exercise) => {
       if (filteredExercise) {
         return exercise.name.startsWith(filteredExercise);
       }

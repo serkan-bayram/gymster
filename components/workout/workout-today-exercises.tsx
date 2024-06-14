@@ -1,23 +1,27 @@
 import { ScrollView } from "react-native-gesture-handler";
 import { Exercise } from "./exercise";
 import { useGetTodaysWorkouts } from "@/utils/apis/workout";
-import { View } from "react-native";
+import * as Crypto from "expo-crypto";
+import { Text, View } from "react-native";
 
 export function WorkoutTodayExercises() {
-  const todaysWorkouts = useGetTodaysWorkouts();
+  const { data: todaysWorkouts, isPending } = useGetTodaysWorkouts();
 
-  console.log("Todays Workouts: ", todaysWorkouts?.data);
+  const exercises = todaysWorkouts?.todaysWorkouts;
+
+  if (isPending) {
+    return (
+      <View className="flex flex-1 justify-center items-center">
+        <Text>Yükleniyor...</Text>
+      </View>
+    );
+  }
 
   return (
     <ScrollView className="mt-4">
-      <Exercise exercise="Chest Presssss" set={{ setCount: 3, repeat: 32 }} />
-      <Exercise exercise="Chest Presssss" set={{ setCount: 3, repeat: 32 }} />
-      <Exercise exercise="Chest Presssss" set={{ setCount: 3, repeat: 32 }} />
-      <Exercise exercise="Chest Presssss" set={{ setCount: 3, repeat: 32 }} />
-      <Exercise exercise="Chest Presssss" set={{ setCount: 3, repeat: 32 }} />
-      <Exercise exercise="Chest Presssss" set={{ setCount: 3, repeat: 32 }} />
-      <Exercise exercise="Chest Presssss" set={{ setCount: 3, repeat: 32 }} />
-      <Exercise exercise="Chest Presssss" set={{ setCount: 3, repeat: 32 }} />
+      {exercises?.map((exercise) => {
+        return <Exercise key={Crypto.randomUUID()} exercise={exercise} />;
+      })}
     </ScrollView>
   );
 }

@@ -1,8 +1,14 @@
-import { AddingWorkout } from "@/utils/types/workout";
+import {
+  AddingWorkout,
+  DefaultExercises,
+  TodaysWorkoutsDB,
+} from "@/utils/types/workout";
 import { createSlice } from "@reduxjs/toolkit";
 
 interface WorkoutState {
   addingWorkout: AddingWorkout;
+  todaysWorkouts: TodaysWorkoutsDB | null;
+  defaultExercises: DefaultExercises | null;
 }
 
 const initialAddingWorkout = {
@@ -15,24 +21,39 @@ const initialAddingWorkout = {
 const initialState: WorkoutState = {
   // We update this object when user is currently adding a workout
   addingWorkout: { ...initialAddingWorkout },
+  // We fetch todaysWorkouts from DB
+  todaysWorkouts: null,
+  defaultExercises: null,
 };
 
 const workoutSlice = createSlice({
   name: "workout",
   initialState,
   reducers: {
-    setExercise: (state, action) => {
-      state.addingWorkout.exerciseId = action.payload.id;
-      state.addingWorkout.exercise = action.payload.name;
+    // We use this dispatch when user is adding a workout
+    setAddingWorkout: (state, action) => {
+      switch (action.payload.type) {
+        case "exercise":
+          state.addingWorkout.exerciseId = action.payload.exerciseId;
+          state.addingWorkout.exercise = action.payload.exercise;
+          break;
+        case "weight":
+          state.addingWorkout.weight = action.payload.weight;
+          break;
+        case "repeat":
+          state.addingWorkout.repeat = action.payload.repeat;
+          break;
+        default:
+          console.log("Error on setAddingWorkout Slice: ", action.payload);
+          break;
+      }
     },
-    setWeight: (state, action) => {
-      state.addingWorkout.weight = action.payload;
+    // We set todays workouts when we fetch it from DB
+    setTodaysWorkouts: (state, action) => {
+      state.todaysWorkouts = action.payload;
     },
-    setRepeat: (state, action) => {
-      state.addingWorkout.repeat = action.payload;
-    },
-    saveWorkout: (state) => {
-      console.log(state.addingWorkout);
+    setDefaultExercises: (state, action) => {
+      state.defaultExercises = action.payload;
     },
     resetAddingWorkout: (state) => {
       return { ...state, addingWorkout: initialAddingWorkout };
@@ -41,11 +62,10 @@ const workoutSlice = createSlice({
 });
 
 export const {
-  setExercise,
-  setWeight,
-  setRepeat,
-  saveWorkout,
+  setTodaysWorkouts,
   resetAddingWorkout,
+  setAddingWorkout,
+  setDefaultExercises,
 } = workoutSlice.actions;
 
 export default workoutSlice.reducer;
