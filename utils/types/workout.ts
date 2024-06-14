@@ -19,3 +19,20 @@ export interface DefaultExercise {
 export interface DefaultExercises {
   exercises: DefaultExercise[];
 }
+
+export interface AddingWorkout {
+  exerciseId: number | null;
+  exercise: string | null;
+  weight: number | null;
+  repeat: number | null;
+}
+
+export interface AllWorkouts {
+  documentPath: string;
+  date: {
+    day: number;
+    month: string;
+    year: number;
+  };
+  workout: Exercise[];
+}

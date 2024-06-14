@@ -8,6 +8,7 @@ import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useRef } from "react";
 import { WorkoutBottomSheet } from "@/components/workout/workout-bottomsheet";
 import { useGetDefaultExercises } from "@/utils/apis/workout";
+import { PastWorkouts } from "@/components/workout/past-workouts";
 
 export default function Workout() {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
@@ -32,6 +33,10 @@ export default function Workout() {
           <WorkoutTodayExercises />
 
           <AddWorkout bottomSheetRef={bottomSheetRef} />
+        </View>
+
+        <View className="p-4 px-0 ">
+          <PastWorkouts />
         </View>
       </ScrollView>
 

@@ -1,5 +1,6 @@
 import {
   AddingWorkout,
+  AllWorkouts,
   DefaultExercises,
   TodaysWorkoutsDB,
 } from "@/utils/types/workout";
@@ -9,6 +10,7 @@ interface WorkoutState {
   addingWorkout: AddingWorkout;
   todaysWorkouts: TodaysWorkoutsDB | null;
   defaultExercises: DefaultExercises | null;
+  allWorkouts: AllWorkouts | null;
 }
 
 const initialAddingWorkout = {
@@ -24,6 +26,7 @@ const initialState: WorkoutState = {
   // We fetch todaysWorkouts from DB
   todaysWorkouts: null,
   defaultExercises: null,
+  allWorkouts: null,
 };
 
 const workoutSlice = createSlice({
@@ -55,6 +58,9 @@ const workoutSlice = createSlice({
     setDefaultExercises: (state, action) => {
       state.defaultExercises = action.payload;
     },
+    setAllWorkouts: (state, action) => {
+      state.allWorkouts = action.payload;
+    },
     resetAddingWorkout: (state) => {
       return { ...state, addingWorkout: initialAddingWorkout };
     },
@@ -66,6 +72,7 @@ export const {
   resetAddingWorkout,
   setAddingWorkout,
   setDefaultExercises,
+  setAllWorkouts,
 } = workoutSlice.actions;
 
 export default workoutSlice.reducer;

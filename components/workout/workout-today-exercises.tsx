@@ -19,13 +19,23 @@ export function WorkoutTodayExercises() {
 
   return (
     <ScrollView className="mt-4">
-      {exercises?.map((exercise) => {
-        return <Exercise key={Crypto.randomUUID()} exercise={exercise} />;
-      })}
+      {exercises &&
+        exercises.map((exercise) => {
+          return (
+            <Exercise
+              workout={todaysWorkouts.todaysWorkouts}
+              documentPath={todaysWorkouts.documentPath}
+              key={Crypto.randomUUID()}
+              exercise={exercise}
+            />
+          );
+        })}
       <View>
-        <Text className="text-white text-center text-xs">
-          *Bir egzersizi silmek için basılı tutun.
-        </Text>
+        {exercises && exercises.length > 0 && (
+          <Text className="text-white text-center text-xs">
+            *Bir egzersizi silmek için basılı tutun.
+          </Text>
+        )}
       </View>
     </ScrollView>
   );

@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../state/store";
 import { Alert } from "react-native";
 import {
+  setAllWorkouts,
   setDefaultExercises,
   setTodaysWorkouts,
 } from "../state/workout/workoutSlice";
@@ -10,6 +11,7 @@ import {
   createWorkoutDocument,
   getDefaultExercises,
   getTodaysWorkouts,
+  getWorkouts,
   updateWorkouts,
 } from "../db/workout";
 import { Exercise, TodaysWorkoutsDB } from "../types/workout";
@@ -50,6 +52,29 @@ export function useGetTodaysWorkouts() {
 
   return useQuery({
     queryKey: ["getTodaysWorkouts"],
+    queryFn: queryFn,
+  });
+}
+
+export function useGetWorkouts() {
+  const user = useSelector((state: RootState) => state.session.user);
+
+  const dispatch = useDispatch<AppDispatch>();
+
+  const queryFn = async () => {
+    if (!user) return null;
+
+    const workouts = await getWorkouts(user);
+
+    dispatch(setAllWorkouts(workouts));
+
+    if (!workouts) return null;
+
+    return workouts;
+  };
+
+  return useQuery({
+    queryKey: ["getWorkouts"],
     queryFn: queryFn,
   });
 }
@@ -138,24 +163,29 @@ export function useSaveWorkout() {
     mutationKey: ["saveWorkout"],
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["getTodaysWorkouts"] });
+      await queryClient.invalidateQueries({ queryKey: ["getWorkouts"] });
     },
     mutationFn: mutationFn,
   });
 }
 
 export function useDeleteWorkout() {
-  const { todaysWorkouts } = useSelector((state: RootState) => state.workout);
-
   const queryClient = useQueryClient();
 
-  const mutationFn = async (deletedWorkout: number) => {
-    if (!todaysWorkouts) return null;
-
-    const newWorkouts = todaysWorkouts?.todaysWorkouts.filter(
+  const mutationFn = async ({
+    workout,
+    deletedWorkout,
+    documentPath,
+  }: {
+    workout: Exercise[];
+    deletedWorkout: number;
+    documentPath: string;
+  }) => {
+    const newWorkouts = workout.filter(
       (workout) => workout.exerciseId !== deletedWorkout
     );
 
-    await updateWorkouts(todaysWorkouts.documentPath, newWorkouts);
+    await updateWorkouts(documentPath, newWorkouts);
 
     return true;
   };
@@ -164,6 +194,7 @@ export function useDeleteWorkout() {
     mutationKey: ["deleteWorkout"],
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["getTodaysWorkouts"] });
+      await queryClient.invalidateQueries({ queryKey: ["getWorkouts"] });
     },
     mutationFn: mutationFn,
   });

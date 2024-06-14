@@ -13,15 +13,22 @@ import * as Haptics from "expo-haptics";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-export function Exercise({ exercise }: { exercise: ExerciseType }) {
+export function Exercise({
+  exercise,
+  darkMode,
+  workout,
+  documentPath,
+}: {
+  exercise: ExerciseType;
+  darkMode?: boolean;
+  workout: ExerciseType[];
+  documentPath: string;
+}) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const { exerciseId, exercises } = exercise;
 
-  const defaultExercises = useSelector(
-    (state: RootState) => state.workout.defaultExercises
-  );
-
+  const { defaultExercises } = useSelector((state: RootState) => state.workout);
   const exerciseName = defaultExercises?.exercises.find((ex) => {
     return exerciseId === ex.id;
   });
@@ -40,7 +47,11 @@ export function Exercise({ exercise }: { exercise: ExerciseType }) {
         {
           text: "Sil",
           onPress: () => {
-            deleteWorkout.mutate(exercise.exerciseId);
+            deleteWorkout.mutate({
+              workout: workout,
+              deletedWorkout: exercise.exerciseId,
+              documentPath: documentPath,
+            });
           },
         },
         { text: "Vazgeç" },
@@ -53,12 +64,17 @@ export function Exercise({ exercise }: { exercise: ExerciseType }) {
       onLongPress={handleLongPress}
       entering={FadeIn.duration(300)}
       onPress={() => setIsOpen((prevValue) => !prevValue)}
-      className="  rounded-xl border
-                border-white active:bg-black/75 transition-all mb-4"
+      className={cn(
+        "rounded-xl border border-white active:bg-black/75 transition-all mb-4",
+        {
+          "border-none bg-secondary mb-2": darkMode,
+        }
+      )}
     >
       <View
-        className="h-10 px-3 flex flex-row items-center
-               justify-between"
+        className={cn("h-10 px-3 flex flex-row items-center justify-between", {
+          "h-12": darkMode,
+        })}
       >
         <Text numberOfLines={1} className="text-white max-w-[50%]">
           {exerciseName?.name || "Egzersiz"}
@@ -73,7 +89,7 @@ export function Exercise({ exercise }: { exercise: ExerciseType }) {
         </View>
       </View>
       {isOpen && (
-        <View className="mt-3 ">
+        <View className="pt-3">
           {exercises.map((ex, index) => {
             return (
               <Set

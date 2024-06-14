@@ -2,9 +2,10 @@ import firestore, {
   FirebaseFirestoreTypes,
 } from "@react-native-firebase/firestore";
 import { getTimestampsForADay } from "../get-timestamps-for-a-day";
-import { SessionState, User } from "../types/session";
+import { User } from "../types/session";
 import {
   AddingWorkout,
+  AllWorkouts,
   DefaultExercises,
   Exercise,
   TodaysWorkoutsDB,
@@ -52,6 +53,38 @@ export async function getTodaysWorkouts(
     todaysWorkouts: todaysWorkouts,
     documentPath: querySnapshot.docs[0].ref.path,
   };
+}
+
+export async function getWorkouts(user: User): Promise<AllWorkouts[] | null> {
+  const query = workoutsRef
+    .where("uid", "==", user.uid)
+    .orderBy("createdAt", "desc");
+
+  const querySnapshot = await query.get();
+
+  if (querySnapshot.size === 0) return null;
+
+  const workouts: AllWorkouts[] = [];
+
+  querySnapshot.forEach((documentSnapshot) => {
+    const data = documentSnapshot.data();
+
+    const date = new Date(data.createdAt.toDate());
+
+    const workoutObject: AllWorkouts = {
+      date: {
+        day: date.getDate(),
+        month: date.toLocaleString("tr-TR", { month: "long" }),
+        year: date.getFullYear(),
+      },
+      workout: data.workout,
+      documentPath: documentSnapshot.ref.path,
+    };
+
+    workouts.push(workoutObject);
+  });
+
+  return workouts;
 }
 
 export async function createWorkoutDocument(
