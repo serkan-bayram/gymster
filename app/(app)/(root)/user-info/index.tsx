@@ -15,10 +15,10 @@ import {
   Text,
   View,
 } from "react-native";
-import { updateUserInfo } from "@/utils/db";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useSelector } from "react-redux";
 import { RootState } from "@/utils/state/store";
+import { updateUserInfo } from "@/utils/db/user-info";
 
 export default function UserInfo() {
   const [age, setAge] = useState<string>("");

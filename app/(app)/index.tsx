@@ -2,10 +2,7 @@ import { StatusBar } from "expo-status-bar";
 import { View, Text } from "react-native";
 import { LandingMascot } from "@/components/ui/landing-mascot";
 import { LandingText } from "@/components/ui/landing-text";
-import {
-  GoogleSignin,
-  GoogleSigninButton,
-} from "@react-native-google-signin/google-signin";
+import { GoogleSigninButton } from "@react-native-google-signin/google-signin";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/utils/state/store";
 import { signIn } from "@/utils/state/session/sessionSlice";
