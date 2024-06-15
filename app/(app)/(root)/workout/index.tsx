@@ -7,20 +7,27 @@ import { AddWorkout } from "@/components/workout/add-workout";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useRef } from "react";
 import { WorkoutBottomSheet } from "@/components/workout/workout-bottomsheet";
-import { useGetDefaultExercises } from "@/utils/apis/workout";
+import {
+  useGetDefaultExercises,
+  useGetTodaysWorkouts,
+  useGetWorkouts,
+} from "@/utils/apis/workout";
 import { PastWorkouts } from "@/components/workout/past-workouts";
+import { FullScreenLoading } from "@/components/loading";
 
 export default function Workout() {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
 
-  const { isPending } = useGetDefaultExercises();
+  const { isPending: isDefaultExercisesPending } = useGetDefaultExercises();
+  const { isPending: isTodaysWorkoutsPending } = useGetTodaysWorkouts();
+  const { isPending: isWorkoutsPending } = useGetWorkouts();
 
-  if (isPending) {
-    return (
-      <View className="flex flex-1 justify-center items-center">
-        <Text>Yükleniyor...</Text>
-      </View>
-    );
+  if (
+    isDefaultExercisesPending ||
+    isTodaysWorkoutsPending ||
+    isWorkoutsPending
+  ) {
+    return <FullScreenLoading />;
   }
 
   return (

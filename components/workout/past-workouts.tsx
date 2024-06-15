@@ -4,17 +4,11 @@ import { Feather } from "@expo/vector-icons";
 import { Exercise } from "@/components/workout/exercise";
 import * as Crypto from "expo-crypto";
 import { Divider } from "@/components/ui/divider";
+import { useSelector } from "react-redux";
+import { RootState } from "@/utils/state/store";
 
 export function PastWorkouts() {
-  const { data: workouts, isPending } = useGetWorkouts();
-
-  if (isPending) {
-    return (
-      <View className="flex flex-1 justify-center items-center">
-        <Text>Yükleniyor...</Text>
-      </View>
-    );
-  }
+  const workouts = useSelector((state: RootState) => state.workout.allWorkouts);
 
   return (
     <>

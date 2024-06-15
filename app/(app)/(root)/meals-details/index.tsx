@@ -6,6 +6,7 @@ import { MealsDetailsHeader } from "@/components/meals-details/meals-details-hea
 import { MemoizedMeals } from "@/components/meals-details/memoized-meals";
 import { DateObject, MealsDetailsObject } from "@/utils/types/meals";
 import { useGetMeals } from "@/utils/apis/meals";
+import { FullScreenLoading } from "@/components/loading";
 
 export default function MealsDetails() {
   const [meals, setMeals] = useState<DateObject[]>();
@@ -45,11 +46,7 @@ export default function MealsDetails() {
   });
 
   if (getMeals.isPending || !currentMeal) {
-    return (
-      <View className="flex-1 justify-center items-center">
-        <Text>Yükleniyor...</Text>
-      </View>
-    );
+    return <FullScreenLoading />;
   }
 
   return (

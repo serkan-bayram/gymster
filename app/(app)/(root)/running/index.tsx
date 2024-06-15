@@ -19,6 +19,8 @@ import { RunningButtons } from "@/components/running/running-buttons";
 import { PastRuns } from "@/components/running/past-runs";
 import { ScrollView } from "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
+import { FullScreenLoading } from "@/components/loading";
+import { useGetRuns } from "@/utils/apis/runs";
 
 TaskManager.defineTask(
   LOCATION_TASK_NAME,
@@ -56,6 +58,12 @@ TaskManager.defineTask(
 export default function Running() {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
 
+  const getRuns = useGetRuns();
+
+  if (getRuns.isPending) {
+    return <FullScreenLoading />;
+  }
+
   return (
     <>
       <ScrollView className="pt-16 pb-20 px-4 bg-background flex-1 ">
@@ -63,7 +71,7 @@ export default function Running() {
 
         <StartRunning bottomSheetRef={bottomSheetRef} />
 
-        <PastRuns />
+        <PastRuns getRunsData={getRuns.data} />
 
         <BottomSheetModal
           handleStyle={{ display: "none" }}

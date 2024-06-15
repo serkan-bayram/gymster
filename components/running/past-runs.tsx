@@ -6,20 +6,15 @@ import * as Crypto from "expo-crypto";
 import { TopStats } from "./top-stats";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import * as Haptics from "expo-haptics";
-import { useUpdateRuns, useGetRuns } from "@/utils/apis/runs";
+import { useUpdateRuns } from "@/utils/apis/runs";
 import { Run, RunsDB } from "@/utils/types/runs";
 
-export function PastRuns() {
+export function PastRuns({
+  getRunsData,
+}: {
+  getRunsData: RunsDB[] | null | undefined;
+}) {
   const updateRuns = useUpdateRuns();
-  const getRuns = useGetRuns();
-
-  if (getRuns.isPending) {
-    return (
-      <View className="w-full h-full items-center mt-4">
-        <Text>Yükleniyor...</Text>
-      </View>
-    );
-  }
 
   // When user long press a RunRow
   const handleLongPress = (item: RunsDB, runObject: Run) => {
@@ -59,26 +54,26 @@ export function PastRuns() {
   // We don't delete empy runs from database,
   // we check is there really a run exists with this block
   let isAnyRunsExists = false;
-  if (getRuns.data) {
+  if (getRunsData) {
     isAnyRunsExists =
-      getRuns.data.filter((run) => run.runs.length > 0).length > 0;
+      getRunsData.filter((run) => run.runs.length > 0).length > 0;
   }
 
   //TODO: Should specify the year
   return (
     <>
-      {getRuns.data && isAnyRunsExists && <TopStats data={getRuns.data} />}
+      {getRunsData && isAnyRunsExists && <TopStats data={getRunsData} />}
 
       <View className="mt-4">
         <Text className="font-bold text-xl">Geçmiş Koşular</Text>
-        {getRuns.data && isAnyRunsExists ? (
+        {getRunsData && isAnyRunsExists ? (
           <>
             <View className="mt-3 min-h-full pb-48 ">
               <FlashList
                 estimatedItemSize={190}
-                data={getRuns.data}
+                data={getRunsData}
                 renderItem={({ item, index }) => {
-                  const isLast = index + 1 === getRuns?.data?.length;
+                  const isLast = index + 1 === getRunsData.length;
 
                   if (isLast) {
                     return (

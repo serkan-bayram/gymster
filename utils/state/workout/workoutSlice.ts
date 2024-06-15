@@ -10,7 +10,7 @@ interface WorkoutState {
   addingWorkout: AddingWorkout;
   todaysWorkouts: TodaysWorkoutsDB | null;
   defaultExercises: DefaultExercises | null;
-  allWorkouts: AllWorkouts | null;
+  allWorkouts: AllWorkouts[] | null;
 }
 
 const initialAddingWorkout = {
