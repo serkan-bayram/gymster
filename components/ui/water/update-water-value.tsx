@@ -2,8 +2,16 @@ import { Pressable, Text, View } from "react-native";
 import { ExtractSvg, PlusSvg } from "../svg";
 import { useWater } from "@/utils/water-context";
 import { useUpdateWater } from "@/utils/apis/water";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/utils/state/store";
+import { setProgress } from "@/utils/state/water/waterSlice";
 
-const useCalculateProgress = (type, currentProgress, goal, updateValue) => {
+const useCalculateProgress = (
+  type: string,
+  currentProgress: number,
+  goal: number,
+  updateValue: number
+) => {
   // If this happens somehow
   if (currentProgress > goal) {
     currentProgress = goal;
@@ -25,12 +33,17 @@ const useCalculateProgress = (type, currentProgress, goal, updateValue) => {
 };
 
 // This component is used to increase or decrease current water progress
-export function UpdateWaterValue({ currentProgress, setCurrentProgress }) {
-  const { updateValue, goalValue: goal } = useWater();
+export function UpdateWaterValue() {
+  const {
+    updateValue,
+    goalValue: goal,
+    progress: currentProgress,
+  } = useSelector((state: RootState) => state.water);
+  const dispatch = useDispatch<AppDispatch>();
 
   const updateWater = useUpdateWater();
 
-  const handleClick = (type) => {
+  const handleClick = (type: string) => {
     const newProgress = useCalculateProgress(
       type,
       currentProgress,
@@ -38,7 +51,7 @@ export function UpdateWaterValue({ currentProgress, setCurrentProgress }) {
       updateValue
     );
 
-    setCurrentProgress(newProgress);
+    dispatch(setProgress(newProgress));
 
     updateWater.mutate({ newProgress: newProgress });
   };
@@ -55,7 +68,7 @@ export function UpdateWaterValue({ currentProgress, setCurrentProgress }) {
        active:scale-110 transition-all
      rounded-xl p-2  transition-300 "
         >
-          <PlusSvg width={"20"} height={"20"} fill={"#7AA2E3"} />
+          <PlusSvg width={20} height={20} fill={"#7AA2E3"} />
         </Pressable>
 
         <Pressable
@@ -64,7 +77,7 @@ export function UpdateWaterValue({ currentProgress, setCurrentProgress }) {
        active:scale-110 transition-all
      rounded-xl p-2   transition-300"
         >
-          <ExtractSvg width="20" height="20" fill="#7AA2E3" />
+          <ExtractSvg width={20} height={20} fill="#7AA2E3" />
         </Pressable>
       </View>
       <Text>{updateValue} ml kadar</Text>

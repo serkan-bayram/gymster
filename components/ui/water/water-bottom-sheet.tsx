@@ -1,27 +1,40 @@
 import { Text, View } from "react-native";
 import { PrimaryButton } from "../../primary-button";
 import { BottomSheetView, BottomSheetModal } from "@gorhom/bottom-sheet";
-import { useRef, useState } from "react";
+import { RefObject, useRef, useState } from "react";
 import { WaterPickers } from "./water-pickers";
-import { useWater } from "@/utils/water-context";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/utils/state/store";
+import { setGoalValue, setUpdateValue } from "@/utils/state/water/waterSlice";
 
 // Content of bottom sheet for water section
-export function WaterBottomSheet({ bottomSheetRef }) {
+export function WaterBottomSheet({
+  bottomSheetRef,
+}: {
+  bottomSheetRef: RefObject<BottomSheetModal>;
+}) {
   // Picker refs
-  const updatePickerRef = useRef(null);
-  const goalPickerRef = useRef(null);
+  const updatePickerRef = useRef<any>(null);
+  const goalPickerRef = useRef<any>(null);
 
-  const { updateValue, setUpdateValue, goalValue, setGoalValue } = useWater();
+  const { updateValue, goalValue } = useSelector(
+    (state: RootState) => state.water
+  );
+  const dispatch = useDispatch<AppDispatch>();
 
   // Values that picked from picker
-  const [pickedUpdateValue, setPickedUpdateValue] = useState(updateValue);
-  const [pickedGoalValue, setPickedGoalValue] = useState(goalValue);
+  const [pickedUpdateValue, setPickedUpdateValue] = useState<string>(
+    updateValue.toString()
+  );
+  const [pickedGoalValue, setPickedGoalValue] = useState<string>(
+    goalValue.toString()
+  );
 
   const handleSave = () => {
-    setUpdateValue(parseInt(pickedUpdateValue));
-    setGoalValue(parseInt(pickedGoalValue));
+    dispatch(setUpdateValue(parseInt(pickedUpdateValue)));
+    dispatch(setGoalValue(parseInt(pickedGoalValue)));
 
-    bottomSheetRef.current.dismiss();
+    bottomSheetRef?.current?.dismiss();
   };
 
   return (
@@ -36,7 +49,7 @@ export function WaterBottomSheet({ bottomSheetRef }) {
             <View className="flex flex-row items-center justify-between">
               <Text className="text-lg font-bold">Güncelleme Değeri</Text>
               <PrimaryButton
-                onPress={() => updatePickerRef.current.focus()}
+                onPress={() => updatePickerRef.current?.focus()}
                 text={`${pickedUpdateValue} ml`}
                 type="outlined"
                 className="active:scale-105 ease-in-out transition-all w-1/3"
@@ -46,7 +59,7 @@ export function WaterBottomSheet({ bottomSheetRef }) {
             <View className="flex flex-row items-center justify-between">
               <Text className="text-lg font-bold">Günlük Hedef</Text>
               <PrimaryButton
-                onPress={() => goalPickerRef.current.focus()}
+                onPress={() => goalPickerRef.current?.focus()}
                 text={`${pickedGoalValue} ml`}
                 type="outlined"
                 className="active:scale-105 ease-in-out transition-all w-1/3"
@@ -65,7 +78,7 @@ export function WaterBottomSheet({ bottomSheetRef }) {
 
           <View className="flex flex-row justify-center items-center mt-16 gap-x-6 ">
             <PrimaryButton
-              onPress={() => bottomSheetRef.current.dismiss()}
+              onPress={() => bottomSheetRef?.current?.dismiss()}
               text="Vazgeç"
               type="danger"
               className="w-1/3"

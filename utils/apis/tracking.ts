@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../state/store";
 import { findTrackingsDoc } from "../db/tracking";
 import { setWentToGYM } from "../state/gymDays/gymDaysSlice";
+import { setProgress } from "../state/water/waterSlice";
 
 export function useGetTracking() {
   const user = useSelector((state: RootState) => state.session.user);
@@ -22,6 +23,10 @@ export function useGetTracking() {
 
     if (trackingsDoc.wentToGYM) {
       dispatch(setWentToGYM(trackingsDoc.wentToGYM));
+    }
+
+    if (trackingsDoc.hydration) {
+      dispatch(setProgress(trackingsDoc.hydration.progress));
     }
 
     return trackingsDoc;

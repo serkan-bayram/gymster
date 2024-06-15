@@ -7,6 +7,9 @@ const trackingsRef = firestore().collection("Trackings");
 
 interface TrackingsDoc {
   wentToGYM?: boolean;
+  hydration?: {
+    progress: number;
+  };
 }
 
 interface Trackings extends FirebaseFirestoreTypes.DocumentData {

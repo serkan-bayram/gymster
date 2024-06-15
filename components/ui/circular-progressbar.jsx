@@ -6,7 +6,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import Svg, { Circle } from "react-native-svg";
-import { useWater } from "@/utils/water-context";
+import { useSelector } from "react-redux";
 
 // How big the circle will be
 const CIRCLE_LENGTH = 400;
@@ -15,8 +15,10 @@ const R = CIRCLE_LENGTH / (2 * Math.PI);
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 // TODO: There is sooo much bandage on this one component, we need to make it simpler
-export function ProgressBar({ currentProgress }) {
-  const { goalValue: goal } = useWater();
+export function ProgressBar() {
+  const { goalValue: goal, progress: currentProgress } = useSelector(
+    (state) => state.water
+  );
 
   // We use these states to locate svgs
   const [width, setWidth] = useState(null);

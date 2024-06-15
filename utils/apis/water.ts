@@ -7,12 +7,11 @@ import { updateHydrationProgress } from "../db/water";
 export function useUpdateWater() {
   const user = useSelector((state: RootState) => state.session.user);
 
-  const queryClient = useQueryClient();
-
   // TODO: This needs a debounce
   return useMutation({
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["tracking"] });
+      // TODO: Creates a visual bug, maybe invalidate after a couple of seconds
+      // await queryClient.invalidateQueries({ queryKey: ["tracking"] });
     },
     mutationFn: async ({ newProgress }: { newProgress: number }) => {
       if (!user) return null;
@@ -22,10 +21,7 @@ export function useUpdateWater() {
       if (foundTrackingsDoc) {
         const { trackingsPath } = foundTrackingsDoc;
 
-        const isUpdated = await updateHydrationProgress(
-          trackingsPath,
-          newProgress
-        );
+        await updateHydrationProgress(trackingsPath, newProgress);
       }
     },
   });

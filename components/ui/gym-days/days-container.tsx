@@ -1,4 +1,4 @@
-import { useGetGYMCalendar } from "@/utils/apis/gymDays";
+import { useGetGYMCalendar, useGetWentToGYMDays } from "@/utils/apis/gymDays";
 import { cn } from "@/utils/cn";
 import { RootState } from "@/utils/state/store";
 import { memo, useMemo } from "react";
@@ -31,6 +31,8 @@ const Days = memo(({ daysCount }: { daysCount: number | undefined }) => {
 
 export function DaysContainer() {
   const GYMCalendar = useGetGYMCalendar();
+
+  useGetWentToGYMDays();
 
   return (
     <View
