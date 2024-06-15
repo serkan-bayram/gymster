@@ -9,6 +9,7 @@ import {
   setWentToGYM,
   setWentToGYMDays,
 } from "@/utils/state/gymDays/gymDaysSlice";
+import { setRenderConfetti } from "@/utils/state/confetti/confettiSlice";
 
 export function DaysHeading() {
   const wentToGYM = useSelector((state: RootState) => state.gymDays.wentToGYM);
@@ -24,40 +25,47 @@ export function DaysHeading() {
     const serverDate = new Date(serverTime.date.toDate());
     const todaysDate = serverDate.getDate();
 
+    if (!wentToGYM) {
+      dispatch(setRenderConfetti(true));
+    }
+
     dispatch(setWentToGYMDays(todaysDate));
-    dispatch(setWentToGYM(!wentToGYM));
 
     updateWentToGYM.mutate({ wentToGYM: !wentToGYM });
+
+    dispatch(setWentToGYM(!wentToGYM));
   };
 
   return (
-    <View className="flex flex-row mb-2 justify-between items-center">
-      <Text className="text-lg font-semibold">Seri</Text>
-      <Pressable
-        className={cn(
-          `flex flex-row p-1 px-2 rounded-lg bg-white
+    <>
+      <View className="flex flex-row mb-2 justify-between items-center">
+        <Text className="text-lg font-semibold">Seri</Text>
+        <Pressable
+          className={cn(
+            `flex flex-row p-1 px-2 rounded-lg bg-white
       border items-center transition-all active:scale-105`,
-          {
-            "bg-green-600": wentToGYM,
-          }
-        )}
-        onPress={handleWentToGYM}
-      >
-        <Text
-          className={cn(`text-black`, {
-            "text-white": wentToGYM,
-          })}
+            {
+              "bg-green-600": wentToGYM,
+            }
+          )}
+          onPress={handleWentToGYM}
         >
-          Egzersiz Yaptım
-        </Text>
-        {wentToGYM ? (
-          <View className="rotate-45">
-            <PlusSvg width={15} height={15} fill={"white"} />
-          </View>
-        ) : (
-          <TickSvg width={15} height={15} fill={"black"} />
-        )}
-      </Pressable>
-    </View>
+          <Text
+            className={cn(`text-black`, {
+              "text-white": wentToGYM,
+            })}
+          >
+            Egzersiz Yaptım
+          </Text>
+          {wentToGYM ? (
+            <View className="rotate-45">
+              <PlusSvg width={15} height={15} fill={"white"} />
+            </View>
+          ) : (
+            <TickSvg width={15} height={15} fill={"black"} />
+          )}
+        </Pressable>
+      </View>
+    </>
   );
 }
