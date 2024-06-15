@@ -4,6 +4,7 @@ import sessionSlice from "./session/sessionSlice";
 import workoutSlice from "./workout/workoutSlice";
 import gymDaysSlice from "./gymDays/gymDaysSlice";
 import waterSlice from "./water/waterSlice";
+import mealsSlice from "./meals/mealsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     workout: workoutSlice,
     gymDays: gymDaysSlice,
     water: waterSlice,
+    meals: mealsSlice,
   },
 });
 

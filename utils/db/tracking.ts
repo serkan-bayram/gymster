@@ -2,6 +2,7 @@ import firestore, {
   FirebaseFirestoreTypes,
 } from "@react-native-firebase/firestore";
 import { getTimestampsForADay } from "../get-timestamps-for-a-day";
+import { Meal } from "../types/meals";
 
 const trackingsRef = firestore().collection("Trackings");
 
@@ -10,6 +11,7 @@ interface TrackingsDoc {
   hydration?: {
     progress: number;
   };
+  meals?: Meal[];
 }
 
 interface Trackings extends FirebaseFirestoreTypes.DocumentData {

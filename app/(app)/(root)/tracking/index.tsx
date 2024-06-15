@@ -21,7 +21,7 @@ export default function Tracking() {
       <ScrollView showsVerticalScrollIndicator={false}>
         <Heading heading={"Takip"} />
         <GYMDays />
-        {/* <Meals fetchedMeals={tracking.data?.meals || []} /> */}
+        <Meals />
         <Water />
       </ScrollView>
     </View>

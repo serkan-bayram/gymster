@@ -4,6 +4,7 @@ import { AppDispatch, RootState } from "../state/store";
 import { findTrackingsDoc } from "../db/tracking";
 import { setWentToGYM } from "../state/gymDays/gymDaysSlice";
 import { setProgress } from "../state/water/waterSlice";
+import { setMeals } from "../state/meals/mealsSlice";
 
 export function useGetTracking() {
   const user = useSelector((state: RootState) => state.session.user);
@@ -27,6 +28,10 @@ export function useGetTracking() {
 
     if (trackingsDoc.hydration) {
       dispatch(setProgress(trackingsDoc.hydration.progress));
+    }
+
+    if (trackingsDoc.meals) {
+      dispatch(setMeals(trackingsDoc.meals));
     }
 
     return trackingsDoc;

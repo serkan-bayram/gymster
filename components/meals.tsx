@@ -7,6 +7,8 @@ import { MealsBottomSheet } from "./meals-bottom-sheet";
 import { Octicons } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import { Meal } from "@/utils/types/meals";
+import { useSelector } from "react-redux";
+import { RootState } from "@/utils/state/store";
 
 type FetchedMeals = Meal[];
 
@@ -40,15 +42,19 @@ export const getColor = (index: number) => {
   return { bgColor, textColor };
 };
 
-export function Meals({ fetchedMeals }: { fetchedMeals: FetchedMeals }) {
+export function Meals() {
+  const { meals: fetchedMeals } = useSelector(
+    (state: RootState) => state.meals
+  );
+
   const mealsBottomSheetRef = useRef(null);
 
+  // We put AddMeal button instead of this placeholder
   const placeholderForAddMeal = {
     nutritions: { carbs: "", fat: "", kcal: "", protein: "" },
     userInput: "",
   };
 
-  // TODO: TODO: TODO: It goes crazy if ...fetchedMeals is null
   const [meals, setMeals] = useState<FetchedMeals>([
     placeholderForAddMeal,
     ...fetchedMeals,
