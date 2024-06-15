@@ -1,17 +1,15 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getServerTime } from "../db";
 import { daysInMonth } from "../days-in-month";
-import { useSelector } from "react-redux";
-import { RootState } from "../state/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../state/store";
 import { getGYMDays, updateWentToGYM } from "../db/gymDays";
 import { findTrackingsDoc } from "../db/tracking";
+import { setWentToGYMDays } from "../state/gymDays/gymDaysSlice";
 
-export function useGetWentToGYMDays({
-  setWentToGYMDays,
-}: {
-  setWentToGYMDays: (wentToGYMDays: number[]) => void;
-}) {
+export function useGetWentToGYMDays() {
   const user = useSelector((state: RootState) => state.session.user);
+  const dispatch = useDispatch<AppDispatch>();
 
   const queryFn = async () => {
     const serverTime = await getServerTime();
@@ -21,9 +19,9 @@ export function useGetWentToGYMDays({
     // Is an array that contains day numbers that user went to gym
     const wentToGYMDays = await getGYMDays(user.uid, serverTime.date);
 
-    setWentToGYMDays(wentToGYMDays);
+    dispatch(setWentToGYMDays(wentToGYMDays));
 
-    return { wentToGYMDays };
+    return { wentToGYMDays: wentToGYMDays };
   };
 
   // This query gets the days that user went to gym

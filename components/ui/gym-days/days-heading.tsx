@@ -3,32 +3,31 @@ import { PlusSvg, TickSvg } from "../svg";
 import { cn } from "@/utils/cn";
 import { getServerTime } from "@/utils/db";
 import { useUpdateWentToGYM } from "@/utils/apis/gymDays";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/utils/state/store";
+import {
+  setWentToGYM,
+  setWentToGYMDays,
+} from "@/utils/state/gymDays/gymDaysSlice";
 
-export function DaysHeading({ wentToGYM, setWentToGYM, setWentToGYMDays }) {
+export function DaysHeading() {
+  const wentToGYM = useSelector((state: RootState) => state.gymDays.wentToGYM);
+  const dispatch = useDispatch<AppDispatch>();
+
   const updateWentToGYM = useUpdateWentToGYM();
 
   const handleWentToGYM = async () => {
     const serverTime = await getServerTime();
 
+    if (!serverTime) return null;
+
     const serverDate = new Date(serverTime.date.toDate());
     const todaysDate = serverDate.getDate();
 
-    // Optimistic updates
-    // Add todays date if not already added
-    setWentToGYMDays((prevValues) => {
-      if (prevValues.includes(todaysDate)) {
-        const updatedDays = prevValues.filter((days) => days !== todaysDate);
-        return updatedDays;
-      }
-
-      const updatedDays = [...prevValues];
-      updatedDays.push(todaysDate);
-      return updatedDays;
-    });
+    dispatch(setWentToGYMDays(todaysDate));
+    dispatch(setWentToGYM(!wentToGYM));
 
     updateWentToGYM.mutate({ wentToGYM: !wentToGYM });
-
-    setWentToGYM(!wentToGYM);
   };
 
   return (

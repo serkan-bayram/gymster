@@ -21,11 +21,11 @@ export default function Tracking() {
     <View className="pt-16 pb-20 px-4 bg-background">
       <ScrollView showsVerticalScrollIndicator={false}>
         <Heading heading={"Takip"} />
-        <GYMDays fetchedWentToGYM={tracking.data?.wentToGYM || false} />
-        <Meals fetchedMeals={tracking.data?.meals || []} />
-        <WaterProvider>
-          <Water fetchedProgress={tracking.data?.hydration?.progress || null} />
-        </WaterProvider>
+        <GYMDays />
+        {/* <Meals fetchedMeals={tracking.data?.meals || []} /> */}
+        {/* <WaterProvider> */}
+        {/* <Water fetchedProgress={tracking.data?.hydration?.progress || null} /> */}
+        {/* </WaterProvider> */}
       </ScrollView>
     </View>
   );

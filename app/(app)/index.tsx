@@ -6,10 +6,13 @@ import { GoogleSigninButton } from "@react-native-google-signin/google-signin";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/utils/state/store";
 import { signIn } from "@/utils/state/session/sessionSlice";
+import { useRouter } from "expo-router";
 
 export default function App() {
   const dispatch = useDispatch<AppDispatch>();
-  const { isLoading } = useSelector((state: RootState) => state.session);
+  const { isLoading, user } = useSelector((state: RootState) => state.session);
+
+  const router = useRouter();
 
   return (
     <View className="bg-background flex  h-full pt-8">
@@ -31,7 +34,14 @@ export default function App() {
           <GoogleSigninButton
             size={GoogleSigninButton.Size.Wide}
             color={GoogleSigninButton.Color.Light}
-            onPress={() => dispatch(signIn())}
+            onPress={() => {
+              if (user) {
+                router.replace("/home");
+                return;
+              }
+
+              dispatch(signIn());
+            }}
             disabled={isLoading}
           />
         </View>

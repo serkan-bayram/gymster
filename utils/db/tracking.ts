@@ -5,8 +5,18 @@ import { getTimestampsForADay } from "../get-timestamps-for-a-day";
 
 const trackingsRef = firestore().collection("Trackings");
 
+interface TrackingsDoc {
+  wentToGYM?: boolean;
+}
+
+interface Trackings extends FirebaseFirestoreTypes.DocumentData {
+  trackingsRef: FirebaseFirestoreTypes.CollectionReference;
+  trackingsDoc: TrackingsDoc;
+  trackingsPath: string;
+}
+
 // Find a Trackings document that in "same day" within timestamp by user id
-export async function findTrackingsDoc(uid: string) {
+export async function findTrackingsDoc(uid: string): Promise<Trackings | null> {
   const timestamps = await getTimestampsForADay();
 
   if (!timestamps) return null;
@@ -31,9 +41,13 @@ export async function findTrackingsDoc(uid: string) {
     return null;
   }
 
-  const trackingsDoc = querySnapshot.docs[0].data();
+  const trackingsDoc = querySnapshot.docs[0].data() as TrackingsDoc;
 
   const trackingsPath = querySnapshot.docs[0].ref.path;
 
-  return { trackingsRef, trackingsDoc, trackingsPath };
+  return {
+    trackingsRef: trackingsRef,
+    trackingsDoc: trackingsDoc,
+    trackingsPath: trackingsPath,
+  };
 }
