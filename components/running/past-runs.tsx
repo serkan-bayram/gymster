@@ -57,7 +57,10 @@ export function PastRuns({
       {getRunsData && <TopStats data={getRunsData} />}
 
       <View className="mt-4">
-        <Text className="font-bold text-xl">Geçmiş Koşular</Text>
+        <View className="flex flex-row justify-between items-center">
+          <Text className="font-bold text-xl">Geçmiş Koşular</Text>
+          <Text className="text-xs">Silmek için basılı tutun.</Text>
+        </View>
         {getRunsData ? (
           <>
             <View className="mt-3 min-h-full pb-48 ">
@@ -65,18 +68,6 @@ export function PastRuns({
                 estimatedItemSize={190}
                 data={getRunsData}
                 renderItem={({ item, index }) => {
-                  const isLast = index + 1 === getRunsData.length;
-
-                  if (isLast) {
-                    return (
-                      <View className="w-full flex items-center mt-6 ">
-                        <Text className="text-black/50">
-                          *Bir koşuyu silmek için uzun süre basın.
-                        </Text>
-                      </View>
-                    );
-                  }
-
                   if (item.runs.length === 0) return <View></View>;
 
                   return (
@@ -103,13 +94,6 @@ export function PastRuns({
                           );
                         })}
                       </View>
-                      {isLast && (
-                        <View className="w-full flex items-center mt-6 ">
-                          <Text className="text-black/50">
-                            *Bir koşuyu silmek için uzun süre basın.
-                          </Text>
-                        </View>
-                      )}
                     </View>
                   );
                 }}

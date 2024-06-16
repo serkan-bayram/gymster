@@ -13,7 +13,9 @@ export async function getRuns(uid: string): Promise<RunsDB[]> {
     let data = documentSnapshot.data() as RunsDB;
 
     // Get dateAsText which is something like 1 June
-    const date = new Date(data.createdAt.toDate());
+    const date = data.createdAt
+      ? new Date(data.createdAt.toDate())
+      : new Date();
 
     const month = date.toLocaleDateString("tr-TR", { month: "long" });
     const day = date.getUTCDate();
@@ -21,7 +23,9 @@ export async function getRuns(uid: string): Promise<RunsDB[]> {
     const dateAsText = `${day} ${month}`;
 
     data = {
-      ...data,
+      date: `${date}`,
+      uid: data.uid,
+      runs: data.runs,
       dateAsText: dateAsText,
       documentPath: documentSnapshot.ref.path,
     };

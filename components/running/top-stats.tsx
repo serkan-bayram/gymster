@@ -1,28 +1,33 @@
-import { Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { RunsDB } from "@/utils/types/runs";
 import { Link } from "expo-router";
+import { LinkProps } from "expo-router/build/link/Link";
 
 function Stat({
   heading,
   subHeading,
   icon,
+  href,
 }: {
+  href?: string;
   heading: string;
   subHeading: string;
   icon: React.ReactNode;
 }) {
   return (
-    <View className="mr-3 flex justify-between border border-gray rounded-lg p-2 w-32">
-      <Text className="font-semibold">{heading}</Text>
-      <View className="flex flex-row justify-between items-center">
-        <Text className="font-bold">{subHeading}</Text>
-        {icon}
-      </View>
-    </View>
+    <Link asChild href={href || "/"}>
+      <Pressable className="mr-3 flex justify-between border border-gray rounded-lg p-2 w-32">
+        <Text className="font-semibold">{heading}</Text>
+        <View className="flex flex-row justify-between items-center">
+          <Text className="font-bold">{subHeading}</Text>
+          {icon}
+        </View>
+      </Pressable>
+    </Link>
   );
 }
 
@@ -40,19 +45,18 @@ export function TopStats({ data }: { data: RunsDB[] }) {
         horizontal={true}
         className="mt-3 "
       >
-        <Link href={"/running/stat"}>
-          <Stat
-            heading="En uzun koşulan mesafe"
-            subHeading={`${maxDistance.toFixed(1)} m`}
-            icon={
-              <MaterialCommunityIcons
-                name="map-marker-distance"
-                size={24}
-                color="black"
-              />
-            }
-          />
-        </Link>
+        <Stat
+          href="/running/stat"
+          heading="En uzun koşulan mesafe"
+          subHeading={`${maxDistance.toFixed(1)} m`}
+          icon={
+            <MaterialCommunityIcons
+              name="map-marker-distance"
+              size={24}
+              color="black"
+            />
+          }
+        />
         <Stat
           heading="En yüksek ortalama hız"
           subHeading={`${maxAverageSpeed.toFixed(1)} km/dk`}

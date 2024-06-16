@@ -19,14 +19,7 @@ export function useGetRuns() {
     if (runs && runs.length > 0) {
       const filterEmptyRuns = runs.filter((run) => run.runs.length > 0);
 
-      const editedRuns = filterEmptyRuns.map((emptyRun) => {
-        // We delete createdAt because it creates problems with redux
-        // and we really don't need it
-        delete emptyRun.createdAt;
-        return emptyRun;
-      });
-
-      dispatch(setAllRuns(editedRuns));
+      dispatch(setAllRuns(filterEmptyRuns));
 
       return filterEmptyRuns;
     }
