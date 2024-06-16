@@ -14,7 +14,7 @@ export function PastWorkouts() {
     <>
       <Text className="text-xl font-bold">Geçmiş Antrenmanlar</Text>
       {workouts &&
-        workouts.map((workout, index) => {
+        workouts.map((workout) => {
           if (workout.workout.length <= 0) {
             return null;
           }
@@ -39,8 +39,6 @@ export function PastWorkouts() {
                   darkMode={true}
                 />
               ))}
-
-              {index + 1 !== workouts.length && <Divider type="horizontal" />}
             </View>
           );
         })}

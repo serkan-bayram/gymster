@@ -7,6 +7,7 @@ import { Meal } from "../types/meals";
 const trackingsRef = firestore().collection("Trackings");
 
 interface TrackingsDoc {
+  createdAt?: FirebaseFirestoreTypes.Timestamp;
   wentToGYM?: boolean;
   hydration?: {
     progress: number;
@@ -55,4 +56,22 @@ export async function findTrackingsDoc(uid: string): Promise<Trackings | null> {
     trackingsDoc: trackingsDoc,
     trackingsPath: trackingsPath,
   };
+}
+
+export async function getAllTrackings({ uid }: { uid: string }) {
+  const query = trackingsRef.where("uid", "==", uid);
+
+  const querySnapshot = await query.get();
+
+  if (querySnapshot.size === 0) return null;
+
+  const data: TrackingsDoc[] = [];
+
+  querySnapshot.forEach((documentSnapshot) => {
+    const trackingsDoc = documentSnapshot.data() as TrackingsDoc;
+
+    data.push(trackingsDoc);
+  });
+
+  return data;
 }

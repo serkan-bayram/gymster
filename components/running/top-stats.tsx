@@ -4,30 +4,26 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { RunsDB } from "@/utils/types/runs";
+import { Octicons } from "@expo/vector-icons";
 import { Link } from "expo-router";
-import { LinkProps } from "expo-router/build/link/Link";
 
 function Stat({
   heading,
   subHeading,
   icon,
-  href,
 }: {
-  href?: string;
   heading: string;
   subHeading: string;
   icon: React.ReactNode;
 }) {
   return (
-    <Link asChild href={href || "/"}>
-      <Pressable className="mr-3 flex justify-between border border-gray rounded-lg p-2 w-32">
-        <Text className="font-semibold">{heading}</Text>
-        <View className="flex flex-row justify-between items-center">
-          <Text className="font-bold">{subHeading}</Text>
-          {icon}
-        </View>
-      </Pressable>
-    </Link>
+    <Pressable className="mr-3 flex justify-between border border-gray rounded-lg p-2 w-32">
+      <Text className="font-semibold">{heading}</Text>
+      <View className="flex flex-row justify-between items-center">
+        <Text className="font-bold">{subHeading}</Text>
+        {icon}
+      </View>
+    </Pressable>
   );
 }
 
@@ -38,7 +34,13 @@ export function TopStats({ data }: { data: RunsDB[] }) {
 
   return (
     <View className="mt-4">
-      <Text className="font-bold text-xl">İstatistikler</Text>
+      <View className="flex flex-row justify-between items-center">
+        <Text className="font-bold text-xl">İstatistikler</Text>
+
+        <Link href={"/running/stat"}>
+          <Octicons name="link-external" size={24} color="black" />
+        </Link>
+      </View>
 
       <ScrollView
         showsHorizontalScrollIndicator={false}
@@ -46,7 +48,6 @@ export function TopStats({ data }: { data: RunsDB[] }) {
         className="mt-3 "
       >
         <Stat
-          href="/running/stat"
           heading="En uzun koşulan mesafe"
           subHeading={`${maxDistance.toFixed(1)} m`}
           icon={

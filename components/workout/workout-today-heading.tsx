@@ -8,7 +8,6 @@ export function WorkoutTodayHeading() {
         <Feather name="calendar" size={20} color="white" />
         <Text className="font-semibold text-white">Bugün</Text>
       </View>
-      <Text className="font-semibold text-white">25/05/24</Text>
     </View>
   );
 }
