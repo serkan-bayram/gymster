@@ -1,18 +1,17 @@
 import { useRef, useState } from "react";
+import { StatHeader } from "./stat-header";
+import { MonthPicker } from "./picker";
+import { Data } from "..";
 import { Text, View } from "react-native";
 import { LineChart } from "react-native-gifted-charts";
-import { MonthPicker } from "./picker";
-import { StatHeader } from "./stat-header";
-import { Data } from "..";
 
-export function Distance({
+export function RunTime({
   stats,
   currentMonth,
 }: {
   stats: Data[];
   currentMonth: string;
 }) {
-  // Picked month by user, currentMonth -> default picked
   const [month, setMonth] = useState<string>(currentMonth);
 
   // Filter stats by month
@@ -23,7 +22,7 @@ export function Distance({
   return (
     <>
       <StatHeader
-        header="Mesafe | km"
+        header="Koşu Süresi | dk"
         month={month}
         monthPicker={monthPicker}
       />

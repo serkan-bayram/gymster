@@ -3,8 +3,8 @@ import { View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useQuery } from "@tanstack/react-query";
 import { getServerTime } from "@/utils/db";
-import { Distance } from "./components/distance";
 import { FullScreenLoading } from "@/components/loading";
+import { Stats } from "./components/stats";
 
 // Get's the current month
 function useCurrentMonth() {
@@ -26,6 +26,11 @@ function useCurrentMonth() {
   });
 }
 
+export interface Data {
+  label: string;
+  value: number;
+}
+
 export default function Stat() {
   const currentMonth = useCurrentMonth();
 
@@ -34,13 +39,9 @@ export default function Stat() {
   }
 
   return (
-    <>
-      <ScrollView className="pt-16 pb-20 px-4 bg-background flex-1 ">
-        <Heading heading="Koşu İstatisikleri" />
-        <View className="mt-4">
-          <Distance currentMonth={currentMonth.data || "Ocak"} />
-        </View>
-      </ScrollView>
-    </>
+    <ScrollView className="pt-16 pb-20 px-4 bg-background flex-1 ">
+      <Heading heading="Koşu İstatisikleri" />
+      <Stats currentMonth={currentMonth.data || "Ocak"} />
+    </ScrollView>
   );
 }
