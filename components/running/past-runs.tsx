@@ -51,22 +51,14 @@ export function PastRuns({
     );
   };
 
-  // We don't delete empy runs from database,
-  // we check is there really a run exists with this block
-  let isAnyRunsExists = false;
-  if (getRunsData) {
-    isAnyRunsExists =
-      getRunsData.filter((run) => run.runs.length > 0).length > 0;
-  }
-
   //TODO: Should specify the year
   return (
     <>
-      {getRunsData && isAnyRunsExists && <TopStats data={getRunsData} />}
+      {getRunsData && <TopStats data={getRunsData} />}
 
       <View className="mt-4">
         <Text className="font-bold text-xl">Geçmiş Koşular</Text>
-        {getRunsData && isAnyRunsExists ? (
+        {getRunsData ? (
           <>
             <View className="mt-3 min-h-full pb-48 ">
               <FlashList

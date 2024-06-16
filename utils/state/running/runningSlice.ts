@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import * as Location from "expo-location";
 import { RootState } from "../store";
 import { calculateDistance } from "@/utils/calculate-distance";
-import { LocationState, Run } from "@/utils/types/runs";
+import { LocationState, Run, RunsDB } from "@/utils/types/runs";
 
 export const LOCATION_TASK_NAME = "running-location-task";
 
@@ -13,7 +13,11 @@ interface RunningState {
   isRunning: boolean;
   run: Run;
   isLocationTracking: boolean;
+  // Represents the runs that we are currently recording
+  // every lap is a run
   runs: Run[];
+  // All runs of user
+  allRuns: RunsDB[];
   // Represents the first time user clicks start running button
   isFirstClicked: boolean;
 }
@@ -27,6 +31,7 @@ export const initialState: RunningState = {
     runTime: { hours: 0, minutes: 0, seconds: 0 },
   },
   isLocationTracking: false,
+  allRuns: [],
   runs: [],
   isFirstClicked: true,
 };
@@ -67,6 +72,9 @@ const runningSlice = createSlice({
   name: "running",
   initialState,
   reducers: {
+    setAllRuns: (state, action) => {
+      state.allRuns = action.payload;
+    },
     // Sets the distance & average speed
     setStats: (state, action) => {
       state.locations.push(action.payload);
@@ -132,7 +140,13 @@ const runningSlice = createSlice({
   },
 });
 
-export const { setRunTime, saveRun, discardRun, firstClickIsDone, setStats } =
-  runningSlice.actions;
+export const {
+  setAllRuns,
+  setRunTime,
+  saveRun,
+  discardRun,
+  firstClickIsDone,
+  setStats,
+} = runningSlice.actions;
 
 export default runningSlice.reducer;

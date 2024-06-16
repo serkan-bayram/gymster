@@ -36,6 +36,10 @@ export default function ProtectedLayout() {
               name="running/index"
               options={{ headerShown: false }}
             />
+            <Stack.Screen
+              name="running/stat/index"
+              options={{ headerShown: false }}
+            />
           </Stack>
           <TabBar />
 

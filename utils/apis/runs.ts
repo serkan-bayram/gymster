@@ -1,12 +1,15 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Run, RunsDB } from "../types/runs";
-import { useSelector } from "react-redux";
-import { RootState } from "../state/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../state/store";
 import { getRuns, saveRun, updateRuns } from "../db/runs";
+import { setAllRuns } from "../state/running/runningSlice";
 
 // Get runs from DB
 export function useGetRuns() {
   const user = useSelector((state: RootState) => state.session.user);
+
+  const dispatch = useDispatch<AppDispatch>();
 
   const queryFn = async () => {
     if (!user) return null;
@@ -14,7 +17,18 @@ export function useGetRuns() {
     const runs = await getRuns(user.uid);
 
     if (runs && runs.length > 0) {
-      return runs;
+      const filterEmptyRuns = runs.filter((run) => run.runs.length > 0);
+
+      const editedRuns = filterEmptyRuns.map((emptyRun) => {
+        // We delete createdAt because it creates problems with redux
+        // and we really don't need it
+        delete emptyRun.createdAt;
+        return emptyRun;
+      });
+
+      dispatch(setAllRuns(editedRuns));
+
+      return filterEmptyRuns;
     }
 
     return null;

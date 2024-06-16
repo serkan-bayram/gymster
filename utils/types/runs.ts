@@ -17,7 +17,7 @@ export interface Run {
 
 // Runs that comes from DB
 export interface RunsDB {
-  createdAt: FirebaseFirestoreTypes.Timestamp;
+  createdAt?: FirebaseFirestoreTypes.Timestamp;
   uid: string;
   dateAsText?: string;
   runs: Run[];

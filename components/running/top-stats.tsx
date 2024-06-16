@@ -4,6 +4,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { RunsDB } from "@/utils/types/runs";
+import { Link } from "expo-router";
 
 function Stat({
   heading,
@@ -39,17 +40,19 @@ export function TopStats({ data }: { data: RunsDB[] }) {
         horizontal={true}
         className="mt-3 "
       >
-        <Stat
-          heading="En uzun koşulan mesafe"
-          subHeading={`${maxDistance.toFixed(1)} m`}
-          icon={
-            <MaterialCommunityIcons
-              name="map-marker-distance"
-              size={24}
-              color="black"
-            />
-          }
-        />
+        <Link href={"/running/stat"}>
+          <Stat
+            heading="En uzun koşulan mesafe"
+            subHeading={`${maxDistance.toFixed(1)} m`}
+            icon={
+              <MaterialCommunityIcons
+                name="map-marker-distance"
+                size={24}
+                color="black"
+              />
+            }
+          />
+        </Link>
         <Stat
           heading="En yüksek ortalama hız"
           subHeading={`${maxAverageSpeed.toFixed(1)} km/dk`}
