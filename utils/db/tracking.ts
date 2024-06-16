@@ -7,7 +7,7 @@ import { Meal } from "../types/meals";
 const trackingsRef = firestore().collection("Trackings");
 
 interface TrackingsDoc {
-  createdAt?: FirebaseFirestoreTypes.Timestamp;
+  createdAt: FirebaseFirestoreTypes.Timestamp;
   wentToGYM?: boolean;
   hydration?: {
     progress: number;

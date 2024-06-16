@@ -7,7 +7,7 @@ import { FullScreenLoading } from "@/components/loading";
 import { Stats } from "./components/stats";
 
 // Get's the current month
-function useCurrentMonth() {
+export function useCurrentMonth() {
   return useQuery({
     queryKey: ["getCurrentMonth"],
     queryFn: async () => {

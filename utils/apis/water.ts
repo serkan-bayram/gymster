@@ -27,17 +27,33 @@ export function useUpdateWater() {
   });
 }
 
+interface ProgressData {
+  progress: number;
+  date: string;
+}
+
 export function useGetAllWaterData() {
   const user = useSelector((state: RootState) => state.session.user);
 
   const queryFn = async () => {
     if (!user) return null;
 
-    const data = await getAllTrackings({ uid: user.uid });
+    const trackings = await getAllTrackings({ uid: user.uid });
 
-    if (!data) return null;
+    if (!trackings) return null;
 
-    return data;
+    const progressData: ProgressData[] = [];
+
+    trackings.forEach((tracking) => {
+      const progress = tracking.hydration?.progress;
+      const createdAt = tracking.createdAt;
+      if (progress && createdAt) {
+        const date = new Date(createdAt.toDate());
+        progressData.push({ progress: progress, date: `${date}` });
+      }
+    });
+
+    return progressData;
   };
 
   return useQuery({ queryKey: ["getAllWaterData"], queryFn: queryFn });

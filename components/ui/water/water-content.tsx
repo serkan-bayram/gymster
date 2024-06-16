@@ -1,24 +1,60 @@
 import { View } from "react-native";
-import { ProgressBar } from "../circular-progressbar";
-import { UpdateWaterValue } from "./update-water-value";
-import { ScrollView } from "react-native-gesture-handler";
-import { LineChart } from "react-native-gifted-charts";
-import { useGetAllWaterData } from "@/utils/apis/water";
+import {
+  Directions,
+  Gesture,
+  GestureDetector,
+} from "react-native-gesture-handler";
+import Animated, {
+  runOnJS,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
+import { WaterChart } from "./water-chart";
+import { WaterProgress } from "./water-progress";
+import { Showing } from "@/components/water";
 
-export function WaterContent() {
-  const data = useGetAllWaterData();
+export function WaterContent({
+  setCurrentlyShowing,
+  currentlyShowing,
+}: {
+  setCurrentlyShowing: any;
+  currentlyShowing: Showing;
+}) {
+  const progressBarPosition = useSharedValue(0);
+  const chartPosition = useSharedValue(0);
+
+  const { showing } = currentlyShowing;
+
+  const flingRight = Gesture.Fling()
+    .direction(Directions.RIGHT)
+    .onStart(() => {
+      if (showing === "progress") return;
+
+      progressBarPosition.value = withTiming(0, { duration: 200 });
+      chartPosition.value = withTiming(400, { duration: 200 });
+
+      runOnJS(setCurrentlyShowing)({ showing: "progress" });
+    });
+
+  const flingLeft = Gesture.Fling()
+    .direction(Directions.LEFT)
+    .onStart(() => {
+      if (showing === "chart") return;
+
+      progressBarPosition.value = withTiming(-400, { duration: 200 });
+      chartPosition.value = withTiming(0, { duration: 200 });
+
+      runOnJS(setCurrentlyShowing)({ showing: "chart" });
+    });
 
   return (
-    <ScrollView horizontal>
-      <View className="flex-1 px-8 w-screen flex-row  h-40 ">
-        <ProgressBar />
-        <UpdateWaterValue />
-      </View>
-      <View className="flex-1  w-screen flex-row  h-40 ">
-        <View className="mx-auto">
-          <LineChart />
+    <GestureDetector gesture={flingRight}>
+      <GestureDetector gesture={flingLeft}>
+        <View className="h-64">
+          <WaterProgress progressBarPosition={progressBarPosition} />
+          <WaterChart chartPosition={chartPosition} />
         </View>
-      </View>
-    </ScrollView>
+      </GestureDetector>
+    </GestureDetector>
   );
 }

@@ -15,7 +15,7 @@ export default function Tracking() {
 
   return (
     <>
-      <View className="pt-16 pb-20 px-4 bg-background ">
+      <View className="pt-16 pb-20  px-4 bg-background ">
         <Confetti />
         <ScrollView showsVerticalScrollIndicator={false}>
           <Heading heading={"Takip"} />
