@@ -26,9 +26,10 @@ export function useCurrentMonth() {
   });
 }
 
-export interface Data {
+export interface ChartData {
   label: string;
   value: number;
+  frontColor?: string;
 }
 
 export default function Stat() {

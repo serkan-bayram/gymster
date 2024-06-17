@@ -3,15 +3,19 @@ import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
 import { findTrackingsDoc, getAllTrackings } from "../db/tracking";
 import { updateHydrationProgress } from "../db/water";
+import { getServerTime } from "../db";
 
 export function useUpdateWater() {
   const user = useSelector((state: RootState) => state.session.user);
+
+  const queryClient = useQueryClient();
 
   // TODO: This needs a debounce
   return useMutation({
     onSuccess: async () => {
       // TODO: Creates a visual bug, maybe invalidate after a couple of seconds
       // await queryClient.invalidateQueries({ queryKey: ["tracking"] });
+      await queryClient.invalidateQueries({ queryKey: ["getAllWaterData"] });
     },
     mutationFn: async ({ newProgress }: { newProgress: number }) => {
       if (!user) return null;
@@ -27,7 +31,7 @@ export function useUpdateWater() {
   });
 }
 
-interface ProgressData {
+export interface ProgressData {
   progress: number;
   date: string;
 }
@@ -53,7 +57,14 @@ export function useGetAllWaterData() {
       }
     });
 
-    return progressData;
+    const serverTime = await getServerTime();
+
+    if (!serverTime) return null;
+
+    return {
+      progress: progressData,
+      currentTime: serverTime.date.toDate(),
+    };
   };
 
   return useQuery({ queryKey: ["getAllWaterData"], queryFn: queryFn });

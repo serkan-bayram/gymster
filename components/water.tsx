@@ -17,7 +17,7 @@ export function Water() {
   });
 
   return (
-    <View className="flex-1 h-64 mt-2 mb-4">
+    <View className="flex-1 mt-2 mb-4">
       <WaterHeading
         currentlyShowing={currentlyShowing}
         bottomSheetRef={bottomSheetRef}
