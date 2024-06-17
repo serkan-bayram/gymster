@@ -1,8 +1,6 @@
 import { ProgressData, useGetAllWaterData } from "@/utils/apis/water";
-import { Pressable, Text, View } from "react-native";
+import { Dimensions, Pressable, Text, View } from "react-native";
 import { BarChart } from "react-native-gifted-charts";
-import Animated, { SharedValue } from "react-native-reanimated";
-import { Dimensions } from "react-native";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import {
   isDateInSameMonth,
@@ -42,13 +40,11 @@ const FilterButton = ({
   </Pressable>
 );
 
-interface WaterChartProps {
-  chartPosition: SharedValue<number>;
-}
-
-export const WaterChart = ({ chartPosition }: WaterChartProps) => {
+export const WaterChart = () => {
   const waterData = useGetAllWaterData();
+
   const [pickedFilter, setPickedFilter] = useState<PickedFilter>("week");
+
   const [filteredWaterData, setFilteredWaterData] = useState<ChartData[]>([]);
 
   // Calculate filtered data based on the picked filter
@@ -56,21 +52,19 @@ export const WaterChart = ({ chartPosition }: WaterChartProps) => {
 
   if (waterData.isPending) {
     return (
-      <View>
-        <Text>Veriler aranıyor...</Text>
+      <View className="flex-1 items-center justify-center">
+        <Text>Veriler düzenleniyor...</Text>
       </View>
     );
   }
 
   if (!waterData.data?.progress) {
     return (
-      <View>
-        <Text>Veri bulunamadı.</Text>
+      <View className="flex-1 items-center justify-center">
+        <Text>Veriler bulunamadı.</Text>
       </View>
     );
   }
-
-  const windowWidth = Dimensions.get("window").width;
 
   // Define the filter options
   const filters: { text: string; filterWord: PickedFilter }[] = [
@@ -79,15 +73,11 @@ export const WaterChart = ({ chartPosition }: WaterChartProps) => {
     { text: "Yıl", filterWord: "year" },
   ];
 
+  const windowWidth = Dimensions.get("window").width;
+
   return (
-    <Animated.View
-      style={{
-        left: chartPosition,
-        width: windowWidth - 32,
-      }}
-      className="flex-1 flex items-center justify-between h-full mt-2 absolute -right-full"
-    >
-      <View className="flex mt-2 flex-row">
+    <View className="flex-1 flex items-center justify-between h-full mt-2">
+      <View className="flex mt-4 mb-4 flex-row">
         {filters.map((filter, index) => (
           <FilterButton
             key={index}
@@ -98,16 +88,26 @@ export const WaterChart = ({ chartPosition }: WaterChartProps) => {
           />
         ))}
       </View>
-      <View className="p-2 pl-0">
+      <View className="p-2 px-8  w-full">
         <BarChart
           yAxisLabelSuffix={pickedFilter === "year" ? " L" : " mL"}
           height={160}
-          width={windowWidth - 60}
+          width={windowWidth - 120}
           frontColor={"lightgray"}
           data={filteredWaterData}
         />
       </View>
-    </Animated.View>
+      <View className="flex gap-y-2 mt-2">
+        <View className="flex flex-row gap-x-2 items-center">
+          <View className="w-3 h-3 bg-[#7AA2E3]"></View>
+          <Text>Günlük hedef tamamlandı.</Text>
+        </View>
+        <View className="flex flex-row gap-x-2 items-center">
+          <View className="w-3 h-3 bg-black/20"></View>
+          <Text>Günlük hedef tamamlanmadı.</Text>
+        </View>
+      </View>
+    </View>
   );
 };
 
@@ -147,7 +147,7 @@ const useCalculateFilterData = (
           return {
             label: day.toString(),
             value: data.progress,
-            frontColor: data.progress >= goalValue ? "#C4E4FF" : "lightgray",
+            frontColor: data.progress >= goalValue ? "#7AA2E3" : "lightgray",
           };
         }
       );
@@ -189,7 +189,7 @@ const useCalculateFilterData = (
         return {
           label: month,
           value: totalProgress / 1000, // Convert mL to L for yearly data
-          frontColor: totalProgress >= goalValue * 30 ? "#C4E4FF" : "lightgray", // Change color if goal is met
+          frontColor: totalProgress >= goalValue * 30 ? "#7AA2E3" : "lightgray", // Change color if goal is met
         };
       });
 

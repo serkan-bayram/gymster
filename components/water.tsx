@@ -1,32 +1,27 @@
 import { View } from "react-native";
-import { WaterContent } from "./ui/water/water-content";
 import { WaterHeading } from "./ui/water/water-heading";
 import { WaterBottomSheet } from "./ui/water/water-bottom-sheet";
 import { useRef, useState } from "react";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-
-export interface Showing {
-  showing: "progress" | "chart";
-}
+import { WaterProgress } from "./ui/water/water-progress";
+import { ChartBottomSheet } from "./ui/water/chart-bottom-sheet";
 
 export function Water() {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
-
-  const [currentlyShowing, setCurrentlyShowing] = useState<Showing>({
-    showing: "progress",
-  });
+  const chartBottomSheetRef = useRef<BottomSheetModal>(null);
 
   return (
     <View className="flex-1 mt-2 mb-4">
       <WaterHeading
-        currentlyShowing={currentlyShowing}
+        chartBottomSheetRef={chartBottomSheetRef}
         bottomSheetRef={bottomSheetRef}
       />
-      <WaterContent
-        currentlyShowing={currentlyShowing}
-        setCurrentlyShowing={setCurrentlyShowing}
-      />
+      <View className="h-48">
+        <WaterProgress />
+      </View>
+
       <WaterBottomSheet bottomSheetRef={bottomSheetRef} />
+      <ChartBottomSheet bottomSheetRef={chartBottomSheetRef} />
     </View>
   );
 }

@@ -6,6 +6,8 @@ interface WaterState {
   progress: number;
 }
 
+// TODO: We should save goalValue and updateValue to localStorage
+
 const initialState: WaterState = {
   updateValue: 200,
   goalValue: 2000,

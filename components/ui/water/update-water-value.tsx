@@ -1,6 +1,5 @@
 import { Pressable, Text, View } from "react-native";
 import { ExtractSvg, PlusSvg } from "../svg";
-import { useWater } from "@/utils/water-context";
 import { useUpdateWater } from "@/utils/apis/water";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/utils/state/store";

@@ -1,35 +1,26 @@
 import { Pressable, Text, View } from "react-native";
 import { EditSvg } from "../svg";
 import { getOpenBottomSheet } from "@/utils/bottomsheet";
-import { cn } from "@/utils/cn";
+import { Entypo } from "@expo/vector-icons";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
-export function WaterHeading({ bottomSheetRef, currentlyShowing }) {
+export function WaterHeading({ bottomSheetRef, chartBottomSheetRef }) {
   const openBottomSheet = getOpenBottomSheet(bottomSheetRef);
-
-  const { showing } = currentlyShowing;
+  const openChart = getOpenBottomSheet(chartBottomSheetRef);
 
   return (
     <View className="flex flex-row  justify-between items-center">
       <View className="flex flex-row items-center">
-        <Text className="text-lg font-semibold">
-          {showing === "progress" ? "Su değerlerin" : "Su istatistiklerin"}
-        </Text>
-        <View className="ml-2 mt-2 flex flex-row">
-          <View
-            className={cn("w-2 h-2 rounded-full bg-black", {
-              "bg-black/20": showing === "chart",
-            })}
-          ></View>
-          <View
-            className={cn("w-2 h-2 rounded-full bg-black/20 ml-1", {
-              "bg-black": showing === "chart",
-            })}
-          ></View>
-        </View>
+        <Text className="text-lg font-semibold">Su değerlerin</Text>
       </View>
-      <Pressable onPress={openBottomSheet}>
-        <EditSvg width={"25"} height={"25"} fill={"black"} />
-      </Pressable>
+      <View className="flex flex-row gap-x-4">
+        <TouchableOpacity onPress={openChart}>
+          <Entypo name="bar-graph" size={25} color="black" />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={openBottomSheet}>
+          <EditSvg width={"25"} height={"25"} fill={"black"} />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
