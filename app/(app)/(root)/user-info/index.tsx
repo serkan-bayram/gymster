@@ -7,7 +7,7 @@ import {
 } from "@/utils/validations";
 import { Picker } from "@react-native-picker/picker";
 import { Link, useLocalSearchParams, useRouter } from "expo-router";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Alert,
   KeyboardAvoidingView,
@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/utils/state/store";
 import { updateUserInfo } from "@/utils/db/user-info";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { setIsSignIn } from "@/utils/state/session/sessionSlice";
 
 export interface UserInfo {
   age?: number;
@@ -33,7 +34,12 @@ export default function UserInfo() {
   const [info, setInfo] = useState<UserInfo | null>(null);
   const pickerRef = useRef<any>(null);
 
-  const user = useSelector((state: RootState) => state.session.user);
+  const { user } = useSelector((state: RootState) => state.session);
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    dispatch(setIsSignIn(false));
+  }, []);
 
   const validate = useValidate({ info: info });
 
@@ -58,13 +64,11 @@ export default function UserInfo() {
         <Link
           replace
           href={"/home"}
-          className="absolute top-16 right-3 font-semibold 
+          className="absolute active:opacity-50 top-16 right-3 font-semibold 
       p-1 px-3"
           asChild
         >
-          <TouchableOpacity>
-            <Text>{params?.update ? "Vazgeç" : "Atla"}</Text>
-          </TouchableOpacity>
+          <Text>{params?.update ? "Vazgeç" : "Atla"}</Text>
         </Link>
 
         <Text className="font-bold w-full text-3xl">

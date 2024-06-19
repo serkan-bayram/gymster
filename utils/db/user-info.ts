@@ -1,6 +1,8 @@
 import { UserInfo } from "@/app/(app)/(root)/user-info";
 import firestore from "@react-native-firebase/firestore";
 
+const usersRef = firestore().collection("Users");
+
 // Find user document and update with user info
 export async function updateUserInfo({
   userObject,
@@ -9,8 +11,7 @@ export async function updateUserInfo({
   userObject: UserInfo;
   uid: string;
 }) {
-  const userRef = firestore().collection("Users");
-  const query = userRef.where("uid", "==", uid).limit(1);
+  const query = usersRef.where("uid", "==", uid).limit(1);
 
   const querySnapshot = await query.get();
 
@@ -23,4 +24,14 @@ export async function updateUserInfo({
       .doc(path)
       .update({ info: userObject });
   });
+}
+
+export async function getUser({ uid }: { uid: string }) {
+  const query = usersRef.where("uid", "==", uid).limit(1);
+
+  const querySnapshot = await query.get();
+
+  const documentData = querySnapshot.docs[0].data();
+
+  return documentData;
 }

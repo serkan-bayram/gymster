@@ -6,7 +6,6 @@ import { User } from "@/utils/types/session";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/utils/state/store";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
-import { Text, View } from "react-native";
 import { FullScreenLoading } from "@/components/loading";
 
 const useAuth = () => {
@@ -14,8 +13,6 @@ const useAuth = () => {
   const router = useRouter();
 
   function onAuthStateChanged(authUser: FirebaseAuthTypes.User | null) {
-    console.log("authUser:", authUser);
-
     if (authUser) {
       const userObject: User = {
         uid: authUser.uid,

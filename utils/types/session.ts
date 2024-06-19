@@ -11,4 +11,5 @@ export interface User {
 export interface SessionState {
   user: null | User;
   isLoading: boolean;
+  isSignIn: boolean;
 }

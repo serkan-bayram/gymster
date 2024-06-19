@@ -7,6 +7,8 @@ import firestore from "@react-native-firebase/firestore";
 const initialState: SessionState = {
   user: null,
   isLoading: true,
+  // Does user signin in or authenticating with localstorage?
+  isSignIn: false,
 };
 
 // We can turn this into a cloud function
@@ -74,23 +76,17 @@ const sessionSlice = createSlice({
     setIsLoading: (state, action) => {
       state.isLoading = action.payload;
     },
+    setIsSignIn: (state, action) => {
+      state.isSignIn = action.payload;
+    },
   },
   extraReducers: (builder) => {
-    // builder.addCase(signIn.pending, (state) => {
-    //   state.isLoading = true;
-    // });
-    // builder.addCase(signIn.fulfilled, (state) => {
-    //   state.isLoading = false;
-    // });
-    // builder.addCase(signOut.pending, (state) => {
-    //   state.isLoading = true;
-    // });
-    // builder.addCase(signOut.fulfilled, (state) => {
-    //   state.isLoading = false;
-    // });
+    builder.addCase(signIn.fulfilled, (state) => {
+      state.isSignIn = true;
+    });
   },
 });
 
-export const { setSession, setIsLoading } = sessionSlice.actions;
+export const { setSession, setIsLoading, setIsSignIn } = sessionSlice.actions;
 
 export default sessionSlice.reducer;
