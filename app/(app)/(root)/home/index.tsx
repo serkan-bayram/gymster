@@ -18,7 +18,7 @@ export default function Home() {
       <ScrollView>
         <Heading heading={`Hoş geldin, ${firstName}`} />
         <CardWithLink
-          href="/tracking"
+          href="/workout"
           text="Düzenle & Keşfet"
           subText="Antrenmanlarını"
           imageSrc={require("@/assets/exercise-mascot.png")}

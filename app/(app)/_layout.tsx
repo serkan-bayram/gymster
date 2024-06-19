@@ -1,39 +1,39 @@
-import { Stack, usePathname, useRouter } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { useEffect } from "react";
-import auth from "@react-native-firebase/auth";
-import {
-  readStorageSession,
-  saveSessionToStorage,
-  saveUser,
-  setSession,
-} from "@/utils/state/session/sessionSlice";
+import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
+import { setIsLoading, setSession } from "@/utils/state/session/sessionSlice";
 import { User } from "@/utils/types/session";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/utils/state/store";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
-
-// TODO: handle didSkipeed
-const useNavigateUser = () => {
-  const { user } = useSelector((state: RootState) => state.session);
-
-  const router = useRouter();
-
-  useEffect(() => {
-    if (user) {
-      // Why timeouts: https://github.com/expo/router/issues/740
-      setTimeout(() => {
-        router.replace("/home");
-      }, 0);
-    } else {
-      setTimeout(() => {
-        router.replace("/");
-      }, 0);
-    }
-  }, [user]);
-};
+import { Text, View } from "react-native";
+import { FullScreenLoading } from "@/components/loading";
 
 const useAuth = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
+
+  function onAuthStateChanged(authUser: FirebaseAuthTypes.User | null) {
+    console.log("authUser:", authUser);
+
+    if (authUser) {
+      const userObject: User = {
+        uid: authUser.uid,
+        email: authUser.email,
+        displayName: authUser.displayName,
+        photoURL: authUser.photoURL,
+        info: null,
+      };
+
+      dispatch(setSession(userObject));
+
+      router.replace("/home");
+      dispatch(setIsLoading(false));
+    } else {
+      dispatch(setSession(null));
+      dispatch(setIsLoading(false));
+    }
+  }
 
   useEffect(() => {
     GoogleSignin.configure({
@@ -41,46 +41,17 @@ const useAuth = () => {
         "925921052788-ca77bp1oklsvdn453kuskdlhba6em8un.apps.googleusercontent.com",
     });
 
-    // Read session from storage and setSession
-    dispatch(readStorageSession());
-
-    const subscriber = auth().onAuthStateChanged(async (user) => {
-      if (user) {
-        const userObject: User = {
-          uid: user.uid,
-          email: user.email,
-          displayName: user.displayName,
-          photoURL: user.photoURL,
-        };
-
-        // Save user to DB if not exists
-        await saveUser(userObject);
-
-        // Save session to localStorage
-        dispatch(saveSessionToStorage(userObject));
-
-        dispatch(setSession(userObject));
-      } else {
-        // User is problably signed out
-        dispatch(setSession(null));
-
-        // Remove session from localStorage
-        dispatch(saveSessionToStorage(null));
-      }
-    });
-
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
     return subscriber; // unsubscribe on unmount
   }, []);
 };
 
-// TODO: This seems to not work
-export const unstable_settings = {
-  initialRouteName: "(root)",
-};
-
 export default function AppLayout() {
   useAuth();
-  useNavigateUser();
+
+  const isLoading = useSelector((state: RootState) => state.session.isLoading);
+
+  if (isLoading) return <FullScreenLoading />;
 
   return (
     <Stack>

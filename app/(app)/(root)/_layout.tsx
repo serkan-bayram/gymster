@@ -4,8 +4,19 @@ import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { StatusBar } from "expo-status-bar";
 import { Text, View } from "react-native";
 import { TabBar } from "@/components/tab-bar";
+import { useSelector } from "react-redux";
+import { RootState } from "@/utils/state/store";
+import { useEffect } from "react";
 
 export default function ProtectedLayout() {
+  const router = useRouter();
+
+  const user = useSelector((state: RootState) => state.session.user);
+
+  useEffect(() => {
+    if (!user) router.replace("/");
+  }, [user]);
+
   return (
     <GestureHandlerRootView className="flex-1">
       <BottomSheetModalProvider>

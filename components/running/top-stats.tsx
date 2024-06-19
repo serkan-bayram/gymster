@@ -35,7 +35,7 @@ export function TopStats({ data }: { data: RunsDB[] }) {
   return (
     <View className="mt-4">
       <View className="flex flex-row justify-between items-center">
-        <Text className="font-bold text-xl">İstatistikler</Text>
+        <Text className="font-bold text-xl">Rekorlar</Text>
 
         <Link href={"/running/stat"}>
           <Octicons name="link-external" size={24} color="black" />

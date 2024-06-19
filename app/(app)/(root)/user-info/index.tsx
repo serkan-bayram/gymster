@@ -6,7 +6,7 @@ import {
   validateWeight,
 } from "@/utils/validations";
 import { Picker } from "@react-native-picker/picker";
-import { Link, useRouter } from "expo-router";
+import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import { useRef, useState } from "react";
 import {
   Alert,
@@ -15,59 +15,38 @@ import {
   Text,
   View,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useSelector } from "react-redux";
-import { RootState } from "@/utils/state/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/utils/state/store";
 import { updateUserInfo } from "@/utils/db/user-info";
+import { TouchableOpacity } from "react-native-gesture-handler";
+
+export interface UserInfo {
+  age?: number;
+  weight?: number;
+  gender?: string;
+}
 
 export default function UserInfo() {
-  const [age, setAge] = useState<string>("");
-  const [weight, setWeight] = useState<string>("");
-  const [gender, setGender] = useState<string>("");
+  const params = useLocalSearchParams();
+  const router = useRouter();
 
+  const [info, setInfo] = useState<UserInfo | null>(null);
   const pickerRef = useRef<any>(null);
 
-  const router = useRouter();
   const user = useSelector((state: RootState) => state.session.user);
 
+  const validate = useValidate({ info: info });
+
   const handlePress = async () => {
-    // This object will be saved to DB
+    if (!user) return null;
 
-    if (age.length > 0 && weight.length > 0 && gender.length > 0) {
-      if (
-        !validateAge(age) ||
-        !validateWeight(weight) ||
-        !validateGender(gender)
-      ) {
-        return;
-      }
+    const saveObject = validate();
 
-      const saveObject = {
-        age: parseInt(age),
-        weight: parseFloat(weight),
-        gender: gender,
-      };
+    if (!saveObject) return null;
 
-      if (user && Object.keys(saveObject).length > 0) {
-        await updateUserInfo(saveObject, user.uid);
+    await updateUserInfo({ userObject: saveObject, uid: user.uid });
 
-        saveSkip();
-
-        router.replace("/home");
-      } else {
-        Alert.alert("Hata", "Herhangi bir bilgi girmediniz.");
-      }
-    }
-  };
-
-  // This screen will be only shown at first sign in
-  // TODO: Skipped true is not enough
-  // We need to check which account for is skipped
-  const saveSkip = async () => {
-    // Save to local storage
-    const jsonSkipped = JSON.stringify({ skipped: true });
-
-    await AsyncStorage.setItem("skipped", jsonSkipped);
+    router.push("/home");
   };
 
   return (
@@ -83,26 +62,37 @@ export default function UserInfo() {
       p-1 px-3"
           asChild
         >
-          <Pressable onPress={saveSkip}>
-            <Text>Atla</Text>
-          </Pressable>
+          <TouchableOpacity>
+            <Text>{params?.update ? "Vazgeç" : "Atla"}</Text>
+          </TouchableOpacity>
         </Link>
+
         <Text className="font-bold w-full text-3xl">
-          Bize biraz kendinden bahset. ✨
+          {params?.update
+            ? "Bilgilerini güncelle"
+            : "Bize biraz kendinden bahset ✨"}
         </Text>
 
         <Input
           className="w-full"
           placeholder="Yaşın"
           keyboardType="numeric"
-          onChangeText={setAge}
+          onChangeText={(text) => {
+            setInfo((prevValues) => {
+              return { ...prevValues, age: parseInt(text.toString()) };
+            });
+          }}
         />
 
         <Input
           className="w-full"
           placeholder="Mevcut Kilon"
           keyboardType="numeric"
-          onChangeText={setWeight}
+          onChangeText={(text) => {
+            setInfo((prevValues) => {
+              return { ...prevValues, weight: parseInt(text.toString()) };
+            });
+          }}
         />
 
         <Pressable
@@ -114,7 +104,7 @@ export default function UserInfo() {
           }}
         >
           <Input
-            value={gender}
+            value={info?.gender || ""}
             placeholder="Cinsiyetin"
             className="w-full text-black"
             editable={false}
@@ -124,7 +114,7 @@ export default function UserInfo() {
 
         <PrimaryButton
           onPress={handlePress}
-          text="Devam Et"
+          text={params?.update ? "Güncelle" : "Devam Et"}
           className="w-2/3"
         />
 
@@ -136,9 +126,15 @@ export default function UserInfo() {
         <View className="hidden">
           <Picker
             ref={pickerRef}
-            selectedValue={gender}
+            selectedValue={info?.gender ? info.gender : "Erkek"}
             onValueChange={(pickedValue) =>
-              pickedValue === "none" ? setGender("") : setGender(pickedValue)
+              pickedValue === "none"
+                ? setInfo((prevValues) => {
+                    return { ...prevValues, gender: undefined };
+                  })
+                : setInfo((prevValues) => {
+                    return { ...prevValues, gender: pickedValue };
+                  })
             }
           >
             <Picker.Item label="İptal" value="none" />
@@ -150,3 +146,32 @@ export default function UserInfo() {
     </View>
   );
 }
+
+const useValidate = ({ info }: { info: UserInfo | null }) => {
+  const validate = () => {
+    if (!info || !info.age || !info.weight || !info.gender) {
+      Alert.alert("Hata", "Lütfen bütün bilgileri doldurunuz.", [
+        { text: "Tamam" },
+      ]);
+      return false;
+    }
+
+    const { age, weight, gender } = info;
+
+    const parsedAge = validateAge(age);
+    const parsedWeight = validateWeight(weight);
+    const parsedGender = validateGender(gender);
+
+    if (!parsedAge || !parsedWeight || !parsedGender) return false;
+
+    const saveObject: UserInfo = {
+      age: parsedAge,
+      weight: parsedWeight,
+      gender: parsedGender,
+    };
+
+    return saveObject;
+  };
+
+  return validate;
+};
