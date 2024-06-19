@@ -22,7 +22,10 @@ export function DaysHeading() {
     source: require("@/assets/sounds/confirm.mp3"),
   });
 
-  const handleWentToGYM = async () => {
+  // wenToGYM updates when dispatch happens
+  // So we run this function with the wentToGYM value that
+  // actually correct
+  const handleWentToGYM = async (currentWentToGYM: boolean) => {
     const serverTime = await getServerTime();
 
     if (!serverTime) return null;
@@ -30,16 +33,15 @@ export function DaysHeading() {
     const serverDate = new Date(serverTime.date.toDate());
     const todaysDate = serverDate.getDate();
 
-    if (!wentToGYM) {
+    dispatch(setWentToGYMDays(todaysDate));
+    dispatch(setWentToGYM(!currentWentToGYM));
+
+    updateWentToGYM.mutate({ wentToGYM: !currentWentToGYM });
+
+    if (!currentWentToGYM) {
       dispatch(setRenderConfetti(true));
       await playSound();
     }
-
-    dispatch(setWentToGYMDays(todaysDate));
-
-    updateWentToGYM.mutate({ wentToGYM: !wentToGYM });
-
-    dispatch(setWentToGYM(!wentToGYM));
   };
 
   return (
@@ -54,7 +56,7 @@ export function DaysHeading() {
               "bg-green-600": wentToGYM,
             }
           )}
-          onPress={handleWentToGYM}
+          onPress={() => handleWentToGYM(wentToGYM)}
         >
           <Text
             className={cn(`text-black`, {
