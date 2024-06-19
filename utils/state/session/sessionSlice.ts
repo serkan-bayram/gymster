@@ -6,6 +6,7 @@ import firestore from "@react-native-firebase/firestore";
 
 const initialState: SessionState = {
   user: null,
+  // is app loading
   isLoading: true,
   // Does user signin in or authenticating with localstorage?
   isSignIn: false,
