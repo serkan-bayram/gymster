@@ -9,6 +9,7 @@ import { resetAddingWorkout } from "@/utils/state/workout/workoutSlice";
 import { useSaveWorkout } from "@/utils/apis/workout";
 import { PrimaryButton } from "../primary-button";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { ExerciseComment } from "./exercise-comment";
 
 // TODO: We need to validate input
 export function WorkoutBottomSheetInputs({
@@ -56,9 +57,14 @@ export function WorkoutBottomSheetInputs({
         <ExerciseWeight />
       </View>
 
-      <View className="mt-4 mb-4">
+      <View className="mt-4">
         <Text className="text-lg">Tekrar</Text>
         <ExerciseRepeat />
+      </View>
+
+      <View className="mt-4 mb-4">
+        <Text className="text-lg">Yorum</Text>
+        <ExerciseComment />
       </View>
 
       <View className="flex flex-row gap-x-3 mt-auto pb-6">

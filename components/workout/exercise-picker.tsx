@@ -79,7 +79,7 @@ export function ExercisePicker({
   }, [searched]);
 
   return (
-    <View className="mt-4 border border-secondary overflow-hidden rounded-xl">
+    <View className="mt-1 border border-secondary overflow-hidden rounded-xl">
       <TextInput
         onChangeText={setSearched}
         className="border-b border-b-secondary p-2"

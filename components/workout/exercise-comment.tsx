@@ -3,20 +3,17 @@ import { setAddingWorkout } from "@/utils/state/workout/workoutSlice";
 import { TextInput, View } from "react-native";
 import { useDispatch } from "react-redux";
 
-export function ExerciseWeight() {
+export function ExerciseComment() {
   const dispatch = useDispatch<AppDispatch>();
 
   return (
     <View className="mt-1">
       <TextInput
         onChangeText={(text) =>
-          dispatch(
-            setAddingWorkout({ type: "weight", weight: parseFloat(text) })
-          )
+          dispatch(setAddingWorkout({ type: "comment", comment: text }))
         }
-        keyboardType="numeric"
         className="p-2 bg-white border border-secondary rounded-lg"
-        placeholder="Bu setteki ağırlığın kaç?"
+        placeholder="Hareketin nasıl geçti?"
       />
     </View>
   );

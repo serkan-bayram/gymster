@@ -1,6 +1,7 @@
 export interface Exercise {
   exerciseId: number;
   exercises: {
+    comment: string;
     repeat: number;
     weight: number;
   }[];
@@ -25,6 +26,7 @@ export interface AddingWorkout {
   exercise: string | null;
   weight: number | null;
   repeat: number | null;
+  comment: string | null;
 }
 
 export interface AllWorkouts {

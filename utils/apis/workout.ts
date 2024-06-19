@@ -91,13 +91,21 @@ export function useSaveWorkout() {
   const mutationFn = async () => {
     if (!user) return null;
 
+    // We don't care even if comment is empty
+    // So we delete it while checking
+    const checkNullObject = JSON.parse(JSON.stringify(addingWorkout));
+
+    delete checkNullObject["comment"];
+
     // Did user filled all the add workout inputs
-    const isAnyNullExists = JSON.stringify(addingWorkout).includes("null");
+    const isAnyNullExists = JSON.stringify(checkNullObject).includes("null");
 
     if (isAnyNullExists) {
-      Alert.alert("Hata", "Lütfen bütün bilgileri doldurunuz.", [
-        { text: "Tamam" },
-      ]);
+      Alert.alert(
+        "Hata",
+        "Lütfen şu alanların hepsini doldurunuz:\nEgzersiz, Ağırlık, Tekrar",
+        [{ text: "Tamam" }]
+      );
 
       return null;
     }
@@ -126,6 +134,7 @@ export function useSaveWorkout() {
       existingWorkout.exercises.push({
         repeat: addingWorkout.repeat || 0,
         weight: addingWorkout.weight || 0,
+        comment: addingWorkout.comment || "",
       });
 
       // Create the newWorkouts array
@@ -149,6 +158,7 @@ export function useSaveWorkout() {
           {
             repeat: addingWorkout.repeat || 0,
             weight: addingWorkout.weight || 0,
+            comment: addingWorkout.comment || "",
           },
         ],
       },

@@ -7,7 +7,7 @@ export function ExerciseRepeat() {
   const dispatch = useDispatch<AppDispatch>();
 
   return (
-    <View className="mt-4">
+    <View className="mt-1">
       <TextInput
         onChangeText={(text) =>
           dispatch(

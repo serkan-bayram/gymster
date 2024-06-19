@@ -44,6 +44,7 @@ export function Exercise({
       "Bu egzersizi silmek istediğinize emin misiniz?",
       exerciseName?.name,
       [
+        { text: "Vazgeç" },
         {
           text: "Sil",
           onPress: () => {
@@ -54,7 +55,6 @@ export function Exercise({
             });
           },
         },
-        { text: "Vazgeç" },
       ]
     );
   };
@@ -97,6 +97,7 @@ export function Exercise({
                 setIndex={index}
                 weight={ex.weight}
                 repeat={ex.repeat}
+                comment={ex.comment}
               />
             );
           })}

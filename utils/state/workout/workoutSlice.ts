@@ -18,6 +18,7 @@ const initialAddingWorkout = {
   exercise: null,
   weight: null,
   repeat: null,
+  comment: null,
 };
 
 const initialState: WorkoutState = {
@@ -36,6 +37,9 @@ const workoutSlice = createSlice({
     // We use this dispatch when user is adding a workout
     setAddingWorkout: (state, action) => {
       switch (action.payload.type) {
+        case "comment":
+          state.addingWorkout.comment = action.payload.comment;
+          break;
         case "exercise":
           state.addingWorkout.exerciseId = action.payload.exerciseId;
           state.addingWorkout.exercise = action.payload.exercise;
