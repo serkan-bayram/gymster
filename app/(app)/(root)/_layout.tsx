@@ -23,6 +23,8 @@ function cacheFonts(fonts: any) {
   return fonts.map((font: any) => Font.loadAsync(font));
 }
 
+SplashScreen.preventAutoHideAsync();
+
 export default function ProtectedLayout() {
   const router = useRouter();
 
@@ -87,8 +89,6 @@ const useCache = () => {
   useEffect(() => {
     async function loadResourcesAndDataAsync() {
       try {
-        SplashScreen.preventAutoHideAsync();
-
         const fontAssets = cacheFonts([
           MaterialIcons.font,
           MaterialCommunityIcons.font,
