@@ -10,12 +10,17 @@ import {
   setWentToGYMDays,
 } from "@/utils/state/gymDays/gymDaysSlice";
 import { setRenderConfetti } from "@/utils/state/confetti/confettiSlice";
+import { useSound } from "@/utils/use-sound";
 
 export function DaysHeading() {
   const wentToGYM = useSelector((state: RootState) => state.gymDays.wentToGYM);
   const dispatch = useDispatch<AppDispatch>();
 
   const updateWentToGYM = useUpdateWentToGYM();
+
+  const playSound = useSound({
+    source: require("@/assets/sounds/confirm.mp3"),
+  });
 
   const handleWentToGYM = async () => {
     const serverTime = await getServerTime();
@@ -27,6 +32,7 @@ export function DaysHeading() {
 
     if (!wentToGYM) {
       dispatch(setRenderConfetti(true));
+      await playSound();
     }
 
     dispatch(setWentToGYMDays(todaysDate));
