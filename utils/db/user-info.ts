@@ -1,5 +1,6 @@
 import { UserInfo } from "@/app/(app)/(root)/user-info";
 import firestore from "@react-native-firebase/firestore";
+import { User } from "../types/session";
 
 const usersRef = firestore().collection("Users");
 
@@ -26,12 +27,12 @@ export async function updateUserInfo({
   });
 }
 
-export async function getUser({ uid }: { uid: string }) {
+export async function getUser({ uid }: { uid: string }): Promise<User> {
   const query = usersRef.where("uid", "==", uid).limit(1);
 
   const querySnapshot = await query.get();
 
-  const documentData = querySnapshot.docs[0].data();
+  const documentData = querySnapshot.docs[0].data() as User;
 
   return documentData;
 }

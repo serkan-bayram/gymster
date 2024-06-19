@@ -8,7 +8,7 @@ import { signOut } from "@/utils/state/session/sessionSlice";
 import { Divider } from "../ui/divider";
 import { FontAwesome } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
-import { useNavigation, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 
 interface SettingsItem {
   onPress: () => void;
@@ -44,26 +44,25 @@ export function ProfileSettings() {
           <SettingsItem
             text="Bilgilerimi Güncelle"
             icon={<AntDesign name="idcard" size={18} color="black" />}
-            onPress={() => router.push("/user-info?update=true")}
+            onPress={() => {
+              setIsOpen(false);
+              router.push("/user-info?update=true");
+            }}
           />
           <Divider type="horizontal" dividerClassName="mt-auto " />
           <SettingsItem
             text="Çıkış Yap"
             icon={<FontAwesome name="sign-out" size={18} color="black" />}
             onPress={() => {
+              setIsOpen(false);
               dispatch(signOut());
             }}
           />
         </View>
       )}
 
-      <TouchableOpacity>
-        <Ionicons
-          onPress={() => setIsOpen((prevValue) => !prevValue)}
-          name="settings-sharp"
-          size={24}
-          color="black"
-        />
+      <TouchableOpacity onPress={() => setIsOpen((prevValue) => !prevValue)}>
+        <Ionicons name="settings-sharp" size={24} color="black" />
       </TouchableOpacity>
     </View>
   );

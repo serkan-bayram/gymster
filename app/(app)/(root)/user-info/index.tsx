@@ -17,9 +17,10 @@ import {
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/utils/state/store";
-import { updateUserInfo } from "@/utils/db/user-info";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { getUser, updateUserInfo } from "@/utils/db/user-info";
 import { setIsSignIn } from "@/utils/state/session/sessionSlice";
+import { useQuery } from "@tanstack/react-query";
+import { FullScreenLoading } from "@/components/loading";
 
 export interface UserInfo {
   age?: number;
@@ -37,9 +38,28 @@ export default function UserInfo() {
   const { user } = useSelector((state: RootState) => state.session);
   const dispatch = useDispatch<AppDispatch>();
 
+  const getUserInfo = useQuery({
+    queryKey: ["getUserInfo"],
+    queryFn: async () => {
+      if (!user) return null;
+
+      const userInfo = await getUser({ uid: user.uid });
+
+      if (userInfo.info) {
+        setInfo(userInfo.info);
+      }
+
+      return true;
+    },
+  });
+
   useEffect(() => {
     dispatch(setIsSignIn(false));
   }, []);
+
+  if (getUserInfo.isPending) {
+    return <FullScreenLoading />;
+  }
 
   const validate = useValidate({ info: info });
 
@@ -78,6 +98,7 @@ export default function UserInfo() {
         </Text>
 
         <Input
+          defaultValue={info?.age?.toString()}
           className="w-full"
           placeholder="Yaşın"
           keyboardType="numeric"
@@ -89,6 +110,7 @@ export default function UserInfo() {
         />
 
         <Input
+          defaultValue={info?.weight?.toString()}
           className="w-full"
           placeholder="Mevcut Kilon"
           keyboardType="numeric"
