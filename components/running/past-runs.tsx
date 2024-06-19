@@ -9,6 +9,9 @@ import * as Haptics from "expo-haptics";
 import { useUpdateRuns } from "@/utils/apis/runs";
 import { Run, RunsDB } from "@/utils/types/runs";
 import Animated, { FadeIn } from "react-native-reanimated";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/utils/state/store";
+import { setNotification } from "@/utils/state/notification/notificationSlice";
 
 export function PastRuns({
   getRunsData,
@@ -16,6 +19,7 @@ export function PastRuns({
   getRunsData: RunsDB[] | null | undefined;
 }) {
   const updateRuns = useUpdateRuns();
+  const dispatch = useDispatch<AppDispatch>();
 
   // When user long press a RunRow
   const handleLongPress = (item: RunsDB, runObject: Run) => {
@@ -27,7 +31,9 @@ export function PastRuns({
 
     Alert.alert(
       `Koşuyu Sil | ${item.dateAsText}`,
-      `Bu koşuyu silmek istediğine emin misin?\n\nOrtalama Hız: ${averageSpeed} \nMesafe: ${distance} \nSüre: ${runTimeAsText}`,
+      `Bu koşuyu silmek istediğine emin misin?\n\nOrtalama Hız: ${averageSpeed.toFixed(
+        2
+      )} km/dk \nMesafe: ${distance.toFixed(2)} km \nSüre: ${runTimeAsText}`,
       [
         {
           text: "Vazgeç",
@@ -45,6 +51,17 @@ export function PastRuns({
                 documentPath: item.documentPath,
                 newRuns: newRuns,
               });
+
+              dispatch(
+                setNotification({
+                  show: true,
+                  text: {
+                    heading: "Başarılı",
+                    content: "Koşunuz silindi.",
+                  },
+                  type: "success",
+                })
+              );
             }
           },
         },

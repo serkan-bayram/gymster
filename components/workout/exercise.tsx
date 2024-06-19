@@ -8,13 +8,13 @@ import * as Crypto from "expo-crypto";
 import Animated, {
   FadeIn,
   useAnimatedStyle,
-  useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-import { useSelector } from "react-redux";
-import { RootState } from "@/utils/state/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/utils/state/store";
 import { useDeleteWorkout } from "@/utils/apis/workout";
 import * as Haptics from "expo-haptics";
+import { setNotification } from "@/utils/state/notification/notificationSlice";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -34,6 +34,7 @@ export function Exercise({
   const { exerciseId, exercises } = exercise;
 
   const { defaultExercises } = useSelector((state: RootState) => state.workout);
+  const dispatch = useDispatch<AppDispatch>();
   const exerciseName = defaultExercises?.exercises.find((ex) => {
     return exerciseId === ex.id;
   });
@@ -66,6 +67,17 @@ export function Exercise({
               deletedWorkout: exercise.exerciseId,
               documentPath: documentPath,
             });
+
+            dispatch(
+              setNotification({
+                show: true,
+                text: {
+                  heading: "Başarılı",
+                  content: "Hareketiniz başarıyla silindi.",
+                },
+                type: "success",
+              })
+            );
           },
         },
       ]

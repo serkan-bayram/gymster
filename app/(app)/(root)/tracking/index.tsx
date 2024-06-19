@@ -14,16 +14,14 @@ export default function Tracking() {
   if (tracking.isPending) return <FullScreenLoading />;
 
   return (
-    <>
-      <View className="pt-16 pb-20  px-4 bg-background ">
-        <Confetti />
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <Heading heading={"Takip"} />
-          <GYMDays />
-          <Meals />
-          <Water />
-        </ScrollView>
-      </View>
-    </>
+    <View className="pt-16 pb-20  px-4 bg-background ">
+      <Confetti />
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <Heading heading={"Takip"} />
+        <GYMDays />
+        <Meals />
+        <Water />
+      </ScrollView>
+    </View>
   );
 }

@@ -1,5 +1,8 @@
 import { Alert } from "react-native";
+import { useDispatch } from "react-redux";
 import { z } from "zod";
+import { AppDispatch, store } from "./state/store";
+import { setNotification } from "./state/notification/notificationSlice";
 
 export function validateAge(age: number) {
   const Age = z
@@ -11,7 +14,15 @@ export function validateAge(age: number) {
   const result = Age.safeParse(age);
 
   if (!result.success) {
-    result.error.issues.map((error) => Alert.alert("Hata", error.message));
+    result.error.issues.map((error) =>
+      store.dispatch(
+        setNotification({
+          show: true,
+          text: { heading: "Hata", content: error.message },
+          type: "error",
+        })
+      )
+    );
     return false;
   }
 
@@ -28,7 +39,15 @@ export function validateWeight(weight: number) {
   const result = Weight.safeParse(weight);
 
   if (!result.success) {
-    result.error.issues.map((error) => Alert.alert("Hata", error.message));
+    result.error.issues.map((error) =>
+      store.dispatch(
+        setNotification({
+          show: true,
+          text: { heading: "Hata", content: error.message },
+          type: "error",
+        })
+      )
+    );
     return false;
   }
 
@@ -43,7 +62,15 @@ export function validateGender(gender: string) {
   const result = Gender.safeParse(gender);
 
   if (!result.success) {
-    result.error.issues.map((error) => Alert.alert("Hata", error.message));
+    result.error.issues.map((error) =>
+      store.dispatch(
+        setNotification({
+          show: true,
+          text: { heading: "Hata", content: error.message },
+          type: "error",
+        })
+      )
+    );
     return false;
   }
 

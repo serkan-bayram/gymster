@@ -18,6 +18,7 @@ import {
   FontAwesome,
   Octicons,
 } from "@expo/vector-icons";
+import { Notifications } from "@/components/notifications";
 
 function cacheFonts(fonts: any) {
   return fonts.map((font: any) => Font.loadAsync(font));
@@ -74,6 +75,8 @@ export default function ProtectedLayout() {
             />
           </Stack>
           <TabBar />
+
+          <Notifications />
 
           <StatusBar style="auto" />
         </View>

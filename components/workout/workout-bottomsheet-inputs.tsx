@@ -10,6 +10,7 @@ import { useSaveWorkout } from "@/utils/apis/workout";
 import { PrimaryButton } from "../primary-button";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { ExerciseComment } from "./exercise-comment";
+import { setNotification } from "@/utils/state/notification/notificationSlice";
 
 // TODO: We need to validate input
 export function WorkoutBottomSheetInputs({
@@ -29,6 +30,17 @@ export function WorkoutBottomSheetInputs({
   useEffect(() => {
     if (isSaved) {
       bottomSheetRef?.current?.dismiss();
+
+      dispatch(
+        setNotification({
+          show: true,
+          text: {
+            heading: "Tebrikler",
+            content: "Hareketiniz başarıyla kaydedildi.",
+          },
+          type: "success",
+        })
+      );
     }
   }, [isSaved]);
 

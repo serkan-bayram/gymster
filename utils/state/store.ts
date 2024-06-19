@@ -6,6 +6,7 @@ import gymDaysSlice from "./gymDays/gymDaysSlice";
 import waterSlice from "./water/waterSlice";
 import mealsSlice from "./meals/mealsSlice";
 import confettiSlice from "./confetti/confettiSlice";
+import notificationSlice from "./notification/notificationSlice";
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     water: waterSlice,
     meals: mealsSlice,
     confetti: confettiSlice,
+    notification: notificationSlice,
   },
 });
 

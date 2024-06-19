@@ -61,8 +61,6 @@ const useHandleUserInfo = () => {
   });
 
   useEffect(() => {
-    console.log(isSignIn, query.data);
-
     // User has not saved any user info
     // and user is just signed in
     if (isSignIn && query.data === false) {

@@ -1,6 +1,6 @@
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/utils/state/store";
@@ -9,6 +9,7 @@ import { Divider } from "../ui/divider";
 import { FontAwesome } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { setNotification } from "@/utils/state/notification/notificationSlice";
 
 interface SettingsItem {
   onPress: () => void;

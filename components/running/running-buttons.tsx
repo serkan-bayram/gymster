@@ -8,6 +8,7 @@ import { getServerTime } from "@/utils/db";
 import * as Crypto from "expo-crypto";
 import { useAddRuns } from "@/utils/apis/runs";
 import { RunsDB } from "@/utils/types/runs";
+import { setNotification } from "@/utils/state/notification/notificationSlice";
 
 export function RunningButtons({
   bottomSheetRef,
@@ -81,6 +82,17 @@ export function RunningButtons({
       };
 
       addRuns.mutate({ runData: saveObject });
+
+      dispatch(
+        setNotification({
+          show: true,
+          text: {
+            heading: "Tebrikler",
+            content: "Koşunuz başarıyla kaydedildi.",
+          },
+          type: "success",
+        })
+      );
 
       stopEverything();
     }

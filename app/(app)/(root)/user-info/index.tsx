@@ -21,6 +21,7 @@ import { getUser, updateUserInfo } from "@/utils/db/user-info";
 import { setIsSignIn } from "@/utils/state/session/sessionSlice";
 import { useQuery } from "@tanstack/react-query";
 import { FullScreenLoading } from "@/components/loading";
+import { setNotification } from "@/utils/state/notification/notificationSlice";
 
 export interface UserInfo {
   age?: number;
@@ -73,6 +74,14 @@ export default function UserInfo() {
     await updateUserInfo({ userObject: saveObject, uid: user.uid });
 
     router.push("/home");
+
+    dispatch(
+      setNotification({
+        show: true,
+        text: { heading: "Başarılı", content: "Bilgileriniz güncellendi!" },
+        type: "success",
+      })
+    );
   };
 
   return (
@@ -98,7 +107,7 @@ export default function UserInfo() {
         </Text>
 
         <Input
-          defaultValue={info?.age?.toString()}
+          defaultValue={!!info?.age ? info?.age?.toString() : ""}
           className="w-full"
           placeholder="Yaşın"
           keyboardType="numeric"
@@ -110,7 +119,7 @@ export default function UserInfo() {
         />
 
         <Input
-          defaultValue={info?.weight?.toString()}
+          defaultValue={!!info?.weight ? info?.weight?.toString() : ""}
           className="w-full"
           placeholder="Mevcut Kilon"
           keyboardType="numeric"
@@ -174,11 +183,20 @@ export default function UserInfo() {
 }
 
 const useValidate = ({ info }: { info: UserInfo | null }) => {
+  const dispatch = useDispatch<AppDispatch>();
+
   const validate = () => {
     if (!info || !info.age || !info.weight || !info.gender) {
-      Alert.alert("Hata", "Lütfen bütün bilgileri doldurunuz.", [
-        { text: "Tamam" },
-      ]);
+      dispatch(
+        setNotification({
+          show: true,
+          text: {
+            heading: "Hata",
+            content: "Lütfen bütün bilgileri doldurunuz.",
+          },
+          type: "error",
+        })
+      );
       return false;
     }
 
