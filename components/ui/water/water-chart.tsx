@@ -30,7 +30,7 @@ const FilterButton = ({
   <Pressable
     onPress={() => setPickedFilter(filterWord)}
     className={cn(
-      "active:bg-blue-600 transition-all p-2 w-16 mr-3 rounded-lg px-3 bg-blue-400",
+      "active:bg-blue-600 transition-all p-2 w-20 mr-3 rounded-lg px-3 bg-blue-400",
       {
         "bg-blue-800": pickedFilter === filterWord,
       }
@@ -68,9 +68,9 @@ export const WaterChart = () => {
 
   // Define the filter options
   const filters: { text: string; filterWord: PickedFilter }[] = [
-    { text: "Hafta", filterWord: "week" },
-    { text: "Ay", filterWord: "month" },
-    { text: "Yıl", filterWord: "year" },
+    { text: "Bu hafta", filterWord: "week" },
+    { text: "Bu ay", filterWord: "month" },
+    { text: "Bu yıl", filterWord: "year" },
   ];
 
   const windowWidth = Dimensions.get("window").width;

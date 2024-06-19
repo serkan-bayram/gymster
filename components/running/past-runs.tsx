@@ -8,6 +8,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import * as Haptics from "expo-haptics";
 import { useUpdateRuns } from "@/utils/apis/runs";
 import { Run, RunsDB } from "@/utils/types/runs";
+import Animated, { FadeIn } from "react-native-reanimated";
 
 export function PastRuns({
   getRunsData,
@@ -71,7 +72,10 @@ export function PastRuns({
                   if (item.runs.length === 0) return <View></View>;
 
                   return (
-                    <View className="mb-4">
+                    <Animated.View
+                      entering={FadeIn.delay(index * 120)}
+                      className="mb-4"
+                    >
                       <View className="flex flex-row items-center">
                         <Feather name="calendar" size={20} color="black" />
                         <Text className="ml-1 font-semibold text-lg">
@@ -94,7 +98,7 @@ export function PastRuns({
                           );
                         })}
                       </View>
-                    </View>
+                    </Animated.View>
                   );
                 }}
               />

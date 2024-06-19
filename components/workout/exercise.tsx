@@ -5,7 +5,12 @@ import { Set } from "./set";
 import { cn } from "@/utils/cn";
 import { Exercise as ExerciseType } from "@/utils/types/workout";
 import * as Crypto from "expo-crypto";
-import Animated, { FadeIn } from "react-native-reanimated";
+import Animated, {
+  FadeIn,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
 import { useSelector } from "react-redux";
 import { RootState } from "@/utils/state/store";
 import { useDeleteWorkout } from "@/utils/apis/workout";
@@ -35,6 +40,14 @@ export function Exercise({
 
   const totalSet = exercises.length;
   const totalRepeat = exercises.reduce((total, ex) => total + ex.repeat, 0);
+
+  const animatedArrow = useAnimatedStyle(() => {
+    return {
+      transform: [
+        { rotate: isOpen ? withSpring("180deg") : withSpring("0deg") },
+      ],
+    };
+  });
 
   const deleteWorkout = useDeleteWorkout();
 
@@ -83,9 +96,9 @@ export function Exercise({
           <Text className="text-white">
             {totalSet} set {totalRepeat} tekrar
           </Text>
-          <View className={cn({ "rotate-180": isOpen })}>
+          <Animated.View style={[animatedArrow]}>
             <MaterialIcons name="expand-more" size={24} color="white" />
-          </View>
+          </Animated.View>
         </View>
       </View>
       {isOpen && (
