@@ -4,6 +4,7 @@ import { useUpdateWater } from "@/utils/apis/water";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/utils/state/store";
 import { setProgress } from "@/utils/state/water/waterSlice";
+import { useSound } from "@/utils/use-sound";
 
 const useCalculateProgress = (
   type: string,
@@ -42,7 +43,11 @@ export function UpdateWaterValue() {
 
   const updateWater = useUpdateWater();
 
-  const handleClick = (type: string) => {
+  const playSound = useSound({
+    source: require("@/assets/sounds/confirm.mp3"),
+  });
+
+  const handleClick = async (type: string) => {
     const newProgress = useCalculateProgress(
       type,
       currentProgress,
@@ -53,6 +58,10 @@ export function UpdateWaterValue() {
     dispatch(setProgress(newProgress));
 
     updateWater.mutate({ newProgress: newProgress });
+
+    if (newProgress >= goal) {
+      await playSound();
+    }
   };
 
   return (
