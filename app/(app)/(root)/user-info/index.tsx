@@ -4,17 +4,11 @@ import {
   validateAge,
   validateGender,
   validateWeight,
-} from "@/utils/validations";
+} from "@/utils/validations/user-info";
 import { Picker } from "@react-native-picker/picker";
 import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
-import {
-  Alert,
-  KeyboardAvoidingView,
-  Pressable,
-  Text,
-  View,
-} from "react-native";
+import { KeyboardAvoidingView, Pressable, Text, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/utils/state/store";
 import { getUser, updateUserInfo } from "@/utils/db/user-info";
@@ -33,11 +27,14 @@ export default function UserInfo() {
   const params = useLocalSearchParams();
   const router = useRouter();
 
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [info, setInfo] = useState<UserInfo | null>(null);
   const pickerRef = useRef<any>(null);
 
   const { user } = useSelector((state: RootState) => state.session);
   const dispatch = useDispatch<AppDispatch>();
+
+  const validate = useValidate({ info: info });
 
   const getUserInfo = useQuery({
     queryKey: ["getUserInfo"],
@@ -62,8 +59,6 @@ export default function UserInfo() {
     return <FullScreenLoading />;
   }
 
-  const validate = useValidate({ info: info });
-
   const handlePress = async () => {
     if (!user) return null;
 
@@ -71,10 +66,28 @@ export default function UserInfo() {
 
     if (!saveObject) return null;
 
-    await updateUserInfo({ userObject: saveObject, uid: user.uid });
+    setIsLoading(true);
+    const { error } = await updateUserInfo({
+      userObject: saveObject,
+      uid: user.uid,
+    });
+    setIsLoading(false);
+
+    if (error) {
+      dispatch(
+        setNotification({
+          show: true,
+          text: {
+            heading: "Hata",
+            content: "Bir şeyler ters gitti, daha sonra tekrar deneyiniz.",
+          },
+          type: "error",
+        })
+      );
+      return;
+    }
 
     router.push("/home");
-
     dispatch(
       setNotification({
         show: true,
@@ -151,6 +164,7 @@ export default function UserInfo() {
           onPress={handlePress}
           text={params?.update ? "Güncelle" : "Devam Et"}
           className="w-2/3"
+          isLoading={isLoading}
         />
 
         <Text className="text-xs absolute bottom-4 text-center">

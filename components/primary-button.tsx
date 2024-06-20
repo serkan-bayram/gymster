@@ -1,4 +1,4 @@
-import { Pressable, Text, View } from "react-native";
+import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { cn } from "../utils/cn";
 import { forwardRef } from "react";
 import { PressableProps } from "react-native";
@@ -7,6 +7,7 @@ interface PrimaryButtonProps extends PressableProps {
   text: string;
   type?: "danger" | "outlined";
   textClassName?: string;
+  isLoading?: boolean;
 }
 
 // <View, PrimaryButtonProps>
@@ -14,10 +15,12 @@ interface PrimaryButtonProps extends PressableProps {
 // This component expects PrimaryButtonProps type
 export const PrimaryButton = forwardRef<View, PrimaryButtonProps>(
   function PrimaryButton(props: PrimaryButtonProps, ref) {
-    const { text, type, className, textClassName, ...otherProps } = props;
+    const { text, type, className, textClassName, isLoading, ...otherProps } =
+      props;
 
     return (
       <Pressable
+        disabled={isLoading}
         className={cn(
           " transition-all duration-300 bg-secondary active:bg-secondary/75 p-4 rounded-xl",
           className,
@@ -28,13 +31,17 @@ export const PrimaryButton = forwardRef<View, PrimaryButtonProps>(
         )}
         {...otherProps}
       >
-        <Text
-          className={cn("text-center text-white", textClassName, {
-            "text-black": type === "outlined",
-          })}
-        >
-          {text}
-        </Text>
+        {!isLoading ? (
+          <Text
+            className={cn("text-center text-white", textClassName, {
+              "text-black": type === "outlined",
+            })}
+          >
+            {text}
+          </Text>
+        ) : (
+          <ActivityIndicator size="small" color="white" />
+        )}
       </Pressable>
     );
   }

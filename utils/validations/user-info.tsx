@@ -1,8 +1,8 @@
 import { Alert } from "react-native";
 import { useDispatch } from "react-redux";
 import { z } from "zod";
-import { AppDispatch, store } from "./state/store";
-import { setNotification } from "./state/notification/notificationSlice";
+import { AppDispatch, store } from "../state/store";
+import { setNotification } from "../state/notification/notificationSlice";
 
 export function validateAge(age: number) {
   const Age = z
