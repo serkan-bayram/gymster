@@ -38,11 +38,16 @@ export async function findTrackingsDoc(uid: string): Promise<Trackings | null> {
   const querySnapshot = await query.get();
 
   // Create document if not exists
-  if (querySnapshot.size === 0) {
-    await trackingsRef.add({
-      createdAt: firestore.FieldValue.serverTimestamp(),
-      uid: uid,
-    });
+  if (querySnapshot.empty) {
+    try {
+      await trackingsRef.add({
+        createdAt: firestore.FieldValue.serverTimestamp(),
+        uid: uid,
+      });
+      console.log("Tracking document is created.");
+    } catch (error) {
+      console.log("Error on findTrackingsDoc: ", error);
+    }
 
     return null;
   }

@@ -4,10 +4,6 @@ import { User } from "../types/session";
 
 const usersRef = firestore().collection("Users");
 
-interface Error {
-  error: boolean;
-}
-
 // Find user document and update with user info
 export async function updateUserInfo({
   userObject,
@@ -15,13 +11,13 @@ export async function updateUserInfo({
 }: {
   userObject: UserInfo;
   uid: string;
-}): Promise<Error> {
+}): Promise<boolean | null> {
   const query = usersRef.where("uid", "==", uid).limit(1);
 
   const querySnapshot = await query.get();
 
   if (querySnapshot.empty) {
-    return { error: true };
+    return null;
   }
 
   const documentSnapshot = querySnapshot.docs[0];
@@ -34,10 +30,10 @@ export async function updateUserInfo({
       .doc(path)
       .update({ info: userObject });
 
-    return { error: false };
+    return true;
   } catch (error) {
     console.log("Error on updateUserInfo: ", error);
-    return { error: true };
+    return false;
   }
 }
 

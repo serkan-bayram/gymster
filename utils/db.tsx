@@ -6,7 +6,7 @@ import firestore, {
 
 // We have a document in the firestore that holds a timestamp
 // We need to update it with server time whenever we need trustable time
-export async function updateServerTime() {
+export async function updateServerTime(): Promise<boolean | null> {
   const serverTimeRef = firestore().collection("ServerTimes");
 
   // There is only one document that holds this information
@@ -18,27 +18,43 @@ export async function updateServerTime() {
 
   // We create first, if no document exists
   if (querySnapshot.size === 0) {
-    await serverTimeRef.add(serverTimeObject);
-  } else {
-    // We update the document with latest server time
-    const documentToUpdate = querySnapshot.docs[0].ref.path;
-
-    await firestore().doc(documentToUpdate).update(serverTimeObject);
+    try {
+      await serverTimeRef.add(serverTimeObject);
+      return true;
+    } catch (error) {
+      console.log("Error on updateServerTime: ", error);
+      return null;
+    }
   }
 
-  return { updated: true };
+  // We update the document with latest server time
+  const documentToUpdate = querySnapshot.docs[0].ref.path;
+
+  try {
+    await firestore().doc(documentToUpdate).update(serverTimeObject);
+    return true;
+  } catch (error) {
+    console.log("Error on updateServerTime: ", error);
+    return null;
+  }
+}
+
+interface ServerTime {
+  date: FirebaseFirestoreTypes.Timestamp;
 }
 
 // We can use cloud functions instead of updateServerTime
-export async function getServerTime(): Promise<FirebaseFirestoreTypes.DocumentData | null> {
-  const { updated } = await updateServerTime();
+export async function getServerTime(): Promise<null | ServerTime> {
+  const isUpdated = await updateServerTime();
 
-  if (updated) {
+  if (isUpdated) {
     const serverTimeRef = firestore().collection("ServerTimes");
 
     const querySnapshot = await serverTimeRef.limit(1).get();
 
-    const serverTime = querySnapshot.docs[0].data();
+    const serverTime = querySnapshot.docs[0].data() as {
+      date: FirebaseFirestoreTypes.Timestamp;
+    };
 
     return serverTime;
   }

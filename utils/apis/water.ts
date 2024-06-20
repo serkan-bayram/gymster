@@ -22,11 +22,11 @@ export function useUpdateWater() {
 
       const foundTrackingsDoc = await findTrackingsDoc(user.uid);
 
-      if (foundTrackingsDoc) {
-        const { trackingsPath } = foundTrackingsDoc;
+      if (!foundTrackingsDoc) return null;
 
-        await updateHydrationProgress(trackingsPath, newProgress);
-      }
+      const { trackingsPath } = foundTrackingsDoc;
+
+      await updateHydrationProgress(trackingsPath, newProgress);
     },
   });
 }

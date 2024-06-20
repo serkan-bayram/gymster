@@ -10,22 +10,20 @@ interface Timestamps {
 
 // This function gives the start and end timestamps of serverTime
 // It's useful when we want to query for a day only
-export async function getTimestampsForADay(): Promise<Timestamps | null> {
+export async function getTimestampsForADay(): Promise<null | Timestamps> {
   const serverTime = await getServerTime();
 
-  if (serverTime) {
-    const serverTimeDate = new Date(serverTime.date.toDate());
+  if (!serverTime) return null;
 
-    const startOfDay = new Date(serverTimeDate);
-    startOfDay.setHours(0, 0, 0, 0);
-    const endOfDay = new Date(serverTimeDate);
-    endOfDay.setHours(23, 59, 59, 999);
+  const serverTimeDate = new Date(serverTime.date.toDate());
 
-    const startTimestamp = firestore.Timestamp.fromDate(startOfDay);
-    const endTimestamp = firestore.Timestamp.fromDate(endOfDay);
+  const startOfDay = new Date(serverTimeDate);
+  startOfDay.setHours(0, 0, 0, 0);
+  const endOfDay = new Date(serverTimeDate);
+  endOfDay.setHours(23, 59, 59, 999);
 
-    return { startTimestamp: startTimestamp, endTimestamp: endTimestamp };
-  }
+  const startTimestamp = firestore.Timestamp.fromDate(startOfDay);
+  const endTimestamp = firestore.Timestamp.fromDate(endOfDay);
 
-  return null;
+  return { startTimestamp: startTimestamp, endTimestamp: endTimestamp };
 }

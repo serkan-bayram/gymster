@@ -67,13 +67,13 @@ export default function UserInfo() {
     if (!saveObject) return null;
 
     setIsLoading(true);
-    const { error } = await updateUserInfo({
+    const isUpdated = await updateUserInfo({
       userObject: saveObject,
       uid: user.uid,
     });
     setIsLoading(false);
 
-    if (error) {
+    if (!isUpdated) {
       dispatch(
         setNotification({
           show: true,

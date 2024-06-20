@@ -14,11 +14,9 @@ export function useGetTracking() {
     if (!user) return null;
 
     const foundTrackingsDoc = await findTrackingsDoc(user.uid);
-    // Trackings document is just created so there is not any value in it
 
-    if (foundTrackingsDoc === null) {
-      return null;
-    }
+    // Trackings document is just created so there is not any value in it
+    if (!foundTrackingsDoc) return null;
 
     const { trackingsDoc } = foundTrackingsDoc;
 
