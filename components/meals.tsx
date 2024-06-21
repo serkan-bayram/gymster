@@ -9,6 +9,8 @@ import { Link } from "expo-router";
 import { Meal } from "@/utils/types/meals";
 import { useSelector } from "react-redux";
 import { RootState } from "@/utils/state/store";
+import { createAnimatedComponent } from "react-native-reanimated/lib/typescript/createAnimatedComponent";
+import Animated, { FadeIn } from "react-native-reanimated";
 
 type FetchedMeals = Meal[];
 
@@ -42,11 +44,13 @@ export const getColor = (index: number) => {
   return { bgColor, textColor };
 };
 
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
 export function Meals() {
   const { meals: fetchedMeals } = useSelector(
     (state: RootState) => state.meals
   );
-
+  AnimatedPressable;
   const mealsBottomSheetRef = useRef(null);
 
   // We put AddMeal button instead of this placeholder
@@ -95,7 +99,8 @@ export function Meals() {
 
             return (
               <Link asChild href={"/meals-details"}>
-                <Pressable
+                <AnimatedPressable
+                  entering={FadeIn}
                   className={cn(
                     `mr-4 border-2 h-full max-w-[250px] active:opacity-50 transition-all  border-secondary self-start rounded-2xl p-3`,
                     bgColor
@@ -123,7 +128,7 @@ export function Meals() {
                       );
                     })}
                   </View>
-                </Pressable>
+                </AnimatedPressable>
               </Link>
             );
           }}

@@ -1,10 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getServerTime } from "../db";
 import { DateObject, Meal, MealsDetailsObject, Sums } from "../types/meals";
-import { useSelector } from "react-redux";
-import { RootState } from "../state/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../state/store";
 import { getAllMeals, updateMeals } from "../db/meals";
 import { findTrackingsDoc } from "../db/tracking";
+import { setNotification } from "../state/notification/notificationSlice";
 
 // Gets all meals
 export function useGetMeals({
@@ -89,25 +90,51 @@ export function useGetMeals({
 
 export function useUpdateMeals() {
   const user = useSelector((state: RootState) => state.session.user);
+  const dispatch = useDispatch<AppDispatch>();
 
   const queryClient = useQueryClient();
 
   const mutationFn = async (newMeal: any) => {
-    // Upddate & get server time
-
     if (!user) return null;
 
     const foundTrackingsDoc = await findTrackingsDoc(user.uid);
+
+    if (!foundTrackingsDoc) return null;
 
     // Remove empty {} at first index
     const shifted = [...newMeal];
     shifted.shift();
 
-    if (foundTrackingsDoc) {
-      const { trackingsPath } = foundTrackingsDoc;
+    const { trackingsPath } = foundTrackingsDoc;
 
-      const isUpdated = await updateMeals(trackingsPath, shifted);
+    const isUpdated = await updateMeals(trackingsPath, shifted);
+
+    if (!isUpdated) {
+      dispatch(
+        setNotification({
+          show: true,
+          text: {
+            heading: "Hata",
+            content: "Öğün eklenemedi, daha sonra tekrar deneyiniz.",
+          },
+          type: "error",
+        })
+      );
+      return null;
     }
+
+    dispatch(
+      setNotification({
+        show: true,
+        text: {
+          heading: "Başarılı",
+          content: "Öğün başarıyla eklendi!",
+        },
+        type: "success",
+      })
+    );
+
+    return true;
   };
 
   return useMutation({

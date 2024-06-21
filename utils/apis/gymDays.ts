@@ -69,7 +69,7 @@ export function useGetGYMCalendar() {
       );
 
       const todaysDate = serverDate.getDate();
-      const monthName = serverDate.toLocaleString("default", {
+      const monthName = serverDate.toLocaleString("tr-TR", {
         month: "long",
       });
 

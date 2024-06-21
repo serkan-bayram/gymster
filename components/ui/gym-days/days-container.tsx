@@ -3,6 +3,7 @@ import { cn } from "@/utils/cn";
 import { RootState } from "@/utils/state/store";
 import { memo, useMemo } from "react";
 import { Text, View } from "react-native";
+import Animated, { FadeIn } from "react-native-reanimated";
 import { useSelector } from "react-redux";
 
 const Days = memo(({ daysCount }: { daysCount: number | undefined }) => {
@@ -12,7 +13,12 @@ const Days = memo(({ daysCount }: { daysCount: number | undefined }) => {
 
   const dayElements = useMemo(() => {
     return Array.from({ length: daysCount || 30 }).map((_, index) => (
-      <View
+      <Animated.View
+        entering={
+          wentToGYMDays.includes(index + 1)
+            ? FadeIn.delay(index * 20)
+            : undefined
+        }
         key={index}
         className={cn(
           "w-8 h-8 m-[2px] flex items-center justify-center bg-black rounded-full transition-all",
@@ -22,7 +28,7 @@ const Days = memo(({ daysCount }: { daysCount: number | undefined }) => {
         )}
       >
         <Text className="text-background">{index + 1}</Text>
-      </View>
+      </Animated.View>
     ));
   }, [wentToGYMDays]);
 

@@ -13,8 +13,10 @@ export function MealsBottomSheet({ setMeals, mealsBottomSheetRef }) {
 
   // MAYBE separate textinput so it does not render the whole component
   const handleSave = () => {
-    // TODO: add a notification to let user know
-    if (input.length <= 0) return;
+    if (input.length <= 0) {
+      closeBottomSheet();
+      return;
+    }
 
     let newMeal;
 
@@ -25,10 +27,10 @@ export function MealsBottomSheet({ setMeals, mealsBottomSheetRef }) {
       newMeal.push({
         userInput: input,
         nutritions: {
-          kcal: "342",
-          protein: "13",
-          fat: "27",
-          carbs: "120",
+          kcal: 342,
+          protein: 13,
+          fat: 27,
+          carbs: 120,
         },
       });
 
