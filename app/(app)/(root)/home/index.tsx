@@ -9,11 +9,14 @@ import { useQuery } from "@tanstack/react-query";
 import { getUser } from "@/utils/db/user-info";
 import { useRouter } from "expo-router";
 import { useEffect } from "react";
+import { FullScreenLoading } from "@/components/loading";
 
 export default function Home() {
   const { user } = useSelector((state: RootState) => state.session);
 
-  useHandleUserInfo();
+  const query = useHandleUserInfo();
+
+  if (query.isPending) return <FullScreenLoading />;
 
   const firstName = user?.displayName
     ? user.displayName.split(" ")[0]
@@ -43,11 +46,11 @@ const useHandleUserInfo = () => {
   const { user, isSignIn } = useSelector((state: RootState) => state.session);
 
   const query = useQuery({
-    // don't fetch if isSignIn is false
-    enabled: isSignIn,
+    // TODO: This line is problamatic
+    // enabled: isSignIn,
     queryKey: ["didUserSavedInfo"],
     queryFn: async () => {
-      if (!user) return true;
+      if (!user) return null;
 
       const dbUser = await getUser({ uid: user.uid });
 
@@ -67,4 +70,6 @@ const useHandleUserInfo = () => {
       router.push("/user-info");
     }
   }, [isSignIn, query.data]);
+
+  return query;
 };
