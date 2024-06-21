@@ -39,11 +39,13 @@ export function useUpdateWentToGYM() {
 
     const foundTrackingsDoc = await findTrackingsDoc(user.uid);
 
-    const doc = foundTrackingsDoc;
+    if (!foundTrackingsDoc) return null;
 
-    if (doc) {
-      await updateWentToGYM(doc.trackingsPath, wentToGYM);
-    }
+    const { trackingsPath } = foundTrackingsDoc;
+
+    const isUpdated = await updateWentToGYM(trackingsPath, wentToGYM);
+
+    console.log("isUpdated: ", isUpdated);
   };
 
   // This mutation updates the wentToGYM field of related document

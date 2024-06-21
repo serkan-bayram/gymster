@@ -52,10 +52,13 @@ export async function getGYMDays(
 export async function updateWentToGYM(
   trackingsPath: string,
   wentToGYM: boolean
-) {
-  await firestore()
-    .doc(trackingsPath)
-    .set({ wentToGYM: wentToGYM }, { merge: true });
-
-  return true;
+): Promise<boolean | null> {
+  try {
+    await firestore().doc(trackingsPath).update({ wentToGYM: wentToGYM });
+    console.log("wentToGYM is updated: ", wentToGYM);
+    return true;
+  } catch (error) {
+    console.log("Error on updateWentToGYM: ", error);
+    return null;
+  }
 }

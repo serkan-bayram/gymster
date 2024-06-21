@@ -1,5 +1,5 @@
 import { memo, useEffect } from "react";
-import { StyleSheet } from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
 import { Text, View } from "react-native";
 import Animated, {
   FadeOut,
@@ -15,26 +15,50 @@ import { setRenderConfetti } from "@/utils/state/confetti/confettiSlice";
 
 const AnimatedView = Animated.createAnimatedComponent(View);
 
-function Emoji({ emoji, positions }: { emoji: string; positions: Positions }) {
+function Emoji({
+  emoji,
+  middleIndex,
+  index,
+}: {
+  emoji: string;
+  middleIndex: number;
+  index: number;
+}) {
   const dispatch = useDispatch<AppDispatch>();
 
   const pBottom = useSharedValue<number>(0);
   const pLeft = useSharedValue<number>(0);
-  const pRight = useSharedValue<number>(0);
+
+  // Increase y by this value
+  const yIncreaseRate = 40;
+
+  // top and min y values
+  const minY = 100;
+  const topY = minY + middleIndex * yIncreaseRate;
+
+  const windowWidth = Dimensions.get("window").width;
+
+  const xIncreaseRate = windowWidth / 2 / middleIndex;
+
+  const position = {
+    // 16 is half size of an emoji (a full one is 32px)
+    x: xIncreaseRate * index - 16,
+    y:
+      index <= middleIndex
+        ? // Increase y value as index is smaller than middleIndex
+          minY + index * yIncreaseRate
+        : // Decrease y value as index is bigger than middleIndex
+          topY - (index - middleIndex) * yIncreaseRate,
+  };
 
   useEffect(() => {
     pBottom.value = withSequence(
-      withTiming(positions.bottom.y, {
-        duration: positions.bottom.duration,
-      }),
-      withDelay(positions.bottom.delay, withTiming(-200))
+      withTiming(position.y, { duration: index * 100 }),
+      withDelay(1000 + index * 100, withTiming(-200))
     );
-    pLeft.value = withTiming(positions.left.x, {
-      duration: positions.left.duration,
-    });
 
-    pRight.value = withTiming(positions.right.x, {
-      duration: positions.right.duration,
+    pLeft.value = withTiming(position.x, {
+      duration: 150,
     });
 
     const timeout = setTimeout(() => {
@@ -52,45 +76,13 @@ function Emoji({ emoji, positions }: { emoji: string; positions: Positions }) {
           zIndex: 100,
           elevation: 100,
           bottom: pBottom,
-          left: positions.right.x ? "auto" : pLeft,
-          right: positions.left.x ? "auto" : pRight,
+          left: pLeft,
         },
       ]}
     >
       <Text className="text-[32px]">{emoji}</Text>
     </AnimatedView>
   );
-}
-
-interface Positions {
-  bottom: { y: number; duration: number; delay: number };
-  left: { x: number; duration: number };
-  right: { x: number; duration: number };
-}
-
-type RandomNumberParams = { min: number; max: number };
-
-function getRandomNumber({ min, max }: RandomNumberParams): number {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function generateRandomPositionParams(): {
-  y: number;
-  duration: number;
-  delay: number;
-} {
-  return {
-    y: getRandomNumber({ min: 200, max: 600 }),
-    duration: getRandomNumber({ min: 400, max: 800 }),
-    delay: getRandomNumber({ min: 600, max: 1200 }),
-  };
-}
-
-function generateSideParams(): { x: number; duration: number } {
-  return {
-    x: getRandomNumber({ min: 0, max: 400 }),
-    duration: getRandomNumber({ min: 200, max: 400 }),
-  };
 }
 
 const emojis = ["🌟", "💯", "💪🏻", "🎉", "✨"];
@@ -101,29 +93,18 @@ export function Confetti() {
   );
 
   return (
-    renderConfetti &&
-    Array.from({ length: 35 }).map(() => {
-      const randBottom = generateRandomPositionParams();
-      const isRight = Math.random() > 0.5;
-      const randLeft = isRight ? { x: 0, duration: 0 } : generateSideParams();
-      const randRight = isRight ? generateSideParams() : { x: 0, duration: 0 };
-
-      const positions: Positions = {
-        bottom: randBottom,
-        left: randLeft,
-        right: randRight,
-      };
-
-      const randomEmoji =
-        emojis[getRandomNumber({ max: emojis.length - 1, min: 0 })];
-
-      return (
-        <Emoji
-          key={Crypto.randomUUID()}
-          emoji={randomEmoji}
-          positions={positions}
-        />
-      );
-    })
+    <>
+      {renderConfetti &&
+        emojis.map((emoji, index) => {
+          return (
+            <Emoji
+              key={Crypto.randomUUID()}
+              middleIndex={Math.floor((emojis.length + 1) / 2)}
+              emoji={emoji}
+              index={index + 1}
+            />
+          );
+        })}
+    </>
   );
 }
