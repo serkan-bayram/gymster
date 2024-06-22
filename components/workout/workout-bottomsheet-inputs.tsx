@@ -5,22 +5,29 @@ import { ExerciseRepeat } from "./exercise-repeat";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/utils/state/store";
 import { RefObject, useEffect, useState } from "react";
-import { resetAddingWorkout } from "@/utils/state/workout/workoutSlice";
+import {
+  resetAddingWorkout,
+  setAddingWorkout,
+} from "@/utils/state/workout/workoutSlice";
 import { useSaveWorkout } from "@/utils/apis/workout";
 import { PrimaryButton } from "../primary-button";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { ExerciseComment } from "./exercise-comment";
 import { setNotification } from "@/utils/state/notification/notificationSlice";
+import {
+  validateComment,
+  validateRepeat,
+  validateWeight,
+} from "@/utils/validations/workout";
 
-// TODO: We need to validate input
 export function WorkoutBottomSheetInputs({
   bottomSheetRef,
 }: {
   bottomSheetRef: RefObject<BottomSheetModal>;
 }) {
   const dispatch = useDispatch<AppDispatch>();
-  const defaultExercises = useSelector(
-    (state: RootState) => state.workout.defaultExercises
+  const { addingWorkout, defaultExercises } = useSelector(
+    (state: RootState) => state.workout
   );
 
   const [isLoading, setIsLoading] = useState(false);
@@ -47,6 +54,32 @@ export function WorkoutBottomSheetInputs({
 
     setIsLoading(false);
   }, [isSaved]);
+
+  // TODO: We might move these validations to slices directly
+  const handleSave = () => {
+    const { comment, repeat, weight } = addingWorkout;
+
+    // comment can be null
+    if (!repeat || !weight) return null;
+
+    const validatedWeight = validateWeight(weight);
+    const validatedRepeat = validateRepeat(repeat);
+    const validatedComment = validateComment(comment ? comment : "");
+    if (
+      validatedWeight === false ||
+      validatedRepeat === false ||
+      validatedComment === false
+    ) {
+      return null;
+    }
+
+    dispatch(setAddingWorkout({ type: "comment", comment: validatedComment }));
+    dispatch(setAddingWorkout({ type: "repeat", comment: validatedRepeat }));
+    dispatch(setAddingWorkout({ type: "weight", comment: validatedWeight }));
+
+    setIsLoading(true);
+    saveWorkout.mutate();
+  };
 
   // Reset state when bottomsheet reopens
   useEffect(() => {
@@ -91,10 +124,7 @@ export function WorkoutBottomSheetInputs({
         />
         <PrimaryButton
           isLoading={isLoading}
-          onPress={() => {
-            setIsLoading(true);
-            saveWorkout.mutate();
-          }}
+          onPress={handleSave}
           text="Kaydet"
           className="flex-1"
         />
