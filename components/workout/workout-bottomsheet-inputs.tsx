@@ -4,7 +4,7 @@ import { ExerciseWeight } from "./exercise-weight";
 import { ExerciseRepeat } from "./exercise-repeat";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/utils/state/store";
-import { RefObject, useEffect } from "react";
+import { RefObject, useEffect, useState } from "react";
 import { resetAddingWorkout } from "@/utils/state/workout/workoutSlice";
 import { useSaveWorkout } from "@/utils/apis/workout";
 import { PrimaryButton } from "../primary-button";
@@ -22,6 +22,8 @@ export function WorkoutBottomSheetInputs({
   const defaultExercises = useSelector(
     (state: RootState) => state.workout.defaultExercises
   );
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const saveWorkout = useSaveWorkout();
 
@@ -42,6 +44,8 @@ export function WorkoutBottomSheetInputs({
         })
       );
     }
+
+    setIsLoading(false);
   }, [isSaved]);
 
   // Reset state when bottomsheet reopens
@@ -86,7 +90,9 @@ export function WorkoutBottomSheetInputs({
           text="Vazgeç"
         />
         <PrimaryButton
+          isLoading={isLoading}
           onPress={() => {
+            setIsLoading(true);
             saveWorkout.mutate();
           }}
           text="Kaydet"
