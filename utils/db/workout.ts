@@ -1,6 +1,7 @@
 import firestore, {
   FirebaseFirestoreTypes,
 } from "@react-native-firebase/firestore";
+import functions from "@react-native-firebase/functions";
 import { getTimestampsForADay } from "../get-timestamps-for-a-day";
 import { User } from "../types/session";
 import {
@@ -17,13 +18,26 @@ const workoutsRef = firestore().collection("Workouts");
 export async function getDefaultExercises(): Promise<DefaultExercises> {
   const defaultExercisesRef = firestore().collection("DefaultExercises");
 
-  const query = defaultExercisesRef.limit(1);
+  try {
+    const querySnapshot = await defaultExercisesRef.get();
 
-  const querySnapshot = await query.get();
+    if (querySnapshot.empty) {
+      const response = await functions().httpsCallable(
+        "createDefaultExercises"
+      )();
 
-  const documentSnapshot = querySnapshot.docs[0].data() as DefaultExercises;
+      if (response.data) {
+        return response.data as DefaultExercises;
+      }
+    }
 
-  return documentSnapshot;
+    const documentSnapshot = querySnapshot.docs[0].data() as DefaultExercises;
+
+    return documentSnapshot;
+  } catch (error) {
+    console.log("Error on getDefaultExercises: ", error);
+    return { exercises: [] };
+  }
 }
 
 // Returns the workouts that user has done for today
@@ -45,7 +59,7 @@ export async function getTodaysWorkouts(
   const querySnapshot = await query.get();
 
   // There is not any workout saved for today yet
-  if (querySnapshot.size === 0) return null;
+  if (querySnapshot.empty) return null;
 
   const todaysWorkouts = querySnapshot.docs[0].data().workout as Exercise[];
 
@@ -90,30 +104,44 @@ export async function getWorkouts(user: User): Promise<AllWorkouts[] | null> {
 export async function createWorkoutDocument(
   user: User,
   addingWorkout: AddingWorkout
-): Promise<void> {
-  await workoutsRef.add({
-    createdAt: firestore.FieldValue.serverTimestamp(),
-    uid: user.uid,
-    workout: [
-      {
-        exerciseId: addingWorkout.exerciseId,
-        exercises: [
-          {
-            repeat: addingWorkout.repeat,
-            weight: addingWorkout.weight,
-            comment: addingWorkout.comment,
-          },
-        ],
-      },
-    ],
-  });
+): Promise<boolean | null> {
+  try {
+    await workoutsRef.add({
+      createdAt: firestore.FieldValue.serverTimestamp(),
+      uid: user.uid,
+      workout: [
+        {
+          exerciseId: addingWorkout.exerciseId,
+          exercises: [
+            {
+              repeat: addingWorkout.repeat,
+              weight: addingWorkout.weight,
+              comment: addingWorkout.comment,
+            },
+          ],
+        },
+      ],
+    });
+    console.log("Workout document is created: ", addingWorkout);
+    return true;
+  } catch (error) {
+    console.log("Error on createWorkoutDocument: ", error);
+    return null;
+  }
 }
 
 export async function updateWorkouts(
   documentPath: string,
   updatedWorkouts: Exercise[]
-): Promise<void> {
+): Promise<boolean | null> {
   const document = documentPath.split("Workouts/")[1];
 
-  await workoutsRef.doc(document).update({ workout: updatedWorkouts });
+  try {
+    await workoutsRef.doc(document).update({ workout: updatedWorkouts });
+    console.log("Workouts updated: ", updateWorkouts);
+    return true;
+  } catch (error) {
+    console.log("Error on updateWorkouts: ", error);
+    return null;
+  }
 }

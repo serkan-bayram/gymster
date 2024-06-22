@@ -63,7 +63,7 @@ export function useGetAllWaterData() {
 
     return {
       progress: progressData,
-      currentTime: serverTime.date.toDate(),
+      currentTime: serverTime.date,
     };
   };
 

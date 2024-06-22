@@ -3,6 +3,9 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import auth from "@react-native-firebase/auth";
 import { SessionState, User } from "@/utils/types/session";
 import firestore from "@react-native-firebase/firestore";
+import functions, {
+  FirebaseFunctionsTypes,
+} from "@react-native-firebase/functions";
 
 const initialState: SessionState = {
   user: null,
@@ -13,10 +16,15 @@ const initialState: SessionState = {
 };
 
 // We can turn this into a cloud function
-export const saveUser = async (user: User) => {
-  const usersCollection = firestore().collection("Users");
-
-  usersCollection.add(user).then(() => console.log("User is saved to DB."));
+export const createUser = async (user: User) => {
+  try {
+    await functions().httpsCallable("createUser")(user);
+    console.log("User is created: ", user);
+    return true;
+  } catch (error) {
+    console.log("Error on createUser: ", error);
+    return null;
+  }
 };
 
 export const signIn = createAsyncThunk("session/signIn", async () => {
@@ -46,7 +54,8 @@ export const signIn = createAsyncThunk("session/signIn", async () => {
         info: null,
       };
 
-      await saveUser(userObject);
+      // Create user in firestore
+      await createUser(userObject);
     }
   } catch (error) {
     console.log("Error on sign in: ", error);

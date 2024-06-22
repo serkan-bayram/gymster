@@ -1,9 +1,7 @@
-import { useGetWorkouts } from "@/utils/apis/workout";
 import { Text, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { Exercise } from "@/components/workout/exercise";
 import * as Crypto from "expo-crypto";
-import { Divider } from "@/components/ui/divider";
 import { useSelector } from "react-redux";
 import { RootState } from "@/utils/state/store";
 

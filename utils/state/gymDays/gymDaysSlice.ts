@@ -20,7 +20,8 @@ const gymDaysSlice = createSlice({
     // TODO: there is a problem, performance issue?
     // just print wentToGYMDays
     setWentToGYMDays: (state, action) => {
-      if (state.wentToGYMDays.length === 0) {
+      console.log(state.wentToGYMDays.length);
+      if (state.wentToGYMDays.length === 0 && Array.isArray(action.payload)) {
         state.wentToGYMDays = action.payload;
       } else {
         // Optimistic updates

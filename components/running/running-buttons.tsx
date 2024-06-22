@@ -9,6 +9,7 @@ import * as Crypto from "expo-crypto";
 import { useAddRuns } from "@/utils/apis/runs";
 import { RunsDB } from "@/utils/types/runs";
 import { setNotification } from "@/utils/state/notification/notificationSlice";
+import firestore from "@react-native-firebase/firestore";
 
 export function RunningButtons({
   bottomSheetRef,
@@ -76,7 +77,7 @@ export function RunningButtons({
       }));
 
       const saveObject: RunsDB = {
-        createdAt: createdAt,
+        createdAt: firestore.FieldValue.serverTimestamp(),
         uid: uid,
         runs: runsWithIdentifier,
       };

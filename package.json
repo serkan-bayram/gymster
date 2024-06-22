@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "expo-router/entry",
   "scripts": {
-	  "build": "eas build --platform android --local --profile development",
+    "build": "eas build --platform android --local --profile development",
     "start": "expo start",
     "android": "expo run:android",
     "ios": "expo run:ios",
@@ -13,9 +13,10 @@
   "dependencies": {
     "@gorhom/bottom-sheet": "^4.6.1",
     "@react-native-async-storage/async-storage": "1.21.0",
-    "@react-native-firebase/app": "^19.2.0",
-    "@react-native-firebase/auth": "^19.2.0",
-    "@react-native-firebase/firestore": "^19.2.0",
+    "@react-native-firebase/app": "19.2.0",
+    "@react-native-firebase/auth": "19.2.0",
+    "@react-native-firebase/firestore": "19.2.0",
+    "@react-native-firebase/functions": "19.2.0",
     "@react-native-google-signin/google-signin": "^11.0.1",
     "@react-native-picker/picker": "^2.7.2",
     "@reduxjs/toolkit": "^2.2.5",

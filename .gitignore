@@ -38,6 +38,8 @@ yarn-error.*
 
 firebaseConfig.js
 
+*.log
+
 # google-services.json
 
 *.apk

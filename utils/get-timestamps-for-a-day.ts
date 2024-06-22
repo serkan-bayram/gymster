@@ -15,7 +15,7 @@ export async function getTimestampsForADay(): Promise<null | Timestamps> {
 
   if (!serverTime) return null;
 
-  const serverTimeDate = new Date(serverTime.date.toDate());
+  const serverTimeDate = serverTime.date;
 
   const startOfDay = new Date(serverTimeDate);
   startOfDay.setHours(0, 0, 0, 0);

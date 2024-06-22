@@ -5,11 +5,8 @@ import { daysInMonth } from "../days-in-month";
 
 // Looks timestamp's month
 // Find documents that wentToGYM field is true
-export async function getGYMDays(
-  uid: string,
-  timestamp: FirebaseFirestoreTypes.Timestamp
-) {
-  const givenDate = new Date(timestamp.toDate());
+export async function getGYMDays(uid: string, serverDate: Date) {
+  const givenDate = serverDate;
 
   const daysCount = daysInMonth(givenDate.getMonth(), givenDate.getFullYear());
 

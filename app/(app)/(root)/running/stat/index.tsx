@@ -14,7 +14,7 @@ export function useCurrentMonth() {
       const serverTime = await getServerTime();
 
       if (serverTime) {
-        const date = new Date(serverTime.date.toDate());
+        const { date } = serverTime;
 
         const month = date.toLocaleDateString("tr-TR", { month: "long" });
 

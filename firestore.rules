@@ -1,0 +1,165 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    function incomingData(){
+    	return request.resource.data;
+    }
+    
+    function existingData(){
+    	return resource.data;
+    }
+    
+    function isSignedIn(){
+    	return request.auth != null;
+    }
+    
+    function isOwner(){
+    	return request.auth.uid == resource.data.uid;
+    }
+    
+    function getAffectedKeys(){
+      // DO NOT FORGET
+      // diff(null) does not work, if you are trying to
+      // reach a document that does not exists, you can not use this function
+      // because existingData() would return null
+      // use incomingData().keys().has...([]) instead
+    	return incomingData().diff(existingData()).affectedKeys();
+    }
+    
+    // ---USER INFO---
+    
+    // Validates userInfo
+    function canUpdateUserInfo(){
+    	let info = incomingData().info;
+      
+      let age = info.age;
+      let weight = info.weight;
+      let gender = info.gender;
+    
+      let isAgeValidated = age >= 8 && age <= 100;
+      let isWeightValidated = weight >= 20 && weight <= 500;
+      let isGenderValidated = gender == "Erkek" || gender == "Kadın";
+      
+      return isAgeValidated && isWeightValidated && isGenderValidated;
+    }
+    
+    // ---TRACKINGS---
+    
+    // Can a user create a tracking document?
+    function canCreateTrackingDocument(){
+    	// incomingData should be made of these two keys when creating 
+    	let correctKeys = incomingData().keys().hasOnly(['createdAt', 'uid']);
+      // createdAt object should have the same time with server
+    	let correctCreatedAt = incomingData().get('createdAt', "") == request.time;
+      // the uid that sent with incomingData should be belongs to user
+    	let correctUID = incomingData().get('uid', 0) == request.auth.uid;
+    
+    	return correctKeys && correctCreatedAt && correctUID;
+    }
+    
+    function validateHydrationData(){
+    	// This validation will be valid if incoming key is about hydration
+    	let isIncomingKeyHydration = getAffectedKeys().hasOnly(['hydration']);
+    
+      let progress = incomingData().hydration.progress;
+      
+      // Make sure hydration and progress are not null
+    	let isHydrationNull = incomingData().hydration != null;
+			let isProgressNull = incomingData().hydration.progress != null;
+      
+      // Progress should be an integer value that between 0 and 30000
+      let validateProgress = isHydrationNull && isProgressNull && progress >= 0 && progress <= 30000 && progress is int;
+    	
+      return isIncomingKeyHydration && validateProgress;
+    }
+    
+    function validateWentToGYMData(){
+	    // This validation will be valid if incoming key is about wentToGYM
+    	let isIncomingKeyWentToGYM = getAffectedKeys().hasOnly(['wentToGYM']);
+    
+    	let wentToGYM = incomingData().wentToGYM;
+      
+      return isIncomingKeyWentToGYM && wentToGYM is bool;
+    }
+    
+    function validateMealsData(){
+    	// This validation will be valid if incoming key is about meals
+    	let isIncomingKeyMeals = getAffectedKeys().hasOnly(['meals']);
+      
+      // Meals data will come from a server.
+      
+      return isIncomingKeyMeals;
+    }
+    
+    // Can a user update it's own tracking document?
+    function canUpdateTrackingDocument(){    
+    	// User can only update 1 field at a time
+      // Updatable fields are wentToGYM, meals and hydration
+      // Any other incomingData will be blocked
+    
+    	// Is incomingData key is correct
+      let affectedKeys = getAffectedKeys();
+      
+      let isIncomingKeysCorrect = affectedKeys.hasAny(['hydration', 'wentToGYM', 'meals']);
+    	      
+      return isIncomingKeysCorrect && validateHydrationData() || validateWentToGYMData() || validateMealsData();
+    }
+    
+    // ---WORKOUTS---
+
+    function canCreateWorkoutDocument() {
+      let data = incomingData();
+      let exercise = data.workout[0].exercises[0];
+
+      let isIncomingKeysCorrect = data.keys().hasAll(['createdAt', 'uid', 'workout']) &&
+                                  data.workout.size() > 0 &&
+                                  data.workout[0].keys().hasOnly(['exerciseId', 'exercises']) &&
+                                  data.workout[0].exercises.size() > 0 &&
+                                  exercise.keys().hasOnly(['repeat', 'weight', 'comment']);
+
+      let correctUID = data.get('uid', 0) == request.auth.uid;
+      let correctCreatedAt = data.get('createdAt', "") == request.time;
+
+      let exerciseIdValid = data.workout[0].exerciseId is int;
+      let isRepeatValid = exercise.repeat is int && exercise.repeat >= 0 && exercise.repeat < 10000;
+      let isWeightValid = exercise.weight is int && exercise.weight >= 0 && exercise.weight < 10000;
+      let isCommentValid = exercise.comment is string && exercise.comment.size() >= 0 && exercise.comment.size() <= 800;
+
+      let correctWorkoutStructure = exerciseIdValid && isRepeatValid && isWeightValid && isCommentValid;
+
+      return isIncomingKeysCorrect && correctUID && correctCreatedAt && correctWorkoutStructure;
+    }
+
+    function canUpdateWorkoutDocument() {
+      // User can only update the workout field in a workout document
+      let isIncomingKeysCorrect = getAffectedKeys().hasOnly(['workout']);
+
+      return isIncomingKeysCorrect && incomingData().workout.size() < 250; 
+    }
+
+    
+    // User can reach it's own Users/user document
+    match /Users/{user} {
+     		allow read: if isSignedIn() && isOwner();	
+        allow update: if canUpdateUserInfo();
+    }
+    
+    match /Trackings/{tracking} {
+    	allow read: if isSignedIn() && isOwner();
+    	allow create: if canCreateTrackingDocument();
+      allow update: if canUpdateTrackingDocument();
+    }
+    
+    match /Workouts/{workout} {
+    	allow read: if isSignedIn() && isOwner();
+      allow create: if canCreateWorkoutDocument();
+      allow update: if canUpdateWorkoutDocument();
+    }
+    
+    match /DefaultExercises/{DefaultExercise} {
+    	allow read: if isSignedIn();
+    }
+  }
+}

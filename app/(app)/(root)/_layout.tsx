@@ -76,11 +76,10 @@ export default function ProtectedLayout() {
           </Stack>
           <TabBar />
 
-          <Notifications />
-
           <StatusBar style="auto" />
         </View>
       </BottomSheetModalProvider>
+      <Notifications />
     </GestureHandlerRootView>
   );
 }

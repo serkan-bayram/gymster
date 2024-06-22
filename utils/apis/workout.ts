@@ -15,6 +15,7 @@ import {
   updateWorkouts,
 } from "../db/workout";
 import { Exercise, TodaysWorkoutsDB } from "../types/workout";
+import { setNotification } from "../state/notification/notificationSlice";
 
 // Default exercises for user to pick
 export function useGetDefaultExercises() {
@@ -85,6 +86,7 @@ export function useSaveWorkout() {
   const { todaysWorkouts, addingWorkout } = useSelector(
     (state: RootState) => state.workout
   );
+  const dispatch = useDispatch<AppDispatch>();
 
   const user = useSelector((state: RootState) => state.session.user);
 
@@ -101,20 +103,39 @@ export function useSaveWorkout() {
     const isAnyNullExists = JSON.stringify(checkNullObject).includes("null");
 
     if (isAnyNullExists) {
-      Alert.alert(
-        "Hata",
-        "Lütfen şu alanların hepsini doldurunuz:\nEgzersiz, Ağırlık, Tekrar",
-        [{ text: "Tamam" }]
+      dispatch(
+        setNotification({
+          show: true,
+          text: {
+            heading: "Hata",
+            content:
+              "Lütfen şu alanların hepsini doldurunuz: Egzersiz, Ağırlık, Tekrar",
+          },
+          type: "error",
+        })
       );
-
       return null;
     }
 
     // First, let's check is there any workout document created?
     if (!!todaysWorkouts === false) {
       // Create one with current data if not
-      await createWorkoutDocument(user, addingWorkout);
-      // And we should update todaysWorkouts
+      const isCreated = await createWorkoutDocument(user, addingWorkout);
+
+      if (!isCreated) {
+        dispatch(
+          setNotification({
+            show: true,
+            text: {
+              heading: "Hata",
+              content:
+                "Hareket eklenirken bir şeyler ters gitti, daha sonra tekrar deneyiniz.",
+            },
+            type: "error",
+          })
+        );
+        return null;
+      }
 
       return true;
     }
@@ -151,7 +172,6 @@ export function useSaveWorkout() {
 
     // If there isn't a exercise in db that same as we're trying to add:
     const newWorkouts = [
-      ...workouts.todaysWorkouts,
       {
         exerciseId: addingWorkout.exerciseId || 0,
         exercises: [
@@ -162,6 +182,7 @@ export function useSaveWorkout() {
           },
         ],
       },
+      ...workouts.todaysWorkouts,
     ];
 
     await updateWorkouts(todaysWorkouts.documentPath, newWorkouts);
@@ -176,6 +197,7 @@ export function useSaveWorkout() {
       await queryClient.invalidateQueries({ queryKey: ["getWorkouts"] });
     },
     mutationFn: mutationFn,
+    retry: 0,
   });
 }
 

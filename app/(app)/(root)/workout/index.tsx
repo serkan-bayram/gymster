@@ -23,9 +23,9 @@ export default function Workout() {
   const { isPending: isWorkoutsPending } = useGetWorkouts();
 
   if (
+    isWorkoutsPending ||
     isDefaultExercisesPending ||
-    isTodaysWorkoutsPending ||
-    isWorkoutsPending
+    isTodaysWorkoutsPending
   ) {
     return <FullScreenLoading />;
   }

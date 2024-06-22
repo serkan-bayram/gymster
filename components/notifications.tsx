@@ -52,9 +52,10 @@ const Notification = memo(() => {
       <Pressable
         onPress={dismissNotification}
         style={styles.notificationContainer}
-        className="flex flex-row justify-between  items-center mx-auto w-[80%] bg-white border p-2 border-gray rounded-xl min-h-[56px]"
+        className="flex flex-row justify-between  items-center 
+        mx-auto w-[80%] bg-white border p-2 border-gray rounded-xl min-h-[56px]"
       >
-        <View>
+        <View className="max-w-[90%]">
           <Text className="font-bold text-lg">{text?.heading}</Text>
           <Text>{text?.content}</Text>
         </View>

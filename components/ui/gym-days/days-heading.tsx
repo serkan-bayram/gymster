@@ -30,8 +30,8 @@ export function DaysHeading() {
 
     if (!serverTime) return null;
 
-    const serverDate = new Date(serverTime.date.toDate());
-    const todaysDate = serverDate.getDate();
+    const { date } = serverTime;
+    const todaysDate = date.getDate();
 
     dispatch(setWentToGYMDays(todaysDate));
     dispatch(setWentToGYM(!currentWentToGYM));

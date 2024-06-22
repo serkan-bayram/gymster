@@ -61,7 +61,7 @@ export function useGetGYMCalendar() {
     const serverTime = await getServerTime();
 
     if (serverTime) {
-      const serverDate = new Date(serverTime.date.toDate());
+      const serverDate = serverTime.date;
 
       const daysCount = daysInMonth(
         serverDate.getMonth(),
