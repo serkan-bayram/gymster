@@ -51,10 +51,6 @@ export async function saveRun(runData: RunsDB) {
     console.log("Error on saveRun: ", saveRun);
     return null;
   }
-
-  // const runsRef = firestore().collection("Runs");
-
-  // await runsRef.add(runData);
 }
 
 export async function updateRuns(documentPath: string, newRuns: Run[]) {

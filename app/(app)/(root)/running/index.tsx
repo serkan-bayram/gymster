@@ -21,7 +21,6 @@ import { ScrollView } from "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
 import { FullScreenLoading } from "@/components/loading";
 import { useGetRuns } from "@/utils/apis/runs";
-import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 
 TaskManager.defineTask(
   LOCATION_TASK_NAME,
@@ -71,17 +70,6 @@ export default function Running() {
         <Heading heading={"Koşu"} />
 
         <StartRunning bottomSheetRef={bottomSheetRef} />
-
-        <MapView
-          className="flex-1 w-full h-48"
-          provider={PROVIDER_GOOGLE} // remove if not using Google Maps
-          region={{
-            latitude: 37.78825,
-            longitude: -122.4324,
-            latitudeDelta: 0.015,
-            longitudeDelta: 0.0121,
-          }}
-        />
 
         <PastRuns getRunsData={getRuns.data} />
 

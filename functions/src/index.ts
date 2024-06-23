@@ -166,3 +166,17 @@ export const createDefaultExercises = onCall(async (request) => {
     return null;
   }
 });
+
+export const getGoogleMapsAPIKey = onCall(async (request) => {
+  if (!request.auth) {
+    throw new HttpsError(
+      "unauthenticated",
+      "The function must be called while authenticated."
+    );
+  }
+
+  // TODO: DO NOT PUT YOUR API KEY IN .ENV THERE ARE OTHER WAYS LIKE SECRET MANAGER
+  const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
+
+  return GOOGLE_MAPS_API_KEY;
+});
