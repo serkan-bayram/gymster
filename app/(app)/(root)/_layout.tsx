@@ -24,18 +24,21 @@ function cacheFonts(fonts: any) {
   return fonts.map((font: any) => Font.loadAsync(font));
 }
 
-SplashScreen.preventAutoHideAsync();
+// TODO: ?
+// SplashScreen.preventAutoHideAsync();
 
 export default function ProtectedLayout() {
   const router = useRouter();
 
   const user = useSelector((state: RootState) => state.session.user);
 
-  useEffect(() => {
-    if (!user) router.replace("/");
-  }, [user]);
-
   const isAppReady = useCache();
+
+  useEffect(() => {
+    if (!user) {
+      router.replace("/");
+    }
+  }, [user]);
 
   if (!isAppReady) return null;
 

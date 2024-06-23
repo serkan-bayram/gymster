@@ -50,9 +50,14 @@ export const getServerTime = onCall(async (request) => {
     );
   }
 
-  const now = Timestamp.now().toDate();
-
-  return JSON.stringify(now);
+  try {
+    const now = Timestamp.now().toDate();
+    console.log("getServerTime Cloud Function ran: ", now);
+    return JSON.stringify(now);
+  } catch (error) {
+    console.log("Error on getServerTime: ", error);
+    return null;
+  }
 });
 
 // I feel like it's a bit slow and overkill
@@ -77,8 +82,6 @@ export const createRuns = onCall(async (request) => {
     if (!areKeysCorrect) return null;
     if (!isUIDCorrect) return null;
   }
-
-  console.log(request.data.saveObject);
 
   const runs = !!request.data.documentPath
     ? request.data.saveObject

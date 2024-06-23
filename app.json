@@ -8,8 +8,8 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/hamster-wheel.png",
-      "resizeMode": "cover",
+      "image": "./assets/hamster-wheel2.png",
+      "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "assetBundlePatterns": ["**/*"],
@@ -26,6 +26,11 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
+      },
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyC9AXV1UkpiiaH4vwjFRXJyttgXqknfgJ4"
+        }
       },
       "googleServicesFile": "./google-services.json",
       "package": "com.serkanbayram.gymsterandroid"
