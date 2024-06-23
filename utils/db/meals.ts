@@ -23,13 +23,18 @@ export async function getAllMeals(uid: string) {
   const trackingsRef = firestore().collection("Trackings");
   const query = trackingsRef.where("uid", "==", uid).orderBy("meals", "desc");
 
-  const querySnapshot = await query.get();
+  try {
+    const querySnapshot = await query.get();
 
-  const meals: FirebaseFirestoreTypes.DocumentData[] = [];
+    const meals: FirebaseFirestoreTypes.DocumentData[] = [];
 
-  querySnapshot.forEach((documentSnapshot) => {
-    meals.push(documentSnapshot.data());
-  });
+    querySnapshot.forEach((documentSnapshot) => {
+      meals.push(documentSnapshot.data());
+    });
 
-  return meals;
+    return meals;
+  } catch (error) {
+    console.log("Error on getAllMeals: ", error);
+    return null;
+  }
 }

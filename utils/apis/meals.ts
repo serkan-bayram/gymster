@@ -24,7 +24,7 @@ export function useGetMeals({
 
     const meals = await getAllMeals(user.uid);
 
-    if (meals) {
+    if (meals && meals.length > 0) {
       const mealsArray: DateObject[] = [];
 
       // Sort meals
@@ -79,7 +79,7 @@ export function useGetMeals({
       return meals;
     }
 
-    return null;
+    return [];
   };
 
   return useQuery({

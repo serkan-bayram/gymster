@@ -45,7 +45,8 @@ export default function MealsDetails() {
     setMeals: setMeals,
   });
 
-  if (getMeals.isPending || !currentMeal) {
+  // || !currentMeal
+  if (getMeals.isPending) {
     return <FullScreenLoading />;
   }
 
@@ -62,7 +63,15 @@ export default function MealsDetails() {
         }}
       >
         <MealsDetailsHeader currentMeal={currentMeal} />
-        <MemoizedMeals meals={meals} mealsLayoutsRef={mealsLayoutsRef} />
+        {!meals || meals?.length === 0 ? (
+          <View className="flex-1 flex items-center justify-center mt-24">
+            <Text className="font-semibold text-lg">
+              Öğün verisi bulunamadı.
+            </Text>
+          </View>
+        ) : (
+          <MemoizedMeals meals={meals} mealsLayoutsRef={mealsLayoutsRef} />
+        )}
       </ScrollView>
       <StatusBar style="light" />
     </View>
