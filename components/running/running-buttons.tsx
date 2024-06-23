@@ -51,10 +51,16 @@ export function RunningButtons({
   // Save to DB
   const handleSave = async () => {
     if (running.isRunning) {
-      Alert.alert(
-        "Dikkat!",
-        "Koşuyu kaydetmek için öncelikle mevcut koşunuzu durdurunuz.",
-        [{ text: "Tamam" }]
+      dispatch(
+        setNotification({
+          show: true,
+          type: "error",
+          text: {
+            heading: "Dikkat!",
+            content:
+              "Koşuyu kaydetmek için öncelikle mevcut koşunuzu durdurunuz.",
+          },
+        })
       );
       return;
     }
@@ -67,7 +73,6 @@ export function RunningButtons({
     const serverTime = await getServerTime();
 
     if (serverTime && user) {
-      const createdAt = serverTime.date;
       const uid = user.uid;
       const runs = running.runs;
 

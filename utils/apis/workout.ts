@@ -217,9 +217,7 @@ export function useDeleteWorkout() {
       (workout) => workout.exerciseId !== deletedWorkout
     );
 
-    await updateWorkouts(documentPath, newWorkouts);
-
-    return true;
+    return await updateWorkouts(documentPath, newWorkouts);
   };
 
   return useMutation({

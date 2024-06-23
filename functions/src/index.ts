@@ -55,6 +55,89 @@ export const getServerTime = onCall(async (request) => {
   return JSON.stringify(now);
 });
 
+// I feel like it's a bit slow and overkill
+// We need to rearrange database
+// Write comments and tidy up this function if you are not going to fix
+export const createRuns = onCall(async (request) => {
+  if (!request.auth) {
+    throw new HttpsError(
+      "unauthenticated",
+      "The function must be called while authenticated."
+    );
+  }
+
+  const areKeysCorrect =
+    request.data.saveObject.hasOwnProperty("createdAt") &&
+    request.data.saveObject.hasOwnProperty("uid") &&
+    request.data.saveObject.hasOwnProperty("runs");
+
+  const isUIDCorrect = request.data.saveObject.uid === request.auth.uid;
+
+  if (!!request.data.documentPath === false) {
+    if (!areKeysCorrect) return null;
+    if (!isUIDCorrect) return null;
+  }
+
+  console.log(request.data.saveObject);
+
+  const runs = !!request.data.documentPath
+    ? request.data.saveObject
+    : request.data.saveObject.runs;
+
+  const areRunsCorrect = runs.map((run: any) => {
+    const areKeysCorrect =
+      run.hasOwnProperty("identifier") &&
+      run.hasOwnProperty("averageSpeed") &&
+      run.hasOwnProperty("runTime") &&
+      run.hasOwnProperty("distance");
+
+    const runTime = run?.runTime;
+    const isRunTimeCorrect =
+      runTime.hasOwnProperty("hours") &&
+      runTime.hasOwnProperty("minutes") &&
+      runTime.hasOwnProperty("seconds") &&
+      runTime.hours < 500 &&
+      runTime.hours >= 0 &&
+      runTime.minutes <= 60 &&
+      runTime.minutes >= 0 &&
+      runTime.seconds <= 60 &&
+      runTime.seconds >= 0;
+
+    const isAverageSpeedCorrect =
+      run.averageSpeed < 100 && run.averageSpeed >= 0;
+    const isDistanceCorrect = run.distance < 10000 && run.distance >= 0;
+
+    return (
+      areKeysCorrect &&
+      isRunTimeCorrect &&
+      isAverageSpeedCorrect &&
+      isDistanceCorrect
+    );
+  });
+
+  if (areRunsCorrect.includes(false)) {
+    return null;
+  }
+
+  const saveObject = JSON.parse(JSON.stringify(request.data.saveObject));
+
+  saveObject.createdAt = Timestamp.now();
+
+  const ref = getFirestore().collection("Runs");
+
+  if (!!request.data.documentPath) {
+    console.log(saveObject);
+    await ref
+      .doc(request.data.documentPath.split("/")[1])
+      .update({ runs: saveObject });
+    return true;
+  }
+
+  await ref.add(saveObject);
+
+  return true;
+});
+
 export const createDefaultExercises = onCall(async (request) => {
   if (!request.auth) {
     throw new HttpsError(

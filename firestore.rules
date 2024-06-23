@@ -157,6 +157,10 @@ service cloud.firestore {
       allow create: if canCreateWorkoutDocument();
       allow update: if canUpdateWorkoutDocument();
     }
+
+    match /Runs/{run} {
+      allow read: if isSignedIn() && isOwner();
+    }
     
     match /DefaultExercises/{DefaultExercise} {
     	allow read: if isSignedIn();

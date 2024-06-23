@@ -1,5 +1,8 @@
-import firestore from "@react-native-firebase/firestore";
+import firestore, {
+  FirebaseFirestoreTypes,
+} from "@react-native-firebase/firestore";
 import { Run, RunsDB } from "../types/runs";
+import functions from "@react-native-firebase/functions";
 
 export async function getRuns(uid: string): Promise<RunsDB[]> {
   const runsRef = firestore().collection("Runs");
@@ -12,10 +15,10 @@ export async function getRuns(uid: string): Promise<RunsDB[]> {
   querySnapshot.forEach((documentSnapshot) => {
     let data = documentSnapshot.data() as RunsDB;
 
+    const createdAt = data.createdAt as FirebaseFirestoreTypes.Timestamp;
+
     // Get dateAsText which is something like 1 June
-    const date = data.createdAt
-      ? new Date(data.createdAt.toDate())
-      : new Date();
+    const date = createdAt ? new Date(createdAt.toDate()) : new Date();
 
     const month = date.toLocaleDateString("tr-TR", { month: "long" });
     const day = date.getUTCDate();
@@ -37,15 +40,34 @@ export async function getRuns(uid: string): Promise<RunsDB[]> {
 }
 
 export async function saveRun(runData: RunsDB) {
-  const runsRef = firestore().collection("Runs");
+  try {
+    const isSaved = await functions().httpsCallable("createRuns")({
+      saveObject: runData,
+    });
 
-  await runsRef.add(runData);
+    console.log("isSaved: ", isSaved);
+    return isSaved;
+  } catch (error) {
+    console.log("Error on saveRun: ", saveRun);
+    return null;
+  }
 
-  return true;
+  // const runsRef = firestore().collection("Runs");
+
+  // await runsRef.add(runData);
 }
 
 export async function updateRuns(documentPath: string, newRuns: Run[]) {
-  const runsRef = firestore().collection("Runs");
+  try {
+    const isSaved = await functions().httpsCallable("createRuns")({
+      saveObject: newRuns,
+      documentPath: documentPath,
+    });
 
-  await runsRef.doc(documentPath.split("/")[1]).update({ runs: newRuns });
+    console.log("isSaved: ", isSaved);
+    return isSaved;
+  } catch (error) {
+    console.log("Error on saveRun: ", saveRun);
+    return null;
+  }
 }
