@@ -49,7 +49,7 @@ function PastRun({ run }: { run: Run }) {
         {run?.locations?.length >= 2 ? (
           <Map waypoints={run.locations} />
         ) : (
-          <View className="w-full h-full flex items-center justify-center bg-gray/50">
+          <View className="w-full h-full  flex items-center justify-center bg-gray/50">
             <Text className="text-center font-semibold">
               Harita için yeterince veri toplanamadı.
             </Text>

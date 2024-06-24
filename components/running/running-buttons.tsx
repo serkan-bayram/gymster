@@ -10,6 +10,7 @@ import { useAddRuns } from "@/utils/apis/runs";
 import { RunsDB } from "@/utils/types/runs";
 import { setNotification } from "@/utils/state/notification/notificationSlice";
 import firestore from "@react-native-firebase/firestore";
+import { useState } from "react";
 
 export function RunningButtons({
   bottomSheetRef,
@@ -19,6 +20,7 @@ export function RunningButtons({
   const dispatch = useDispatch<AppDispatch>();
   const running = useSelector((state: RootState) => state.running);
   const user = useSelector((state: RootState) => state.session.user);
+  const [isLoading, setIsLoading] = useState(false);
 
   const stopEverything = () => {
     // Stop tracking location
@@ -70,6 +72,8 @@ export function RunningButtons({
       return;
     }
 
+    setIsLoading(true);
+
     const serverTime = await getServerTime();
 
     if (serverTime && user) {
@@ -102,12 +106,15 @@ export function RunningButtons({
 
       stopEverything();
     }
+
+    setIsLoading(false);
   };
 
   return (
     <View className="flex flex-row gap-x-4 px-6 pb-6 mt-auto">
       <PrimaryButton onPress={handleDiscard} type="outlined" text="Vazgeç" />
       <PrimaryButton
+        isLoading={isLoading}
         onPress={handleSave}
         text="Koşuyu Kaydet"
         className="flex-1"
