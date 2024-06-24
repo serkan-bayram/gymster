@@ -8,10 +8,13 @@ import { RootState } from "@/utils/state/store";
 export function PastWorkouts() {
   const workouts = useSelector((state: RootState) => state.workout.allWorkouts);
 
+  const isAllEmpty =
+    workouts?.filter((workout) => workout.workout.length > 0) || [];
+
   return (
     <>
       <Text className="text-xl font-bold">Geçmiş Antrenmanlar</Text>
-      {workouts ? (
+      {workouts && isAllEmpty.length > 0 ? (
         workouts.map((workout, index) => {
           if (workout.workout.length <= 0) {
             return null;
