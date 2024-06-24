@@ -57,10 +57,23 @@ export function WorkoutBottomSheetInputs({
 
   // TODO: We might move these validations to slices directly
   const handleSave = () => {
-    const { comment, repeat, weight } = addingWorkout;
+    const { comment, repeat, weight, exercise } = addingWorkout;
 
     // comment can be null
-    if (!repeat || !weight) return null;
+    if (!repeat || !weight || !exercise) {
+      dispatch(
+        setNotification({
+          show: true,
+          text: {
+            heading: "Hata!",
+            content:
+              "Lütfen şu alanların hepsini doldurunuz: Hareket, Ağırlık, Tekrar",
+          },
+          type: "error",
+        })
+      );
+      return null;
+    }
 
     const validatedWeight = validateWeight(weight);
     const validatedRepeat = validateRepeat(repeat);

@@ -116,7 +116,7 @@ export async function createWorkoutDocument(
             {
               repeat: addingWorkout.repeat,
               weight: addingWorkout.weight,
-              comment: addingWorkout.comment,
+              comment: addingWorkout.comment || "",
             },
           ],
         },

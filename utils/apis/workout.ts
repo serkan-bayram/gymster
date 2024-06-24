@@ -97,6 +97,8 @@ export function useSaveWorkout() {
     // So we delete it while checking
     const checkNullObject = JSON.parse(JSON.stringify(addingWorkout));
 
+    console.log(checkNullObject);
+
     delete checkNullObject["comment"];
 
     // Did user filled all the add workout inputs
