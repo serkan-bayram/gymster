@@ -25,13 +25,6 @@ export function WorkoutTodayExercises() {
             />
           );
         })}
-      <View>
-        {exercises && exercises.length > 0 && (
-          <Text className="text-white text-center text-xs">
-            *Bir egzersizi silmek için basılı tutun.
-          </Text>
-        )}
-      </View>
     </ScrollView>
   );
 }

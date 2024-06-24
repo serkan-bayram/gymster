@@ -186,7 +186,7 @@ export function PastRuns({
             </View>
           </>
         ) : (
-          <View className="w-full items-center mt-4">
+          <View className="w-full items-center mt-12">
             <Text className="text-black/50">Henüz bir koşu kaydetmediniz.</Text>
           </View>
         )}
