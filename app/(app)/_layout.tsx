@@ -1,4 +1,4 @@
-import { Stack, useRouter } from "expo-router";
+import { SplashScreen, Stack, useRouter } from "expo-router";
 import { useEffect } from "react";
 import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import { setIsLoading, setSession } from "@/utils/state/session/sessionSlice";
@@ -29,6 +29,7 @@ const useAuth = () => {
     } else {
       dispatch(setSession(null));
       dispatch(setIsLoading(false));
+      SplashScreen.hideAsync();
     }
   }
 
