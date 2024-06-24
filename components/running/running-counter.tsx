@@ -3,9 +3,13 @@ import { CounterType } from "./counter-type";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/utils/state/store";
-import { setRunTime } from "@/utils/state/running/runningSlice";
+import {
+  getDistanceBetweenTwoLocations,
+  setLastDistanceChecked,
+  setRunTime,
+} from "@/utils/state/running/runningSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Run, RunTime } from "@/utils/types/runs";
+import { LocationState, Run, RunTime } from "@/utils/types/runs";
 
 function getTimeDifference(timestamp1: string, timestamp2: string) {
   // Convert timestamps to Date objects
@@ -29,9 +33,8 @@ function getTimeDifference(timestamp1: string, timestamp2: string) {
 }
 
 export function RunningCounter() {
-  const { isRunning, run, isFirstClicked } = useSelector(
-    (state: RootState) => state.running
-  );
+  const { isRunning, run, isFirstClicked, locations, lastDistanceChecked } =
+    useSelector((state: RootState) => state.running);
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -40,6 +43,8 @@ export function RunningCounter() {
 
   // Tracks time by incrementing the seconds
   useTrackTime(isRunning, run, dispatch);
+
+  useGetDistance(locations, lastDistanceChecked);
 
   return (
     <View>
@@ -54,6 +59,70 @@ export function RunningCounter() {
     </View>
   );
 }
+
+// Gets the distance when needed
+const useGetDistance = (
+  locations: LocationState[],
+  lastDistanceChecked: string | null
+) => {
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    if (locations.length === 0) return;
+    if (!lastDistanceChecked) return;
+
+    const lastLocation = locations[locations.length - 1];
+    const { timestamp } = lastLocation;
+
+    // Convert timestamp to date object
+    const lastLocationDate = new Date(timestamp);
+    const lastDistanceCheckedDate = new Date(JSON.parse(lastDistanceChecked));
+
+    const diff = lastLocationDate.getTime() - lastDistanceCheckedDate.getTime();
+
+    // Convert milliseconds to minutes
+    const diffInMinutes = diff / 60000; // 1 minute = 60000 milliseconds
+
+    console.log("Diff: ", diffInMinutes);
+
+    // Two minutes has passed since last distance checked
+    if (diffInMinutes >= 1 && locations.length >= 2) {
+      // Get distance between two last known locations
+      console.log(locations);
+
+      // Get two locations with correct timing
+      // We are looking for at least 30 seconds between timestamps
+
+      let correctLocation: undefined | LocationState;
+
+      // Start from reverse
+      locations
+        .slice()
+        .reverse()
+        .forEach((location) => {
+          // If we found the corectLocation
+          if (correctLocation) return;
+
+          const locationDate = new Date(location.timestamp);
+
+          // If there is 60 seconds (1 minute) gap
+          const diff =
+            (lastLocationDate.getTime() - locationDate.getTime()) / 60000;
+
+          if (diff >= 1) {
+            correctLocation = location;
+          }
+        });
+
+      if (correctLocation) {
+        dispatch(
+          getDistanceBetweenTwoLocations([correctLocation, lastLocation])
+        );
+        dispatch(setLastDistanceChecked());
+      }
+    }
+  }, [locations]);
+};
 
 const useTrackTime = (isRunning: boolean, run: Run, dispatch: AppDispatch) => {
   useEffect(() => {

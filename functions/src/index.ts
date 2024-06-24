@@ -14,6 +14,7 @@ import { HttpsError, onCall } from "firebase-functions/v2/https";
 import { initializeApp } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
 import { Timestamp } from "firebase-admin/firestore";
+import axios from "axios";
 
 initializeApp();
 
@@ -179,4 +180,55 @@ export const getGoogleMapsAPIKey = onCall(async (request) => {
   const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
 
   return GOOGLE_MAPS_API_KEY;
+});
+
+export interface LocationState {
+  latitude: number;
+  longitude: number;
+  timestamp: number;
+}
+
+// Returns the distance and duration between two locations
+// We use this function to calculate user's average speed and distance
+export const getDistanceBetweenTwoLocations = onCall(async (request) => {
+  if (!request.auth) {
+    throw new HttpsError(
+      "unauthenticated",
+      "The function must be called while authenticated."
+    );
+  }
+
+  // Sent by user, location at the start and last known location
+  const locations: LocationState[] | null = request.data.locations;
+
+  if (!locations) return null;
+
+  const origins = locations[0];
+  const destinations = locations[1];
+
+  const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
+
+  const requestURL = `https://maps.googleapis.com/maps/api/distancematrix/json?destinations=${destinations.latitude},${destinations.longitude}&origins=${origins.latitude},${origins.longitude}&mode=walking&key=${GOOGLE_MAPS_API_KEY}`;
+
+  try {
+    const response = await axios({
+      method: "get",
+      url: requestURL,
+    });
+
+    if (response.data) {
+      const rows = response.data.rows;
+
+      if (rows) {
+        const row = rows[0].elements[0];
+
+        return { distance: row.distance.text, duration: row.duration.text };
+      }
+    }
+
+    return null;
+  } catch (error) {
+    console.log("Error on getDistanceBetweenTwoLocations: ", error);
+    return null;
+  }
 });

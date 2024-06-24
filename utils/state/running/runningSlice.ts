@@ -3,6 +3,7 @@ import * as Location from "expo-location";
 import { RootState } from "../store";
 import { calculateDistance } from "@/utils/calculate-distance";
 import { LocationState, Run, RunsDB } from "@/utils/types/runs";
+import functions from "@react-native-firebase/functions";
 
 export const LOCATION_TASK_NAME = "running-location-task";
 
@@ -20,6 +21,8 @@ interface RunningState {
   allRuns: RunsDB[];
   // Represents the first time user clicks start running button
   isFirstClicked: boolean;
+  // Last date that we checked user's distance
+  lastDistanceChecked: string | null;
 }
 
 export const initialState: RunningState = {
@@ -34,6 +37,7 @@ export const initialState: RunningState = {
   allRuns: [],
   runs: [],
   isFirstClicked: true,
+  lastDistanceChecked: null,
 };
 
 export const startRunning = createAsyncThunk(
@@ -42,7 +46,7 @@ export const startRunning = createAsyncThunk(
     // Start location tracking
     await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
       accuracy: Location.Accuracy.Highest,
-      timeInterval: 1000,
+      timeInterval: 60000,
       distanceInterval: 1,
       showsBackgroundLocationIndicator: true,
       foregroundService: {
@@ -65,6 +69,23 @@ export const stopRunning = createAsyncThunk("running/stopRunning", async () => {
   return await Location.hasStartedLocationUpdatesAsync(LOCATION_TASK_NAME);
 });
 
+export const getDistanceBetweenTwoLocations = createAsyncThunk(
+  "running/getDistanceBetweenTwoLocations",
+  async (locations: LocationState[]) => {
+    const response = await functions().httpsCallable(
+      "getDistanceBetweenTwoLocations"
+    )({ locations: locations });
+
+    if (response.data) {
+      if (response.data.distance) {
+        return response.data.distance;
+      }
+    }
+
+    return null;
+  }
+);
+
 // We move this selection function because it needs to be cached
 export const selectRuns = (state: RootState) => state.running.runs;
 
@@ -75,36 +96,16 @@ const runningSlice = createSlice({
     setAllRuns: (state, action) => {
       state.allRuns = action.payload;
     },
-    // Sets the distance & average speed
-    setStats: (state, action) => {
-      state.locations.push(action.payload);
-
-      // We calculate the distance and speed over these location datas
-      let totalDistance = 0;
-      let totalTime = 0;
-      let averageSpeed = 0;
-
-      for (let i = 1; i < state.locations.length; i++) {
-        const coord1 = state.locations[i - 1];
-        const coord2 = state.locations[i];
-
-        const distance = calculateDistance(coord1, coord2);
-
-        const timeDiff =
-          (state.locations[i].timestamp - state.locations[i - 1].timestamp) /
-          1000; // convert milliseconds to seconds
-
-        totalDistance += distance;
-        totalTime += timeDiff;
+    setLocations: (state, action) => {
+      // First check
+      if (state.locations.length === 0) {
+        state.lastDistanceChecked = JSON.stringify(new Date());
       }
 
-      // 0 / 0 happens
-      averageSpeed = totalDistance / (totalTime / 3600);
-
-      // AverageSpeed is in km/dk
-      state.run.averageSpeed = averageSpeed || 0;
-      // Distance is in meters
-      state.run.distance = totalDistance * 1000;
+      state.locations.push(action.payload);
+    },
+    setLastDistanceChecked: (state) => {
+      state.lastDistanceChecked = JSON.stringify(new Date());
     },
     // Sets the counter
     setRunTime: (state, action) => {
@@ -137,6 +138,35 @@ const runningSlice = createSlice({
       state.isLocationTracking = action.payload;
       state.isRunning = action.payload;
     });
+
+    // Calculate ran distance and averageSpeed of current run
+    builder.addCase(
+      getDistanceBetweenTwoLocations.fulfilled,
+      (state, action) => {
+        if (action.payload) {
+          // Total distance that user has run (in meters)
+          // TODO: I'm not sure about meters part
+          const distance = parseFloat(action.payload.split(" ")[0]);
+
+          // This distance is basically the distance between locations that at least 1 minute apart
+          // So, if distance < 30m user is problably not moving, we don't count it
+          if (distance > 30) {
+            console.log("Distance: ", distance);
+
+            state.run.distance += distance;
+
+            console.log("Total Distance: ", state.run.distance);
+
+            const { hours, minutes, seconds } = state.run.runTime;
+            const runTimeInMinutes = hours * 60 + minutes + seconds / 60;
+
+            // Average speed (in minutes/km)
+            state.run.averageSpeed =
+              runTimeInMinutes / (state.run.distance / 1000);
+          }
+        }
+      }
+    );
   },
 });
 
@@ -146,7 +176,8 @@ export const {
   saveRun,
   discardRun,
   firstClickIsDone,
-  setStats,
+  setLocations,
+  setLastDistanceChecked,
 } = runningSlice.actions;
 
 export default runningSlice.reducer;

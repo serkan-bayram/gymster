@@ -12,7 +12,8 @@ import { store } from "@/utils/state/store";
 import { Runs } from "@/components/running/runs";
 import {
   LOCATION_TASK_NAME,
-  setStats,
+  getDistanceBetweenTwoLocations,
+  setLocations,
 } from "@/utils/state/running/runningSlice";
 import { Divider } from "@/components/ui/divider";
 import { RunningButtons } from "@/components/running/running-buttons";
@@ -21,6 +22,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
 import { FullScreenLoading } from "@/components/loading";
 import { useGetRuns } from "@/utils/apis/runs";
+import { getSnapPoints } from "@/utils/bottomsheet";
 
 TaskManager.defineTask(
   LOCATION_TASK_NAME,
@@ -44,7 +46,7 @@ TaskManager.defineTask(
       const { timestamp } = data.locations[0];
 
       store.dispatch(
-        setStats({
+        setLocations({
           latitude: latitude,
           longitude: longitude,
           timestamp: timestamp,
@@ -59,6 +61,8 @@ export default function Running() {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
 
   const getRuns = useGetRuns();
+
+  const snapPoints = getSnapPoints();
 
   if (getRuns.isPending) {
     return <FullScreenLoading />;
@@ -76,7 +80,7 @@ export default function Running() {
         <BottomSheetModal
           handleStyle={{ display: "none" }}
           enablePanDownToClose={false}
-          snapPoints={[700]}
+          snapPoints={snapPoints}
           ref={bottomSheetRef}
         >
           <BottomSheetScrollView
@@ -84,7 +88,7 @@ export default function Running() {
             stickyHeaderIndices={[0]}
           >
             <View className="px-6 bg-white pb-3 ">
-              <View className="mt-6 flex  flex-row justify-between items-center">
+              <View className="mt-16 flex  flex-row justify-between items-center">
                 <RunningCounter />
 
                 <CounterControllers />
