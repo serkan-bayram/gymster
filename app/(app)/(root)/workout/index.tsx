@@ -1,11 +1,11 @@
 import { Heading } from "@/components/heading";
-import { Text, View } from "react-native";
+import { BackHandler, Text, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { WorkoutTodayHeading } from "@/components/workout/workout-today-heading";
 import { WorkoutTodayExercises } from "@/components/workout/workout-today-exercises";
 import { AddWorkout } from "@/components/workout/add-workout";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import { useRef } from "react";
+import { RefObject, useEffect, useRef } from "react";
 import { WorkoutBottomSheet } from "@/components/workout/workout-bottomsheet";
 import {
   useGetDefaultExercises,

@@ -63,7 +63,7 @@ const useGetDistance = () => {
   const { locations } = useSelector((state: RootState) => state.running);
 
   useEffect(() => {
-    console.log("Locations: ", locations);
+    // console.log("Locations: ", locations);
 
     if (locations.length < 2) return;
     // if (!lastDistanceChecked) return;

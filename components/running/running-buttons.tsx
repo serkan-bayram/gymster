@@ -13,40 +13,16 @@ import firestore from "@react-native-firebase/firestore";
 import { useState } from "react";
 
 export function RunningButtons({
-  bottomSheetRef,
+  handleDiscard,
+  stopEverything,
 }: {
-  bottomSheetRef: React.RefObject<BottomSheetModal | null>;
+  handleDiscard: () => void;
+  stopEverything: () => void;
 }) {
   const dispatch = useDispatch<AppDispatch>();
   const running = useSelector((state: RootState) => state.running);
   const user = useSelector((state: RootState) => state.session.user);
   const [isLoading, setIsLoading] = useState(false);
-
-  const stopEverything = () => {
-    // Stop tracking location
-    dispatch(stopRunning());
-
-    // Set everything to initialData
-    dispatch(discardRun());
-
-    bottomSheetRef?.current?.close();
-  };
-
-  const handleDiscard = () => {
-    Alert.alert(
-      "Vazgeç",
-      "Vazgeçerseniz mevcut koşu verileriniz silinecektir, emin misiniz?",
-      [
-        {
-          text: "Verileri Sil",
-          onPress: stopEverything,
-        },
-        {
-          text: "Koşuya Devam",
-        },
-      ]
-    );
-  };
 
   const addRuns = useAddRuns();
 

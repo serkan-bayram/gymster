@@ -3,9 +3,12 @@ import { Text, TextInput, View } from "react-native";
 import { PrimaryButton } from "./primary-button";
 import { useRef, useState } from "react";
 import { useUpdateMeals } from "@/utils/apis/meals";
+import { useCloseBottomSheetOnBackPressed } from "@/utils/bottomsheet";
 
 export function MealsBottomSheet({ setMeals, mealsBottomSheetRef }) {
   const inputRef = useRef(null);
+
+  const setIndex = useCloseBottomSheetOnBackPressed(mealsBottomSheetRef);
 
   const [input, setInput] = useState("");
 
@@ -55,6 +58,7 @@ export function MealsBottomSheet({ setMeals, mealsBottomSheetRef }) {
       enablePanDownToClose={true}
       snapPoints={[500]}
       ref={mealsBottomSheetRef}
+      onChange={(index) => setIndex(index)}
     >
       <BottomSheetView className="flex-1 ">
         <View className="p-5 flex gap-y-4">

@@ -6,6 +6,7 @@ import { WaterPickers } from "./water-pickers";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/utils/state/store";
 import { setGoalValue, setUpdateValue } from "@/utils/state/water/waterSlice";
+import { useCloseBottomSheetOnBackPressed } from "@/utils/bottomsheet";
 
 // Content of bottom sheet for water section
 export function WaterBottomSheet({
@@ -16,6 +17,8 @@ export function WaterBottomSheet({
   // Picker refs
   const updatePickerRef = useRef<any>(null);
   const goalPickerRef = useRef<any>(null);
+
+  const setIndex = useCloseBottomSheetOnBackPressed(bottomSheetRef);
 
   const { updateValue, goalValue } = useSelector(
     (state: RootState) => state.water
@@ -42,6 +45,7 @@ export function WaterBottomSheet({
       enablePanDownToClose={true}
       snapPoints={[500]}
       ref={bottomSheetRef}
+      onChange={(index) => setIndex(index)}
     >
       <BottomSheetView className="flex-1">
         <View className="p-5">
