@@ -4,20 +4,12 @@ import { useQuery } from "@tanstack/react-query";
 import functions from "@react-native-firebase/functions";
 import { useState } from "react";
 import { View } from "react-native";
+import { LocationState } from "@/functions/src";
 
-export function Map() {
+export function Map({ waypoints }: { waypoints: LocationState[] }) {
   const { data: apiKey, isPending: isAPIKeyPending } = useGetGoogleMapsAPIKey();
 
-  const [coordinates] = useState([
-    {
-      latitude: 48.8587741,
-      longitude: 2.2069771,
-    },
-    {
-      latitude: 48.8323785,
-      longitude: 2.3361663,
-    },
-  ]);
+  const [coordinates] = useState(waypoints);
 
   if (isAPIKeyPending) return <View></View>;
 
@@ -26,18 +18,19 @@ export function Map() {
       className="flex-1 w-full h-full "
       provider={PROVIDER_GOOGLE}
       initialRegion={{
-        latitude: coordinates[0].latitude,
-        longitude: coordinates[0].longitude,
-        latitudeDelta: 0.0622,
-        longitudeDelta: 0.0121,
+        latitude: coordinates[0]["latitude"],
+        longitude: coordinates[0]["longitude"],
+        latitudeDelta: 0.005,
+        longitudeDelta: 0.005,
       }}
     >
       <Marker coordinate={coordinates[0]} />
-      <Marker coordinate={coordinates[1]} />
+      <Marker coordinate={coordinates[coordinates.length - 1]} />
       {apiKey && (
         <MapViewDirections
           origin={coordinates[0]}
-          destination={coordinates[1]}
+          waypoints={coordinates}
+          destination={coordinates[coordinates.length - 1]}
           apikey={apiKey}
           strokeWidth={4}
           strokeColor="#111111"

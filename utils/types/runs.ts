@@ -13,6 +13,7 @@ export interface Run {
   distance: number;
   runTime: RunTime;
   identifier?: string;
+  locations: LocationState[];
 }
 
 // Runs that comes from DB

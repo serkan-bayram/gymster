@@ -46,7 +46,15 @@ function PastRun({ run }: { run: Run }) {
   return (
     <View className="w-full gap-x-2 flex flex-row ">
       <View className="h-40 w-[70%] overflow-hidden rounded-xl ">
-        <Map />
+        {run?.locations?.length >= 2 ? (
+          <Map waypoints={run.locations} />
+        ) : (
+          <View className="w-full h-full flex items-center justify-center bg-gray/50">
+            <Text className="text-center font-semibold">
+              Harita için yeterince veri toplanamadı.
+            </Text>
+          </View>
+        )}
       </View>
       <View className="w-[30%] h-40 flex justify-between ">
         {metrics.map((metric) => (

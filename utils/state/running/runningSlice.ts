@@ -28,6 +28,7 @@ const initialRun: Run = {
   averageSpeed: 0,
   distance: 0,
   runTime: { hours: 0, minutes: 0, seconds: 0 },
+  locations: [],
 };
 
 export const initialState: RunningState = {
@@ -118,6 +119,7 @@ const runningSlice = createSlice({
         averageSpeed: state.run.averageSpeed,
         distance: state.run.distance,
         runTime: state.run.runTime,
+        locations: state.locations,
       };
 
       return { ...initialState, runs: [...state.runs, newRun] };
