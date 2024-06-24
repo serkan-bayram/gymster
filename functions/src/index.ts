@@ -222,7 +222,7 @@ export const getDistanceBetweenTwoLocations = onCall(async (request) => {
       if (rows) {
         const row = rows[0].elements[0];
 
-        return { distance: row.distance.text, duration: row.duration.text };
+        return { distance: row.distance.value, duration: row.duration.text };
       }
     }
 

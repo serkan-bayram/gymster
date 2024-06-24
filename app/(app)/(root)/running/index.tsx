@@ -1,28 +1,20 @@
 import { Heading } from "@/components/heading";
 import { StartRunning } from "@/components/running/start-running";
-import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
-import { useRef, useState } from "react";
-import { Text, View } from "react-native";
-import { RunningCounter } from "@/components/running/running-counter";
-import { CounterControllers } from "@/components/running/counter-controllers";
-import { RunningStats } from "@/components/running/running-stats";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { useRef } from "react";
 import * as TaskManager from "expo-task-manager";
 import { LocationObject } from "expo-location";
 import { store } from "@/utils/state/store";
-import { Runs } from "@/components/running/runs";
 import {
   LOCATION_TASK_NAME,
-  getDistanceBetweenTwoLocations,
   setLocations,
 } from "@/utils/state/running/runningSlice";
-import { Divider } from "@/components/ui/divider";
-import { RunningButtons } from "@/components/running/running-buttons";
 import { PastRuns } from "@/components/running/past-runs";
 import { ScrollView } from "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
 import { FullScreenLoading } from "@/components/loading";
 import { useGetRuns } from "@/utils/apis/runs";
-import { getSnapPoints } from "@/utils/bottomsheet";
+import { BottomSheet } from "@/components/running/bottom-sheet";
 
 TaskManager.defineTask(
   LOCATION_TASK_NAME,
@@ -56,13 +48,10 @@ TaskManager.defineTask(
   }
 );
 
-// TODO: Does it calculate distance and averageSpeed in the background
 export default function Running() {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
 
   const getRuns = useGetRuns();
-
-  const snapPoints = getSnapPoints();
 
   if (getRuns.isPending) {
     return <FullScreenLoading />;
@@ -77,35 +66,7 @@ export default function Running() {
 
         <PastRuns getRunsData={getRuns.data} />
 
-        <BottomSheetModal
-          handleStyle={{ display: "none" }}
-          enablePanDownToClose={false}
-          snapPoints={snapPoints}
-          ref={bottomSheetRef}
-        >
-          <BottomSheetScrollView
-            contentContainerStyle={{ flexGrow: 1 }}
-            stickyHeaderIndices={[0]}
-          >
-            <View className="px-6 bg-white pb-3 ">
-              <View className="mt-16 flex  flex-row justify-between items-center">
-                <RunningCounter />
-
-                <CounterControllers />
-              </View>
-            </View>
-
-            <Divider type="horizontal" dividerClassName="my-5 mt-2 mx-6 " />
-
-            <View className="p-4 px-4 pt-0">
-              <RunningStats />
-
-              <Runs />
-            </View>
-
-            <RunningButtons bottomSheetRef={bottomSheetRef} />
-          </BottomSheetScrollView>
-        </BottomSheetModal>
+        <BottomSheet bottomSheetRef={bottomSheetRef} />
       </ScrollView>
     </>
   );

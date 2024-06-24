@@ -22,22 +22,22 @@ interface RunningState {
   // Represents the first time user clicks start running button
   isFirstClicked: boolean;
   // Last date that we checked user's distance
-  lastDistanceChecked: string | null;
 }
+
+const initialRun: Run = {
+  averageSpeed: 0,
+  distance: 0,
+  runTime: { hours: 0, minutes: 0, seconds: 0 },
+};
 
 export const initialState: RunningState = {
   locations: [],
   isRunning: false,
-  run: {
-    averageSpeed: 0,
-    distance: 0,
-    runTime: { hours: 0, minutes: 0, seconds: 0 },
-  },
+  run: initialRun,
   isLocationTracking: false,
   allRuns: [],
   runs: [],
   isFirstClicked: true,
-  lastDistanceChecked: null,
 };
 
 export const startRunning = createAsyncThunk(
@@ -46,8 +46,8 @@ export const startRunning = createAsyncThunk(
     // Start location tracking
     await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
       accuracy: Location.Accuracy.Highest,
-      timeInterval: 60000,
-      distanceInterval: 1,
+      timeInterval: 60000, // every minute
+      distanceInterval: 1, // or 1 meter
       showsBackgroundLocationIndicator: true,
       foregroundService: {
         notificationTitle: "Koşu İstatistikleri Hesaplanıyor",
@@ -77,6 +77,7 @@ export const getDistanceBetweenTwoLocations = createAsyncThunk(
     )({ locations: locations });
 
     if (response.data) {
+      console.log(response.data);
       if (response.data.distance) {
         return response.data.distance;
       }
@@ -97,15 +98,12 @@ const runningSlice = createSlice({
       state.allRuns = action.payload;
     },
     setLocations: (state, action) => {
-      // First check
-      if (state.locations.length === 0) {
-        state.lastDistanceChecked = JSON.stringify(new Date());
-      }
-
       state.locations.push(action.payload);
     },
-    setLastDistanceChecked: (state) => {
-      state.lastDistanceChecked = JSON.stringify(new Date());
+    resetRunningState: (state) => {
+      state.locations = [];
+      state.run = initialRun;
+      state.isFirstClicked = true;
     },
     // Sets the counter
     setRunTime: (state, action) => {
@@ -145,24 +143,31 @@ const runningSlice = createSlice({
       (state, action) => {
         if (action.payload) {
           // Total distance that user has run (in meters)
-          // TODO: I'm not sure about meters part
-          const distance = parseFloat(action.payload.split(" ")[0]);
+          console.log("API Distance: ", action.payload);
 
-          // This distance is basically the distance between locations that at least 1 minute apart
-          // So, if distance < 30m user is problably not moving, we don't count it
-          if (distance > 30) {
-            console.log("Distance: ", distance);
+          const distance = action.payload;
 
-            state.run.distance += distance;
+          // distance > 20
+          // If distance is smaller than 20 meters, user problably not moving
+          if (distance > 20) {
+            state.run.distance += parseFloat(distance.toFixed(2));
 
-            console.log("Total Distance: ", state.run.distance);
+            // console.log("Total Distance: ", state.run.distance);
+
+            // This distance is basically the distance between locations that at least 1 minute apart
+            // So, if distance < 30m user is problably not moving, we don't count it
 
             const { hours, minutes, seconds } = state.run.runTime;
-            const runTimeInMinutes = hours * 60 + minutes + seconds / 60;
+            const runTimeInMinutes = parseFloat(
+              (hours * 60 + minutes + seconds / 60).toFixed(2)
+            );
 
             // Average speed (in minutes/km)
-            state.run.averageSpeed =
-              runTimeInMinutes / (state.run.distance / 1000);
+            const distanceInKM = state.run.distance / 1000;
+            state.run.averageSpeed = distanceInKM / runTimeInMinutes;
+
+            // console.log("RunInMinutes: ", runTimeInMinutes);
+            // console.log("Average Speed:", state.run.averageSpeed);
           }
         }
       }
@@ -177,7 +182,7 @@ export const {
   discardRun,
   firstClickIsDone,
   setLocations,
-  setLastDistanceChecked,
+  resetRunningState,
 } = runningSlice.actions;
 
 export default runningSlice.reducer;

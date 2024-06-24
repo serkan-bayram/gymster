@@ -25,7 +25,7 @@ function cacheFonts(fonts: any) {
 }
 
 // TODO: ?
-// SplashScreen.preventAutoHideAsync();
+SplashScreen.preventAutoHideAsync();
 
 export default function ProtectedLayout() {
   const router = useRouter();
