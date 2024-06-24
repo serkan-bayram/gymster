@@ -3,6 +3,9 @@ import { AntDesign } from "@expo/vector-icons";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 
 import * as Location from "expo-location";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/utils/state/store";
+import { setNotification } from "@/utils/state/notification/notificationSlice";
 
 const requestPermissions = async () => {
   const { status: foregroundStatus } =
@@ -25,15 +28,48 @@ export function StartRunning({
 }: {
   bottomSheetRef: React.RefObject<BottomSheetModal | null>;
 }) {
-  const handlePress = async () => {
-    const isGranted = await requestPermissions();
+  const dispatch = useDispatch<AppDispatch>();
 
-    if (!isGranted) {
-      Alert.alert("Konum izni vermeden devam edemezsiniz.");
+  const handlePress = async () => {
+    const accessGranted = async () => {
+      const isGranted = await requestPermissions();
+
+      if (!isGranted) {
+        dispatch(
+          setNotification({
+            show: true,
+            text: {
+              heading: "Hata!",
+              content: "Gerekli izinler verilmedi.",
+            },
+            type: "error",
+          })
+        );
+        return;
+      }
+
+      bottomSheetRef?.current?.present();
+    };
+
+    // Don't ask for permissions if already granted
+    const { granted: isForegroundGranted } =
+      await Location.getForegroundPermissionsAsync();
+    const { granted: isBackgroundGranted } =
+      await Location.getBackgroundPermissionsAsync();
+
+    if (isForegroundGranted && isBackgroundGranted) {
+      bottomSheetRef?.current?.present();
       return;
     }
 
-    bottomSheetRef?.current?.present();
+    Alert.alert(
+      "Uyarı",
+      "Koşu özelliğini kullanmak için arka planda her zaman izin ver seçeneğine tıklamanız gerekmektedir.",
+      [
+        { text: "Tamam", onPress: async () => await accessGranted() },
+        { text: "Vazgeç" },
+      ]
+    );
   };
 
   return (

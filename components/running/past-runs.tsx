@@ -134,7 +134,6 @@ export function PastRuns({
       <View className="mt-4">
         <View className="flex flex-row justify-between items-center">
           <Text className="font-bold text-xl">Geçmiş Koşular</Text>
-          <Text className="text-xs">Silmek için basılı tutun.</Text>
         </View>
         {getRunsData ? (
           <>
@@ -171,7 +170,15 @@ export function PastRuns({
                           );
                         })}
                       </View>
+
                       <Divider type="horizontal" />
+                      {index + 1 === getRunsData.length && (
+                        <View className="w-full mt-4 items-center ">
+                          <Text className="text-black/50">
+                            Silmek için basılı tutun.
+                          </Text>
+                        </View>
+                      )}
                     </Animated.View>
                   );
                 }}
