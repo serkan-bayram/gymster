@@ -12,9 +12,9 @@ import functions from "@react-native-firebase/functions";
 // set the host and the port property to connect to the emulator
 // set these before any read/write operations occur to ensure it doesn't affect your Cloud Firestore data!
 if (__DEV__) {
-  firestore().useEmulator("192.168.1.68", 8080);
-  functions().useEmulator("192.168.1.68", 5001);
-  auth().useEmulator("http://192.168.1.68:9099");
+  firestore().useEmulator("192.168.1.14", 8080);
+  functions().useEmulator("192.168.1.14", 5001);
+  auth().useEmulator("http://192.168.1.14:9099");
 }
 
 // 30000

@@ -22,19 +22,19 @@
   ],
   "emulators": {
     "auth": {
-      "host": "192.168.1.68",
+      "host": "192.168.1.14",
       "port": 9099
     },
     "functions": {
-      "host": "192.168.1.68",
+      "host": "192.168.1.14",
       "port": 5001
     },
     "firestore": {
-      "host": "192.168.1.68",
+      "host": "192.168.1.14",
       "port": 8080
     },
     "ui": {
-      "host": "192.168.1.68",
+      "host": "192.168.1.14",
       "enabled": true
     },
     "singleProjectMode": true
