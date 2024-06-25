@@ -6,8 +6,8 @@ import {
 import { RefObject, useCallback, useEffect, useMemo, useState } from "react";
 import { BackHandler, StyleSheet } from "react-native";
 
-export function getSnapPoints() {
-  return useMemo(() => ["100%"], []);
+export function getSnapPoints(snapPoints?: string[]) {
+  return useMemo(() => (snapPoints ? snapPoints : ["100%"]), []);
 }
 
 export function getBackdrop() {

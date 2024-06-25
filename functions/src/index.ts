@@ -201,7 +201,9 @@ export const createDefaultExercises = onCall(async (request) => {
     getFirestore().collection("DefaultExercises");
 
   try {
-    await defaultExercisesCollection.add({ exercises: exercises });
+    await defaultExercisesCollection
+      .doc("default")
+      .set({ exercises: exercises });
     return { exercises: exercises };
   } catch (error) {
     console.log("Error on createDefaultExercises: ", error);

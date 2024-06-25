@@ -47,9 +47,12 @@ function PastRun({ run }: { run: Run }) {
     <View className="w-full gap-x-2 flex flex-row ">
       <View className="h-40 w-[70%] overflow-hidden rounded-xl ">
         {run?.locations?.length >= 2 ? (
-          <Map waypoints={run.locations} />
+          <Map key={Crypto.randomUUID()} waypoints={run.locations} />
         ) : (
-          <View className="w-full h-full  flex items-center justify-center bg-gray/50">
+          <View
+            key={Crypto.randomUUID()}
+            className="w-full h-full  flex items-center justify-center bg-gray/50"
+          >
             <Text className="text-center font-semibold">
               Harita için yeterince veri toplanamadı.
             </Text>

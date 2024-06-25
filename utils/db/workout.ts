@@ -16,12 +16,14 @@ const workoutsRef = firestore().collection("Workouts");
 
 // The default exercises that user can choose between when user wants to add a workout
 export async function getDefaultExercises(): Promise<DefaultExercises> {
-  const defaultExercisesRef = firestore().collection("DefaultExercises");
+  const defaultExercisesRef = firestore()
+    .collection("DefaultExercises")
+    .doc("default");
 
   try {
     const querySnapshot = await defaultExercisesRef.get();
 
-    if (querySnapshot.empty) {
+    if (!querySnapshot.exists) {
       const response = await functions().httpsCallable(
         "createDefaultExercises"
       )();
@@ -31,7 +33,7 @@ export async function getDefaultExercises(): Promise<DefaultExercises> {
       }
     }
 
-    const documentSnapshot = querySnapshot.docs[0].data() as DefaultExercises;
+    const documentSnapshot = querySnapshot.data() as DefaultExercises;
 
     return documentSnapshot;
   } catch (error) {

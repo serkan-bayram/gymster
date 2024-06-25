@@ -14,6 +14,7 @@ import {
 } from "@/utils/apis/workout";
 import { PastWorkouts } from "@/components/workout/past-workouts";
 import { FullScreenLoading } from "@/components/loading";
+import { AddExtraWorkout } from "@/components/workout/add-extra-workout";
 
 export default function Workout() {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
@@ -41,6 +42,8 @@ export default function Workout() {
 
           <AddWorkout bottomSheetRef={bottomSheetRef} />
         </View>
+
+        <AddExtraWorkout />
 
         <View className="p-4 px-0 ">
           <PastWorkouts />
