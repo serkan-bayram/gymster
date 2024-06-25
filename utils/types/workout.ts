@@ -15,6 +15,8 @@ export interface TodaysWorkoutsDB {
 export interface DefaultExercise {
   id: number;
   name: string;
+  type: string;
+  text: string;
 }
 
 export interface DefaultExercises {

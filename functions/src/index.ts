@@ -152,8 +152,49 @@ export const createDefaultExercises = onCall(async (request) => {
 
   // TODO: Will fetch this from somewhere, or save it in database
   const exercises = [
-    { id: 0, name: "Chest Press" },
-    { id: 1, name: "Squat" },
+    { id: 0, name: "Barbell Bench Press", type: "chest", text: "Göğüs" },
+    { id: 1, name: "Machine Chest Press", type: "chest", text: "Göğüs" },
+    { id: 2, name: "Machine Fly", type: "chest", text: "Göğüs" },
+    {
+      id: 3,
+      name: "Barbell Incline Bench Press",
+      type: "chest",
+      text: "Göğüs",
+    },
+    { id: 4, name: "Dumbell Fly", type: "chest", text: "Göğüs" },
+    { id: 5, name: "Şınav", type: "chest", text: "Göğüs" },
+    { id: 6, name: "Cable Crossover", type: "chest", text: "Göğüs" },
+    { id: 7, name: "Dumbell Curl", type: "biceps", text: "Ön kol" },
+    { id: 8, name: "Hammer Curl", type: "biceps", text: "Ön kol" },
+    { id: 9, name: "Standing Biceps Curl", type: "biceps", text: "Ön kol" },
+    {
+      id: 10,
+      name: "Dumbell Concentration Curl",
+      type: "biceps",
+      text: "Ön kol",
+    },
+    { id: 11, name: "Triceps Pushdown", type: "triceps", text: "Arka kol" },
+    { id: 12, name: "Rope Pushdown", type: "triceps", text: "Arka kol" },
+    { id: 13, name: "Bench Dip", type: "triceps", text: "Arka kol" },
+
+    { id: 14, name: "Seated Cable Lat Pulldown", type: "lats", text: "Sırt" },
+    { id: 15, name: "Reverse Grip Pulldown", type: "lats", text: "Sırt" },
+    { id: 16, name: "Seated Cable Row", type: "lats", text: "Sırt" },
+    { id: 17, name: "Hyperextension", type: "lats", text: "Sırt" },
+
+    { id: 18, name: "Overhead Machine Press", type: "shoulder", text: "Omuz" },
+    { id: 19, name: "Dumbell Front Raise", type: "shoulder", text: "Omuz" },
+    {
+      id: 20,
+      name: "Dumbell Side Lateral Raise",
+      type: "shoulder",
+      text: "Omuz",
+    },
+    { id: 21, name: "Dumbell Upright Row", type: "shoulder", text: "Omuz" },
+
+    { id: 22, name: "Leg Press", type: "leg", text: "Bacak" },
+    { id: 23, name: "Leg Extention", type: "leg", text: "Bacak" },
+    { id: 24, name: "Standing Calf Raises", type: "leg", text: "Bacak" },
   ];
 
   const defaultExercisesCollection =
