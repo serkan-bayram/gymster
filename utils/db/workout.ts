@@ -9,6 +9,7 @@ import {
   AllWorkouts,
   DefaultExercises,
   Exercise,
+  ExtraWorkout,
   TodaysWorkoutsDB,
 } from "../types/workout";
 
@@ -146,4 +147,108 @@ export async function updateWorkouts(
     console.log("Error on updateWorkouts: ", error);
     return null;
   }
+}
+
+export async function getExtraExercises(
+  user: User
+): Promise<ExtraWorkout[] | null> {
+  const extraExercisesRef = firestore().collection("ExtraExercises");
+
+  const usersDocument = await extraExercisesRef
+    .where("uid", "==", user.uid)
+    .limit(1)
+    .get();
+
+  if (usersDocument.empty) return null;
+
+  const usersDocumentPath = usersDocument.docs[0].ref.path;
+
+  const usersExercisesRef = firestore().collection(
+    `${usersDocumentPath}/exercises`
+  );
+
+  const usersExercises = await usersExercisesRef.get();
+
+  if (usersExercises.empty) return null;
+
+  const extraWorkouts: ExtraWorkout[] = [];
+
+  usersExercises.forEach((usersExercise) => {
+    const exerciseName = usersExercise.data().name;
+
+    extraWorkouts.push({ name: exerciseName, id: usersExercise.id });
+  });
+
+  return extraWorkouts;
+}
+
+export async function saveExtraExercise(
+  user: User,
+  exerciseName: string
+): Promise<boolean | null> {
+  const extraExercisesRef = firestore().collection("ExtraExercises");
+
+  const usersDocument = await extraExercisesRef
+    .where("uid", "==", user.uid)
+    .limit(1)
+    .get();
+
+  if (usersDocument.empty) {
+    const documentRef = await extraExercisesRef.add({ uid: user.uid });
+
+    const documentPath = documentRef.path;
+
+    const exercisesCollectionRef = firestore().collection(
+      `${documentPath}/exercises`
+    );
+
+    try {
+      await exercisesCollectionRef.add({ name: exerciseName });
+      return true;
+    } catch (error) {
+      console.log("Error on saveExtraExercise: ", error);
+    }
+
+    return null;
+  }
+
+  const exercisesCollectionRef = firestore().collection(
+    `${usersDocument.docs[0].ref.path}/exercises`
+  );
+
+  try {
+    await exercisesCollectionRef.add({ name: exerciseName });
+    return true;
+  } catch (error) {
+    console.log("Error on saveExtraExercise: ", error);
+  }
+
+  return null;
+}
+
+export async function deleteExtraExercise(
+  user: User,
+  extraExercise: ExtraWorkout
+): Promise<boolean | null> {
+  const extraExercisesRef = firestore().collection("ExtraExercises");
+
+  const usersDocument = await extraExercisesRef
+    .where("uid", "==", user.uid)
+    .limit(1)
+    .get();
+
+  if (usersDocument.empty) return null;
+
+  const exercisesCollectionRef = firestore().collection(
+    `${usersDocument.docs[0].ref.path}/exercises`
+  );
+
+  try {
+    await exercisesCollectionRef.doc(extraExercise.id).delete();
+    return true;
+  } catch (error) {
+    console.log("Error on deleteExtraExercise: ", error);
+  }
+
+  return null;
 }

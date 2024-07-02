@@ -41,14 +41,15 @@ export const initialState: RunningState = {
   isFirstClicked: true,
 };
 
+// Start tracking location in background
 export const startRunning = createAsyncThunk(
   "running/startRunning",
   async () => {
-    // Start location tracking
     await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
       accuracy: Location.Accuracy.Highest,
-      timeInterval: 60000, // every minute
+      timeInterval: 60000, // update in every minute
       distanceInterval: 1, // or 1 meter
+      // show to user that location tracking is used
       showsBackgroundLocationIndicator: true,
       foregroundService: {
         notificationTitle: "Koşu İstatistikleri Hesaplanıyor",
@@ -157,7 +158,7 @@ const runningSlice = createSlice({
             // console.log("Total Distance: ", state.run.distance);
 
             // This distance is basically the distance between locations that at least 1 minute apart
-            // So, if distance < 30m user is problably not moving, we don't count it
+            // So, if distance < 20m user is problably not moving, we don't count it
 
             const { hours, minutes, seconds } = state.run.runTime;
             const runTimeInMinutes = parseFloat(

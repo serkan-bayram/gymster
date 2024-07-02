@@ -28,7 +28,9 @@ const useAuth = () => {
       dispatch(setIsLoading(false));
     } else {
       dispatch(setSession(null));
+
       dispatch(setIsLoading(false));
+
       SplashScreen.hideAsync();
     }
   }

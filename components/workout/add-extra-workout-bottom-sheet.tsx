@@ -3,68 +3,87 @@ import {
   getSnapPoints,
   useCloseBottomSheetOnBackPressed,
 } from "@/utils/bottomsheet";
-import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
-import { useQuery } from "@tanstack/react-query";
-import { RefObject } from "react";
-import { Text, View } from "react-native";
-import firestore from "@react-native-firebase/firestore";
+import {
+  BottomSheetModal,
+  BottomSheetScrollView,
+  TouchableHighlight,
+} from "@gorhom/bottom-sheet";
+import { RefObject, useEffect, useState } from "react";
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import { TextInput } from "react-native-gesture-handler";
+import { PrimaryButton } from "../primary-button";
+import {
+  useDeleteExtraExercise,
+  useSaveExtraExercise,
+} from "@/utils/apis/workout";
 import { useSelector } from "react-redux";
 import { RootState } from "@/utils/state/store";
+import * as Crypto from "expo-crypto";
+import { ExtraWorkout } from "@/utils/types/workout";
 
-interface ExtraWorkout {
-  id: string;
-  name: string;
-}
+function ExtraWorkouts() {
+  const extraWorkouts = useSelector(
+    (state: RootState) => state.workout.extraWorkouts
+  );
 
-const useGetUserExtraWorkouts = () => {
-  const { user } = useSelector((state: RootState) => state.session);
+  const mutation = useDeleteExtraExercise();
 
-  const queryFn = async () => {
-    if (!user) return null;
-
-    const defaultExercisesRef = firestore().collection("DefaultExercises");
-
-    const usersDocument = await defaultExercisesRef
-      .where("uid", "==", user.uid)
-      .limit(1)
-      .get();
-
-    if (usersDocument.empty) return null;
-
-    const usersDocumentPath = usersDocument.docs[0].ref.path;
-
-    const usersExercisesRef = firestore().collection(
-      `${usersDocumentPath}/exercises`
-    );
-
-    const usersExercises = await usersExercisesRef.get();
-
-    if (usersExercises.empty) return null;
-
-    const extraWorkouts: ExtraWorkout[] = [];
-
-    usersExercises.forEach((usersExercise) => {
-      const data = usersExercise.data() as ExtraWorkout;
-
-      extraWorkouts.push(data);
-    });
-
-    return extraWorkouts;
+  const handlePress = (extraExercise: ExtraWorkout) => {
+    mutation.mutate(extraExercise);
   };
 
-  return useQuery({ queryKey: ["getUserExtraWorkouts"], queryFn: queryFn });
-};
+  return !!extraWorkouts && extraWorkouts.length > 0 ? (
+    <View className="mt-2">
+      <Text className="font-bold text-lg">Hareketler</Text>
+      <View className="flex flex-row flex-wrap gap-2 gap-x-4 mt-2 mb-4 ">
+        {extraWorkouts.map((extraWorkout) => {
+          return (
+            <Pressable
+              onLongPress={() => handlePress(extraWorkout)}
+              key={Crypto.randomUUID()}
+              className="p-2 rounded-lg px-4
+                bg-gray/25 border-gray border-2"
+            >
+              <Text>{extraWorkout.name}</Text>
+            </Pressable>
+          );
+        })}
+      </View>
+      <View className="mb-4 mt-12 flex w-full items-center ">
+        <Text className="text-black/50">Hareketi silmek için basılı tut.</Text>
+      </View>
+    </View>
+  ) : (
+    <View className="flex mt-8 items-center">
+      <Text>Henüz ekstra hareket eklemediniz.</Text>
+    </View>
+  );
+}
 
 export function AddExtraWorkoutBottomSheet({
   bottomSheetRef,
 }: {
   bottomSheetRef: RefObject<BottomSheetModal>;
 }) {
-  const snapPoints = getSnapPoints(["50%"]);
+  const snapPoints = getSnapPoints(["80%"]);
   const renderBackdrop = getBackdrop();
   const setIndex = useCloseBottomSheetOnBackPressed(bottomSheetRef);
+  const [isLoading, setIsLoading] = useState<boolean>();
 
-  const { data: extraWorkouts } = useGetUserExtraWorkouts();
+  const [input, setInput] = useState<string>("");
+
+  const mutation = useSaveExtraExercise();
+
+  useEffect(() => {
+    if (mutation.isSuccess) {
+      setIsLoading(false);
+    }
+  }, [mutation]);
+
+  const handleSave = async () => {
+    setIsLoading(true);
+    mutation.mutate(input);
+  };
 
   return (
     <BottomSheetModal
@@ -77,20 +96,30 @@ export function AddExtraWorkoutBottomSheet({
     >
       <BottomSheetScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View className="flex-1 px-4 ">
-          <View className="w-full p-2 border-2 border-secondary bg-[#B0EBB4]/30 rounded-xl mt-4">
+          <View className="w-full p-2 border-2 border-secondary bg-[#B0EBB4]/30 rounded-xl mt-8">
             <Text>
               Bu menüyü kullanarak özel hareket isimleri ekleyebilir, daha sonra
               antrenman sırasında bu hareketleri seçebilirsiniz.
             </Text>
           </View>
 
-          {!!extraWorkouts && extraWorkouts.length > 0 ? (
-            <View></View>
-          ) : (
-            <View className="flex-1 items-center justify-center">
-              <Text>Henüz ekstra hareket eklemediniz.</Text>
+          <View className="flex flex-row h-10 items-center mt-4 justify-between">
+            <View className="w-[75%] h-10 bg-gray rounded-lg">
+              <TextInput
+                onChangeText={setInput}
+                placeholder="Hareket adı"
+                className="p-1 px-2"
+              />
             </View>
-          )}
+            <PrimaryButton
+              isLoading={isLoading}
+              onPress={handleSave}
+              text="Kaydet"
+              className="h-10 p-2 rounded-lg"
+            />
+          </View>
+
+          <ExtraWorkouts />
         </View>
       </BottomSheetScrollView>
     </BottomSheetModal>

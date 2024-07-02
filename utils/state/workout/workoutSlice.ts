@@ -2,6 +2,7 @@ import {
   AddingWorkout,
   AllWorkouts,
   DefaultExercises,
+  ExtraWorkout,
   TodaysWorkoutsDB,
 } from "@/utils/types/workout";
 import { createSlice } from "@reduxjs/toolkit";
@@ -11,6 +12,7 @@ interface WorkoutState {
   todaysWorkouts: TodaysWorkoutsDB | null;
   defaultExercises: DefaultExercises | null;
   allWorkouts: AllWorkouts[] | null;
+  extraWorkouts: ExtraWorkout[] | null;
 }
 
 const initialAddingWorkout = {
@@ -28,6 +30,7 @@ const initialState: WorkoutState = {
   todaysWorkouts: null,
   defaultExercises: null,
   allWorkouts: null,
+  extraWorkouts: null,
 };
 
 const workoutSlice = createSlice({
@@ -65,6 +68,9 @@ const workoutSlice = createSlice({
     setAllWorkouts: (state, action) => {
       state.allWorkouts = action.payload;
     },
+    setExtraWorkouts: (state, action) => {
+      state.extraWorkouts = action.payload;
+    },
     resetAddingWorkout: (state) => {
       return { ...state, addingWorkout: initialAddingWorkout };
     },
@@ -77,6 +83,7 @@ export const {
   setAddingWorkout,
   setDefaultExercises,
   setAllWorkouts,
+  setExtraWorkouts,
 } = workoutSlice.actions;
 
 export default workoutSlice.reducer;

@@ -1,30 +1,43 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../state/store";
-import { Alert } from "react-native";
 import {
   setAllWorkouts,
   setDefaultExercises,
+  setExtraWorkouts,
   setTodaysWorkouts,
 } from "../state/workout/workoutSlice";
 import {
   createWorkoutDocument,
+  deleteExtraExercise,
   getDefaultExercises,
+  getExtraExercises,
   getTodaysWorkouts,
   getWorkouts,
+  saveExtraExercise,
   updateWorkouts,
 } from "../db/workout";
-import { Exercise, TodaysWorkoutsDB } from "../types/workout";
+import { Exercise, ExtraWorkout, TodaysWorkoutsDB } from "../types/workout";
 import { setNotification } from "../state/notification/notificationSlice";
 
 // Default exercises for user to pick
 export function useGetDefaultExercises() {
   const dispatch = useDispatch<AppDispatch>();
+  const extraExercises = useSelector(
+    (state: RootState) => state.workout.extraWorkouts
+  );
 
   const queryFn = async () => {
     const defaultExercises = await getDefaultExercises();
 
-    dispatch(setDefaultExercises(defaultExercises));
+    if (extraExercises && defaultExercises) {
+      const combinedExercises = {
+        exercises: [...extraExercises, ...defaultExercises.exercises],
+      };
+      dispatch(setDefaultExercises(combinedExercises));
+    } else {
+      dispatch(setDefaultExercises(defaultExercises));
+    }
 
     return defaultExercises;
   };
@@ -228,6 +241,127 @@ export function useDeleteWorkout() {
       await queryClient.invalidateQueries({ queryKey: ["getTodaysWorkouts"] });
       await queryClient.invalidateQueries({ queryKey: ["getWorkouts"] });
     },
+    mutationFn: mutationFn,
+  });
+}
+
+export function useGetExtraExercises() {
+  const { user } = useSelector((state: RootState) => state.session);
+  const dispatch = useDispatch<AppDispatch>();
+
+  const queryFn = async () => {
+    if (!user) return null;
+
+    const extraWorkouts = await getExtraExercises(user);
+
+    dispatch(setExtraWorkouts(extraWorkouts));
+
+    return extraWorkouts;
+  };
+
+  return useQuery({ queryKey: ["getExtraExercises"], queryFn: queryFn });
+}
+
+export function useDeleteExtraExercise() {
+  const { user } = useSelector((state: RootState) => state.session);
+  const dispatch = useDispatch<AppDispatch>();
+
+  const queryClient = useQueryClient();
+
+  const mutationFn = async (extraExercise: ExtraWorkout) => {
+    if (!user) return null;
+
+    const isSaved = await deleteExtraExercise(user, extraExercise);
+
+    if (isSaved) {
+      dispatch(
+        setNotification({
+          show: true,
+          text: {
+            heading: "Başarılı!",
+            content: `${extraExercise.name} silindi.`,
+          },
+          type: "success",
+        })
+      );
+    } else {
+      dispatch(
+        setNotification({
+          show: true,
+          text: { heading: "Hata", content: `Bir şeyler terst gitti.` },
+          type: "error",
+        })
+      );
+    }
+
+    return isSaved;
+  };
+
+  return useMutation({
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["getExtraExercises"] });
+      await queryClient.invalidateQueries({
+        queryKey: ["getDefaultExercises"],
+      });
+    },
+    mutationKey: ["deleteExtraExercise"],
+    mutationFn: mutationFn,
+  });
+}
+
+export function useSaveExtraExercise() {
+  const { user } = useSelector((state: RootState) => state.session);
+  const dispatch = useDispatch<AppDispatch>();
+
+  const queryClient = useQueryClient();
+
+  const mutationFn = async (exerciseName: string) => {
+    if (!user) return null;
+    if (exerciseName.length === 0) {
+      dispatch(
+        setNotification({
+          show: true,
+          text: { heading: "Hata", content: `Boş egzersiz eklenemez.` },
+          type: "error",
+        })
+      );
+      return null;
+    }
+
+    const isSaved = await saveExtraExercise(user, exerciseName);
+
+    if (isSaved) {
+      dispatch(
+        setNotification({
+          show: true,
+          text: {
+            heading: "Başarılı!",
+            content: `${exerciseName} özel egzersizlere eklendi.`,
+          },
+          type: "success",
+        })
+      );
+    } else {
+      dispatch(
+        setNotification({
+          show: true,
+          text: { heading: "Hata", content: `Bir şeyler terst gitti.` },
+          type: "error",
+        })
+      );
+    }
+
+    return isSaved;
+  };
+
+  return useMutation({
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["getExtraExercises"] });
+      await queryClient.invalidateQueries({
+        queryKey: ["getDefaultExercises"],
+      });
+    },
+    mutationKey: ["saveExtraExercise"],
     mutationFn: mutationFn,
   });
 }

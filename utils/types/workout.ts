@@ -13,10 +13,10 @@ export interface TodaysWorkoutsDB {
 }
 
 export interface DefaultExercise {
-  id: number;
+  id: number | string;
   name: string;
-  type: string;
-  text: string;
+  type?: string;
+  text?: string;
 }
 
 export interface DefaultExercises {
@@ -39,4 +39,9 @@ export interface AllWorkouts {
     year: number;
   };
   workout: Exercise[];
+}
+
+export interface ExtraWorkout {
+  id: string;
+  name: string;
 }

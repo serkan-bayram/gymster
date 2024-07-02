@@ -18,9 +18,6 @@ const MemoizedPastWorkouts = memo(
     filteredWorkouts: AllWorkouts[] | null;
     workouts: AllWorkouts[] | null;
   }) => {
-    const isWorkoutsNull = workouts === null;
-    const isFilteredWorkoutsNull = filteredWorkouts === null;
-
     const isAllEmpty =
       filteredWorkouts?.filter((workout) => workout.workout.length > 0) || [];
 

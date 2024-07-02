@@ -9,6 +9,7 @@ import { RefObject, useEffect, useRef } from "react";
 import { WorkoutBottomSheet } from "@/components/workout/workout-bottomsheet";
 import {
   useGetDefaultExercises,
+  useGetExtraExercises,
   useGetTodaysWorkouts,
   useGetWorkouts,
 } from "@/utils/apis/workout";
@@ -22,11 +23,13 @@ export default function Workout() {
   const { isPending: isDefaultExercisesPending } = useGetDefaultExercises();
   const { isPending: isTodaysWorkoutsPending } = useGetTodaysWorkouts();
   const { isPending: isWorkoutsPending } = useGetWorkouts();
+  const { isPending: isExtraWorkoutsPending } = useGetExtraExercises();
 
   if (
     isWorkoutsPending ||
     isDefaultExercisesPending ||
-    isTodaysWorkoutsPending
+    isTodaysWorkoutsPending ||
+    isExtraWorkoutsPending
   ) {
     return <FullScreenLoading />;
   }

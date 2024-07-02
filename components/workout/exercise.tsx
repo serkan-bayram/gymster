@@ -86,6 +86,7 @@ export function Exercise({
 
   return (
     <AnimatedPressable
+      key={exercise.exerciseId}
       onLongPress={handleLongPress}
       entering={FadeIn.duration(300)}
       onPress={() => setIsOpen((prevValue) => !prevValue)}
