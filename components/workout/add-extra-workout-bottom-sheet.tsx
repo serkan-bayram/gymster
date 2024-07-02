@@ -8,7 +8,7 @@ import {
   BottomSheetScrollView,
   TouchableHighlight,
 } from "@gorhom/bottom-sheet";
-import { RefObject, useEffect, useState } from "react";
+import { ReactNode, RefObject, useEffect, useRef, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { PrimaryButton } from "../primary-button";
@@ -72,6 +72,8 @@ export function AddExtraWorkoutBottomSheet({
 
   const [input, setInput] = useState<string>("");
 
+  const inputRef = useRef<TextInput | null>(null);
+
   const mutation = useSaveExtraExercise();
 
   useEffect(() => {
@@ -83,6 +85,7 @@ export function AddExtraWorkoutBottomSheet({
   const handleSave = async () => {
     setIsLoading(true);
     mutation.mutate(input);
+    inputRef?.current?.clear();
   };
 
   return (
@@ -94,18 +97,25 @@ export function AddExtraWorkoutBottomSheet({
         setIndex(index);
       }}
     >
-      <BottomSheetScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <BottomSheetScrollView
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={{ flexGrow: 1 }}
+      >
         <View className="flex-1 px-4 ">
-          <View className="w-full p-2 border-2 border-secondary bg-[#B0EBB4]/30 rounded-xl mt-8">
-            <Text>
-              Bu menüyü kullanarak özel hareket isimleri ekleyebilir, daha sonra
-              antrenman sırasında bu hareketleri seçebilirsiniz.
+          <View
+            className="w-full border border-t-0 border-x-0 border-b-gray pb-2
+            mt-8"
+          >
+            <Text className="text-xs">
+              * Bu menüyü kullanarak özel hareket isimleri ekleyebilir, daha
+              sonra antrenman sırasında bu hareketleri seçebilirsiniz.
             </Text>
           </View>
 
           <View className="flex flex-row h-10 items-center mt-4 justify-between">
             <View className="w-[75%] h-10 bg-gray rounded-lg">
               <TextInput
+                ref={inputRef}
                 onChangeText={setInput}
                 placeholder="Hareket adı"
                 className="p-1 px-2"
